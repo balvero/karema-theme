@@ -859,14 +859,25 @@
 
         .sw-section-team-members-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 320px));
-            justify-content: center;
+            grid-template-columns: 1fr;
             gap: 2rem;
+
+            @media #{$l-up} {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
         .sw-section-team-members-item {
             text-align: center;
             padding: 2rem 1.5rem;
+
+            &:last-child:nth-child(odd) {
+                @media #{$l-up} {
+                    grid-column: 1 / -1;
+                    max-width: 50%;
+                    margin: 0 auto;
+                }
+            }
         }
 
         .sw-section-team-members-photo {

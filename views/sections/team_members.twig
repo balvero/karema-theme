@@ -1,41 +1,45 @@
 <section class="sw-section sw-section-team-members">
-	<div class="row column">
-		<h2 class="sw-section-team-members-heading large-text-center">
-			{{ theme.text_snippet('section_header', '', section.settings) }}
-		</h2>
+	<div class="row">
+		<div class="column large-8 large-push-2">
+			<h2 class="sw-section-team-members-heading large-text-center">
+				{{ theme.text_snippet('section_header', '', section.settings) }}
+			</h2>
+		</div>
 	</div>
-	<div class="row column">
-		<div class="sw-section-team-members-grid">
-			{% for block in section.blocks %}
-				<div class="sw-section-team-members-item" data-id="{{ block.id }}">
-					{% if block.settings.team_member_photo %}
-						<div class="sw-section-team-members-photo">
-							{{ html.image(block.settings.team_member_photo, block.settings.team_member_name, '', '', gts.lazyload_images) }}
-						</div>
-					{% endif %}
-					{% if block.settings.team_member_name %}
-						<strong class="sw-section-team-members-name">{{ block.settings.team_member_name }}</strong>
-					{% endif %}
-					{% if block.settings.team_member_title %}
-						<em class="sw-section-team-members-title">{{ block.settings.team_member_title }}</em>
-					{% endif %}
-					{% if block.settings.team_member_email or block.settings.team_member_phone %}
-						<div class="sw-section-team-members-contact">
-							{% if block.settings.team_member_email %}
-								<a href="mailto:{{ block.settings.team_member_email }}">{{ block.settings.team_member_email }}</a>
-							{% endif %}
-							{% if block.settings.team_member_phone %}
-								<a href="tel:{{ block.settings.team_member_phone }}">{{ block.settings.team_member_phone }}</a>
-							{% endif %}
-						</div>
-					{% endif %}
-					{% if block.settings.team_member_bio %}
-						<div class="sw-section-team-members-bio">
-							{{ block.settings.team_member_bio|raw }}
-						</div>
-					{% endif %}
-				</div>
-			{% endfor %}
+	<div class="row">
+		<div class="column large-8 large-push-2">
+			<div class="sw-section-team-members-grid">
+				{% for block in section.blocks %}
+					<div class="sw-section-team-members-item" data-id="{{ block.id }}">
+						{% if block.settings.team_member_photo %}
+							<div class="sw-section-team-members-photo">
+								{{ html.image(block.settings.team_member_photo, block.settings.team_member_name, '', '', gts.lazyload_images) }}
+							</div>
+						{% endif %}
+						{% if block.settings.team_member_name %}
+							<strong class="sw-section-team-members-name">{{ block.settings.team_member_name }}</strong>
+						{% endif %}
+						{% if block.settings.team_member_title %}
+							<em class="sw-section-team-members-title">{{ block.settings.team_member_title }}</em>
+						{% endif %}
+						{% if block.settings.team_member_email or block.settings.team_member_phone %}
+							<div class="sw-section-team-members-contact">
+								{% if block.settings.team_member_email %}
+									<a href="mailto:{{ block.settings.team_member_email }}">{{ block.settings.team_member_email }}</a>
+								{% endif %}
+								{% if block.settings.team_member_phone %}
+									<a href="tel:{{ block.settings.team_member_phone }}">{{ block.settings.team_member_phone }}</a>
+								{% endif %}
+							</div>
+						{% endif %}
+						{% if block.settings.team_member_bio %}
+							<div class="sw-section-team-members-bio">
+								{{ block.settings.team_member_bio|raw }}
+							</div>
+						{% endif %}
+					</div>
+				{% endfor %}
+			</div>
 		</div>
 	</div>
 </section>
