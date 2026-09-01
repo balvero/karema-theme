@@ -2,28 +2,37 @@
 {% extends 'templates/page_wrap.twig' %}
 
 {% set title = page.title %}
-{% set titleClass = 'account-header' %}
+{% set narrow_content = global.current_path == '/about-us' %}
+{% set titleClass = narrow_content ? 'account-header text-center' : 'account-header' %}
 {% set hideTitle = 0 %}
 {% set side_list = global.theme.settings['list_sidebar'] %}
 
 {% block page_content %}
 	{{ render(global.theme.sections_above_content_area, {
-		featured_products: featured_products, 
-		featured_categories: featured_categories, 
-		gts: global.theme.settings, 
-		theme: theme, html: html, 
-		blog_posts: blog_posts, 
-		recently_viewed: global.recently_viewed_products, 
+		featured_products: featured_products,
+		featured_categories: featured_categories,
+		gts: global.theme.settings,
+		theme: theme, html: html,
+		blog_posts: blog_posts,
+		recently_viewed: global.recently_viewed_products,
 		product: product
-		}) 
+		})
 	}}
+	{% if narrow_content %}
+	<div class="row column">
+		<div class="large-8 large-push-2 text-center section top">
+	{% endif %}
 	<div class="page-container shadow-box lg pad-small" id="{{ global.theme.content_area_id }}">
 		{# Render page content #}
 		<div class="fr-view">
 		   {{ page.content|raw }}
 		</div>
 	</div>
-	{{ render(global.theme.sections_below_content_area, { 
+	{% if narrow_content %}
+		</div>
+	</div>
+	{% endif %}
+	{{ render(global.theme.sections_below_content_area, {
 		featured_products: featured_products, 
 		featured_categories: featured_categories, 
 		gts: global.theme.settings, 
