@@ -849,4 +849,64 @@
         }
     }
 
+    // team members section
+
+    &.sw-section-team-members {
+
+        .sw-section-team-members-heading {
+            margin-bottom: 2rem;
+        }
+
+        .sw-section-team-members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 2rem;
+        }
+
+        .sw-section-team-members-item {
+            text-align: center;
+            padding: 2rem 1.5rem;
+        }
+
+        .sw-section-team-members-photo {
+            margin-bottom: 1rem;
+
+            img {
+                width: 100%;
+                max-width: 220px;
+                height: auto;
+                border: 15px solid #fff;
+                border-radius: 5px;
+            }
+        }
+
+        .sw-section-team-members-name {
+            display: block;
+            font-size: 16px;
+        }
+
+        .sw-section-team-members-title {
+            display: block;
+        }
+
+        .sw-section-team-members-contact {
+            display: block;
+            margin-top: 0.5rem;
+
+            a {
+                display: block;
+            }
+        }
+
+        .sw-section-team-members-bio {
+            text-align: justify;
+            margin-top: 1.5rem;
+
+            p {
+                font-size: 16px;
+                line-height: 2;
+            }
+        }
+    }
+
 }

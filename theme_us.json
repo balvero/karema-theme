@@ -717,7 +717,77 @@
 				}
 			]
 		},
-		{ 
+		{
+			"name": "team_members",
+			"icon": "image2",
+			"label": "Team Members",
+			"pageTypes": [ "content_page" ],
+			"settings": [
+				{
+					"name": "text_section_header",
+					"type": "rich_text",
+					"label": "Heading Text",
+					"defaultValue": "Meet the team",
+					"livePreview": true,
+					"separator": true
+				}
+			],
+			"blocks": [
+				{
+					"name": "team_member",
+					"label": "Team Member",
+					"icon": "image2",
+					"settings": [
+						{
+							"name": "team_member_photo",
+							"type": "image",
+							"label": "Photo",
+							"note": "Recommended image size 400px x 400px",
+							"identifier": true
+						},
+						{
+							"name": "team_member_name",
+							"type": "text",
+							"label": "Name",
+							"identifier": true,
+							"refreshButton": true,
+							"note": "Click refresh to see your changes."
+						},
+						{
+							"name": "team_member_title",
+							"type": "text",
+							"label": "Job Title",
+							"refreshButton": true,
+							"note": "Click refresh to see your changes."
+						},
+						{
+							"name": "team_member_email",
+							"type": "text",
+							"label": "Email Address",
+							"refreshButton": true,
+							"note": "Click refresh to see your changes."
+						},
+						{
+							"name": "team_member_phone",
+							"type": "text",
+							"label": "Phone Number",
+							"refreshButton": true,
+							"note": "Click refresh to see your changes.",
+							"separator": true
+						},
+						{
+							"name": "team_member_bio",
+							"type": "rich_text",
+							"extraButtons": true,
+							"label": "Bio",
+							"refreshButton": true,
+							"note": "Click refresh to see your changes."
+						}
+					]
+				}
+			]
+		},
+		{
 			"name": "blog_posts",
 			"icon": "blog",
 			"label": "Blog Posts",
