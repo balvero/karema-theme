@@ -1,0 +1,348 @@
+{% if global.theme.is_preview_mode_enabled %}
+    {% set short_codes = {
+        year : 'now'|date('Y'),
+        email: global.business.email,
+        phone:  global.business.phone,
+        address: global.business.one_line_address
+    } %}
+
+    <script>
+        $(window).on('message', function(event) {
+            if(event) {
+                try {
+                    JSON.parse(event.originalEvent.data);
+                } catch (event) {
+                    return false;
+                }
+
+                var result = JSON.parse(event.originalEvent.data),
+                    action = result.action,
+                    name = result.data.name,
+                    typed = result.data.value;
+				
+				console.log('result -> ', result);
+				
+				if(action == 'SW.ThemeSettingEditor.updateCssCustomProperty') {
+					$('.image-container').trigger('update');
+                    $(window).trigger('resize');
+				}
+
+                if(action == 'SW.ThemeSettingEditor.scrollToElement') {
+                    highlightElm(result.data);
+                }
+
+                if(action == 'SW.ThemeSettingEditor.init') {
+
+                    if(result.data.previewElementId == 'product_add_button_oos') {
+                        // out of stock action
+                        var addButton = $('button[name="cart_button"]'),
+                            quantityContainer = addButton.closest('form').find('.product-quantity'),
+                            quantityLabel = addButton.closest('.product-buy').prev('.field-label'),
+                            productContainer = addButton.closest('.product-container');
+
+                        // disable button
+                        addButton.prop('disabled', true).addClass('disabled').attr('data-name', 'button_out_of_stock').text(addButton.data('nostock'));
+                        quantityContainer.addClass('hide');
+                        quantityLabel.text('This product is out of stock');
+                        addButton.addClass('hide');
+                        productContainer.removeClass('in-stock');
+                        highlightElm('button_out_of_stock');
+
+                    }
+                    else if(result.data.previewElementId == 'product_add_button') {
+                        // in stock action
+                        var addButton = $('button[name="cart_button"]'),
+                            quantityContainer = addButton.closest('form').find('.product-quantity'),
+                            quantityLabel = addButton.closest('.product-buy').prev('.field-label'),
+                            productContainer = addButton.closest('.product-container');
+
+                        // enable button
+                        addButton.prop('disabled', false).removeClass('disabled').attr('data-name', 'button_add_to_basket').text(addButton.data('text'));
+                        quantityContainer.removeClass('hide');
+                        quantityLabel.text('Quantity');
+                        addButton.removeClass('hide');
+                        productContainer.addClass('in-stock');
+                        highlightElm('button_add_to_basket');
+
+                    }
+                    else {
+						
+						console.log('else highlightElm ->>> ', result.data.previewElementId);
+						
+						if(result.data.previewElementId) {
+                        	highlightElm(result.data.previewElementId);
+						}
+                    }
+
+                }
+
+                if(action == 'SW.ThemeSettingEditor.updateSetting') {
+
+                    var val = replaceAll(typed, map),
+                        itemID = result.data.itemId ? result.data.itemId : false;
+
+                    if (itemID) {
+                        var container = $('#'+ itemID +' [data-name="'+name+'"]');
+                    }
+                    else {
+                        var container = $('[data-name="'+name+'"]');
+                    }
+
+                    if(container.hasClass('html-snippet')) {
+                        container.html(val);
+                    }
+                    else {
+                        container.text(val);
+                    }
+
+                    switch (name) {
+                        case 'button_add_to_basket':
+                            container.data('text', val);
+                            $('[data-name="button_out_of_stock"]').data('text', val);
+                            break;
+                        case 'button_out_of_stock':
+                            container.data('nostock', val);
+                            $('[data-name="button_add_to_basket"]').data('nostock', val);
+                            break;
+                        case 'text_announce':
+                            var bar = container.closest('.announcement-bar');
+                            if(val) {
+                                bar.removeClass('hide');
+                            } else {
+                                bar.addClass('hide');
+                            }
+                        break;
+                    }
+                }
+
+                // dragging
+                if(action == 'SW.ThemeSettingEditor.selectSection' || action == 'SW.ThemeSettingEditor.deselectSection') {
+                    var sectionId = result.data.id,
+                        section = $('#' + sectionId),
+                        activeClass = 'sw-editor-active-section';
+
+                    // dragging start
+                    if(action == 'SW.ThemeSettingEditor.selectSection') {
+                        section.addClass(activeClass);
+                        scrollCenter(sectionId);
+                    }
+
+                    // dragging end
+                    if(action == 'SW.ThemeSettingEditor.deselectSection') {
+                        section.removeClass(activeClass);
+                    }
+                }
+
+                // reorder section
+                if(action == 'SW.ThemeSettingEditor.moveSection') {
+					
+					console.log('SW.ThemeSettingEditor.moveSection ->>> ', result.data);
+
+                    var parsedIndex = result.data.newPosition == 0 ? 1 : result.data.newPosition;
+                    // var parsedIndex = result.data.newPosition;
+
+                    reorderBlocks(result.data.id, parsedIndex);
+                }
+
+
+                function reorderBlocks(id, index) {
+
+                    var block = $('#' + id),
+                        parent = block.parent(),
+                        blocks = parent.find('> *'),
+                        blockCount = blocks.length,
+                        oldPosition = block.data('order') ? block.data('order') : block.index() + 1,
+                        newPosition = index;
+
+                    // prepare container
+                    parent.css({'display': 'flex', 'flex-direction': 'column'});
+
+                    // was reordered
+                    if(block.data('order')) {
+
+                        // cache current order
+                        blocks = [];
+
+                        for (var i = 0; i < blockCount; i++) {
+
+                            var thisOrder = i + 1,
+                                elm = parent.find('[data-order="' + thisOrder + '"]');
+							
+							console.log('elm -> ', elm);
+
+                            blocks.push( elm );
+                        }
+
+                        // re-order blocks array
+                        array_move(blocks, (oldPosition - 1), (newPosition - 1));
+
+                        // apply CSS and modify data attribute
+                        $.each( blocks, function(i, v) {
+                            $(blocks[i]).css({'order': i + 1}).attr('data-order', i + 1).data('order', i + 1 );
+                        });
+                    }
+                    else { // first reorder
+
+                        // re-order blocks array
+                        array_move(blocks, (oldPosition - 1), (newPosition - 1));
+
+                        // apply CSS and modify data attribute
+                        blocks.each(function(i) {
+                            $(this).css({'order': i + 1}).attr('data-order', i + 1).data('order', i + 1 );
+                        });
+                    }
+
+                    console.log ({
+                        block: block,
+                        parent: parent,
+                        blocks: blocks,
+                        blockCount: blockCount,
+                        oldPosition: oldPosition,
+                        newPosition: newPosition
+                    });
+
+                    // focus selected block while dragging
+                    scrollCenter(id);
+                }
+
+                // change slider to active block if slider
+                if(action == 'SW.ThemeSettingEditor.openBlock') {
+                    var block_id = result.data.id,
+                        block = $('[data-id="'+ block_id +'"]'),
+                        // slide_index = block.data('slick-index');
+                        slide_index = block.data('index');
+
+                    if(typeof slide_index !== 'undefined') {
+
+                        var slider = block.closest('.slick-slider');
+
+                        // change slide
+                        moveToSlickItem(slider, slide_index);
+
+                    }
+                }
+
+                function moveToSlickItem(elm, slickIndex) {
+
+                    console.log({
+                        name: 'moveToSlickItem',
+                        elm: elm,
+                        slickIndex: slickIndex
+                    });
+
+                    // move to slide
+                    elm.slick('slickGoTo', slickIndex);
+                }
+				
+				function array_move(arr, fromIndex, toIndex) {
+					var element = arr[fromIndex];
+					arr.splice(fromIndex, 1);
+					arr.splice(toIndex, 0, element);
+				}
+
+//                 function array_move(arr, old_index, new_index) {
+//                     if (new_index >= arr.length) {
+//                         var k = new_index - arr.length + 1;
+//                         while (k--) {
+//                             arr.push(undefined);
+//                         }
+//                     }
+//                     arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
+//                     return arr; // for testing
+//                 };
+
+                function scrollCenter(id) {
+                    var block = $('#' + id);
+
+                    $('html, body').animate({
+                        scrollTop: block.offset().top - (($(window).height() / 2) - (block.height() / 2))
+                    });
+                }
+
+                if(action == 'SW.ThemeSettingEditor.trigger') {
+
+                    var triggers = {
+                        'verifyAgeModal': 'age_modal',
+                        'newsletterModal': 'newsletter_modal'
+                    }
+
+                    for(key in triggers) {
+                        if(triggers[key] == result.data.settingName) {
+
+                            // open modal
+                            $('#' + key).foundation('open');
+                        }
+                    }
+                }
+
+                String.prototype.replaceAll = function(search, replacement) {
+                    var target = this;
+                    return target.replace(new RegExp('\\[\\[' + search + '\\]\\]', 'g'), replacement);
+                };
+
+                function replaceAll(str, map) {
+                    for(key in map){
+                        str = str.replaceAll(key, map[key]);
+                    }
+                    return str;
+                }
+
+                var map = {
+                    'YEAR' : '{{ short_codes.year }}',
+                    'EMAIL' : '{{ short_codes.email }}',
+                    'PHONE' : '{{ short_codes.phone }}',
+                    'ADDRESS' : '{{ short_codes.address }}'
+                };
+
+                function highlightElm(name) {
+					
+					console.log('highlightElm name ->  ', name);
+
+                    var elm = $('[data-name="'+name+'"]'),
+                        className = 'sw-theme-highlight';
+
+                    if(name == 'button_out_of_stock') {
+                        // out of stock action
+                        elm = $('.stock-requests-container').length ? $('.out-of-stock-button') : $('[data-name="product_add_button"]');
+                    }
+
+                    elm.addClass(className);
+
+                    $('html, body').animate({
+                        scrollTop: elm.offset().top - 10
+                    }, 500);
+
+                    setTimeout(function () {
+                        elm.removeClass(className);
+                    }, 3000);
+                }
+            }
+        });
+		
+
+		
+		var animationDelay;
+		
+		$(window).on('resize', function() {
+			console.log('window resized');
+			clearTimeout(animationDelay);
+			animationDelay = setTimeout(reinitImages, 400);
+		});
+
+		function reinitImages() {
+			$('.image-container').trigger('update');
+		}
+		
+		
+    </script>
+    <style>
+        .sw-theme-highlight,
+        .sw-theme-highlight * {
+            background-color: #fecbcb !important;
+        }
+
+        .sw-editor-active-section {
+            border: 7px dashed #f10257;
+        }
+    </style>
+{% endif %}

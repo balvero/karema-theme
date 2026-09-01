@@ -1,0 +1,735 @@
+{# Extend page template #}
+{% extends 'templates/page.twig' %}
+
+{% set full_width = true %}
+{% set hideTitle = true %}
+{% set hideDesc = true %}
+
+
+{% block page_content %}
+	<div>
+		{{ render(global.theme.sections_above_content_area, { 
+			featured_products: featured_products, 
+			featured_categories: featured_categories, 
+			gts: global.theme.settings, 
+			theme: theme, html: html, 
+			blog_posts: blog_posts, 
+			recently_viewed: global.recently_viewed_products, 
+			product: product,
+			global_theme: global.theme,
+			global_customer: global.customer
+			}) 
+		}}
+		<div id="{{ global.theme.content_area_id }}">
+			<div class="basket-header-container">
+				{% if basket.errors.has_both_normal_and_subscription_products %}
+					<div class="row column">
+						<div class="basket-subscription-error">
+							<div class="inner">
+								{% include 'partials/warning_svg.twig' %}
+								<span>Din {{ 'basket'|alt_text }} ordre kan ikke indeholde både abonnements- og engangsprodukter, læg venligst separate ordrer for at fortsætte.</span>
+							</div>
+						</div>
+					</div>
+				{% endif %}
+				{% if basket.user_files_lost %}
+					<div class="row column">
+						<div class="basket-subscription-error">
+							<div class="inner">
+								{% include 'partials/warning_svg.twig' %}
+								<span>Filer, der er uploadet for produktet/produkterne i din kurv, er gået tabt. Tøm venligst din kurv, og start din bestilling igen.</span>
+							</div>
+						</div>
+					</div>
+				{% endif %}
+				<div class="row">
+					<div class="column medium-6">
+						<h1 class="regular-header">
+							{{ theme.text_snippet('basket_title') }}
+						</h1>
+					</div>
+{% set calculated_total = 0 %}
+{% for item in basket.items %}
+    {% if item.offers %}
+        {% set offer = item.offers|first %}
+        {% if offer.discount_type == 'fixed_price' %}
+            {% set full_sets = (item.quantity / offer.item_count)|round(0, 'floor') %}
+            {% set remaining_items = item.quantity % offer.item_count %}
+            {% set calculated_total = calculated_total + (full_sets * offer.discount_amount) + (remaining_items * item.original_price) %}
+        {% else %}
+            {% set calculated_total = calculated_total + (item.original_price * item.quantity) %}
+        {% endif %}
+    {% else %}
+        {% set calculated_total = calculated_total + (item.original_price * item.quantity) %}
+    {% endif %}
+{% endfor %}
+					
+{# set calculated_total = calculated_total + basket.original_shipping #}
+
+<div class="column medium-6 medium-text-right">
+    <span class="basket-header-total">
+        <span class="basket-header-label">Total</span>
+        <strong class="basket-header-amount basket-total">{{ format_price(calculated_total) }}</strong>
+    </span>
+</div>
+				</div>
+			</div>
+			<div class="basket-items-container">
+				{# Render errors #}
+				{{ theme.errors(errors) }}
+				<div class="row column basket-items-inner">
+					<form action="{{ global.current_url }}" method="post" class="basket-form">
+						{# Render items table #}
+						<table class="basket-table unstriped{{ basket.items ? '' : ' no-margin' }}" role="grid">
+							{% if basket.items %}
+								<tr class="basket-headings show-for-large">
+									<th colspan="2">Produkt ({{ basket.items|length }} produkt{{ basket.items|length != 1 ? 'er' : '' }})</th>
+									<th>Antal</th>
+									<th>Pris</th>
+									<th>Subtotal</th>
+									<th>Fjerne</th>
+								</tr>
+							{% endif %}
+							{# Render items #}
+							{% for item in basket.items %}
+								{% if global.customer.id %}
+									{% if global.customer.order_quantity_restrictions_enabled %}
+										{% set order_min = not global.features.extensions.min_max_quantity ? 0 : global.minimum_product_quantity > 0 ? global.minimum_product_quantity : item.product.minimum_order_quantity %}
+										{% set order_max = not global.features.extensions.min_max_quantity ? 0 : global.maximum_product_quantity > 0 ? global.maximum_product_quantity : item.product.maximum_order_quantity %}
+									{% endif %}
+								{% else %}
+									{% if global.features.order_quantity_restrictions_for_visitors %}
+										{% set order_min = not global.features.extensions.min_max_quantity ? 0 : global.minimum_product_quantity > 0 ? global.minimum_product_quantity : item.product.minimum_order_quantity %}
+										{% set order_max = not global.features.extensions.min_max_quantity ? 0 : global.maximum_product_quantity > 0 ? global.maximum_product_quantity : item.product.maximum_order_quantity %}
+									{% endif %}
+								{% endif %}
+
+								<tr data-id="{{item.product.id}}" class="basket-item" data-min-quantity="{{ order_min }}" data-max-quantity="{{ order_max }}">
+									<td class="basket-item-image">
+										{% if item.is_gift_voucher %}
+											<div class="image-container" data-fit="0">
+												<img src="{{ item.product.photo_url }}" alt="gift voucher">
+											</div>
+										{% else %}
+											<a href="{{ item.product.url }}" class="image-container" data-fit="0">
+												<img src="{{ item.product.photo_url }}" alt="{{ item.product.photo_description }}">
+											</a>
+										{% endif %}
+									</td>
+									<td class="basket-item-info">
+										{# Render title #}
+										<a href="{{ item.product.url }}">
+											<h4 class="basket-item-title">
+												{% if item.is_gift_voucher %}
+													{{ item.product.title|raw }}
+												{% else %}
+													{{ item.product.title }}
+												{% endif %}
+											</h4>
+										</a>
+										<div class="basket-item-options">
+											{% for name, value in item.options %}
+											   <div>
+												   {{ name }}
+												   <strong>{{ theme.filter_hex(value) }}</strong>
+											   </div>
+											{% endfor %}
+											{% for choice in item.choices %}
+												<div>
+													{{ choice.value }}
+													<strong>{{ format_price(choice.price) }}</strong>
+											   </div>
+											{% endfor %}
+											{% if item.subscription_interval %}
+												<div>
+													Abonnementsinterval
+													<strong>{{ item.subscription_interval.description|capitalize }}</strong>
+											    </div>
+												{% if item.subscription_interval.billing_intervals %}
+													<div>
+														Afdrag
+														<strong>{{ item.subscription_interval.billing_intervals }}</strong>
+											    	</div>
+												{% endif %}
+											{% endif %}
+											{% if item.comments|length %}
+											   {% set opts = item.comments|split('|') %}
+											   {% for option in opts %}
+												   {% set name = option|split(':')[0] %}
+												   {% set value = option|split(':')[1] %}
+												   <div>
+													   {{ name }}
+													   <strong>{{ value }}</strong>
+												   </div>
+											   {% endfor %}
+											{% endif %}
+											{% for extra in item.extras %}
+											   <div>
+												   {{ extra.name }}
+												   <strong>
+													   {{ format_price(extra.price) }}
+												   </strong>
+											   </div>
+											{% endfor %}
+											{% if item.user_files|length > 0 %}
+												<div class="text-small">
+													You have uploaded {{ item.user_files|length }} file{{ item.user_files|length == 1 ? '' :'s' }} for this item:<br>
+													{% for file in item.user_files %}
+														<a href="{{ file.url }}" target="_blank" class="text-small">{{ file.name }}</a><br>
+													{% endfor %}
+												</div>
+											{% endif %}
+											{# Render min max order values #}
+											{% if order_min or order_max %}
+											   {% set order_qty = [] %}
+											   {% if order_min %}
+												   {% set order_qty = order_qty|merge(['Min ' ~ order_min]) %}
+											   {% endif %}
+											   {% if order_max %}
+												   {% set order_qty = order_qty|merge(['Max ' ~ order_max]) %}
+											   {% endif %}
+											   <p class="basket-item-options">
+												   ({{ order_qty|join(', ') }})
+											   </p>
+											{% endif %}
+										</div>
+										{# render pre-order shipping date #}
+										{% if item.product.shipping_date %}
+											<p class="basket-item-options">
+												This product will be shipped on <strong>{{ item.product.shipping_date|date('jS F Y', 'Europe/London') }}</strong>
+											</p>
+										{% endif %}
+										{% if not item.is_gift_voucher and gts.basket_show_move_to_wishlist %}
+											{# move to wishlist #}
+											<a href="{{ item.remove_url }}&amp;add_to_wishlist=1" class="link-with-icon info-wishlist margin-top">
+												{{ theme.sw_icon('heart') }}
+												<span>{{ theme.text_snippet('basket_move_to_wishlist') }}</span>
+											</a>
+										{% endif %}
+										{# Render labels #}
+										{% if item.product.three_for_two %}
+											{{ theme.product_label('3 for 2') }}
+										{% elseif item.product.two_for_one %}
+											{{ theme.product_label('2 for 1') }}
+										{% endif %}
+										{# Render product offers #}
+										{% for offer in item.offers %}
+											<div class="product-offer">
+												<div class="product-offer-title">
+													{{ offer.title }}
+												</div>
+											</div>
+										{% endfor %}
+									</td>
+									<td class="basket-item-qty" data-label="Quantity">
+										<div class="quantity">
+											{% if not item.is_gift_voucher %}
+												{{ html.number_toggle('quantity[' ~ item.id ~ ']', item.quantity, 'basket-qty', '', '', '', '', '') }}
+												<button class="basket-update" type="submit">
+													Opdatering
+												</button>
+											{% endif %}
+										</div>
+									</td>
+									<td class="basket-item-price show-for-large" data-label="Price">
+										<div class="price">
+											{{ format_price(item.original_price) }}
+										</div>
+									</td>
+									<td class="basket-item-cost" data-label="Cost">
+    <div class="price">
+        {% if item.offers %}
+            {% set offer = item.offers|first %}
+            {% if offer.discount_type == 'fixed_price' %}
+                {% set full_sets = (item.quantity / offer.item_count)|round(0, 'floor') %}
+                {% set remaining_items = item.quantity % offer.item_count %}
+                {% set item_price = (full_sets * offer.discount_amount) + (remaining_items * item.original_price) %}
+            {% elseif offer.discount_type == 'percentage' %}
+                {% set item_price = (item.original_price - (item.original_price * offer.discount_amount / 100)) * item.quantity %}
+            {% elseif offer.discount_type == 'fixed' %}
+                {% set item_price = (item.original_price - offer.discount_amount) * item.quantity %}
+            {% else %}
+                {% set item_price = item.original_price * item.quantity %}
+            {% endif %}
+            {{ format_price(item_price) }}
+        {% else %}
+            {{ format_price(item.original_price * item.quantity) }}
+        {% endif %}
+    </div>
+</td>
+									
+									<td class="basket-item-remove">
+										<div class="remove">
+											<a class="remove-button" href="{{ item.remove_url }}"><svg width="64px" height="64px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M20.5001 6H3.5" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path> <path d="M18.8332 8.5L18.3732 15.3991C18.1962 18.054 18.1077 19.3815 17.2427 20.1907C16.3777 21 15.0473 21 12.3865 21H11.6132C8.95235 21 7.62195 21 6.75694 20.1907C5.89194 19.3815 5.80344 18.054 5.62644 15.3991L5.1665 8.5" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path> <path d="M9.5 11L10 16" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path> <path d="M14.5 11L14 16" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path> <path d="M6.5 6C6.55588 6 6.58382 6 6.60915 5.99936C7.43259 5.97849 8.15902 5.45491 8.43922 4.68032C8.44784 4.65649 8.45667 4.62999 8.47434 4.57697L8.57143 4.28571C8.65431 4.03708 8.69575 3.91276 8.75071 3.8072C8.97001 3.38607 9.37574 3.09364 9.84461 3.01877C9.96213 3 10.0932 3 10.3553 3H13.6447C13.9068 3 14.0379 3 14.1554 3.01877C14.6243 3.09364 15.03 3.38607 15.2493 3.8072C15.3043 3.91276 15.3457 4.03708 15.4286 4.28571L15.5257 4.57697C15.5433 4.62992 15.5522 4.65651 15.5608 4.68032C15.841 5.45491 16.5674 5.97849 17.3909 5.99936C17.4162 6 17.4441 6 17.5 6" stroke="#1C274C" stroke-width="1.5"></path> </g></svg></a>
+										</div>
+									</td>
+								</tr>
+							{% else %}
+								<tr class="shadow-box">
+									<td>
+										<h2 class="subheader">
+											{{ theme.text_snippet('empty_basket') }}
+										</h2>
+									</td>
+								</tr>
+							{% endfor %}
+						</table>
+					</form>
+				</div>
+			</div>
+			<div class="basket-bottom-container">
+				<div class="row">
+					<div class="column large-5">
+						{# voucher form #}
+						{% if global.customer.trade %}
+							{% if gts.basket_allow_trade_voucher %}
+								{{ block('voucher_entry') }}
+							{% endif %}
+						{% elseif gts.basket_allow_customer_voucher %}
+							{{ block('voucher_entry') }}
+						{% endif %}
+						{# reward points #}
+						{% if basket.has_redeemed_points or basket.reward_points > 0 or basket.reward_points_earned > 0 %}
+							<div class="info-rewards-line mod-basket margin-top">
+								<p>
+									{{ theme.sw_icon('premium-badge', '', gts.icon_premium_badge) }}
+									{% if basket.reward_points_earned %}
+										You will earn <span>{{ basket.reward_points_earned }}</span> reward points with this purchase.
+									{% endif %}
+									{% if basket.has_redeemed_points %}
+										A discount of <span>{{ format_price(basket.reward_points_discount) }}</span> has been applied. <a href="/checkout/basket/unconvert-reward-points">Cancel.</a>
+									{% elseif basket.reward_points > 0 %}
+										You have <span>{{ basket.reward_points }} reward point{{ basket.reward_points != 1 ? 's' : '' }}</span>.
+										{% if basket.can_redeem_points %}
+											<a href="/checkout/basket/convert-reward-points">Redeem for a discount.</a>
+										{% endif %}
+									{% endif %}
+								</p>
+							</div>
+						{% endif %}
+					</div>
+					<div class="column large-6 last">
+						<form x-data="{submitButton: 'button'}" @keydown.enter.prevent class="form-with-validation" action="/checkout/{{ global.theme.settings.force_login_at_checkout ? 'login' : 'address' }}" method="post" id="basket-form" data-radios="{{ gts.rates_as_radios }}"
+							  data-shipmondo="1" >
+							{# basket totals #}
+							<div class="basket-box margin-bottom">
+								<table data-ship="{{basket.shipping_countries | json_encode}}" class="basket-totals unstriped">
+									<tbody>
+									
+										{% if calculated_total < 499 %}
+											<tr>
+												<td class="free-shipping-notice" colspan="2">
+													<span><img src="{{ asset_url('images/icon-shipping.png')}}" />Kun <strong>{{ format_price(500 - calculated_total) }}</strong> mere for at opnå fri fragt!</span>
+												</td>
+
+											</tr>
+										{% elseif basket.total > 499 and basket.original_sub_total <=4999 %}
+											<tr>
+												<td class="free-shipping-notice" colspan="2">
+													<span><img src="{{ asset_url('images/icon-shipping.png')}}" />Du har opnået fri fragt – god shopping!</span>
+												</td>
+
+											</tr>
+										{% endif %}
+										<tr>
+											<td>Subtotal</td>
+											<td><span class="basket-sub-total basket-total">{{ format_price(calculated_total) }}</span></td>
+										</tr>
+									</tbody>
+								</table>
+								{# shipping fields #}
+								{% if basket.shipping_countries %}
+									<label class="hide">
+										<span class="field-label">Leveringsland</span>
+										<select name="countryId">
+											<option value="">Vælg venligst</option>
+											{% if basket.shipping_countries|first is iterable %}
+												{% for name, states in basket.shipping_countries %}
+													<optgroup label="{{ name|default('Other Countries') }}">
+														{% for state in states %}
+															<option value="{{ state.id }}"{% if state.current %} selected="selected"{% endif %}>
+																{{ state.name }}
+															</option>
+														{% endfor %}
+													</optgroup>
+												{% endfor %}
+											{% else %}
+												{% for country in basket.shipping_countries %}
+													<option value="{{ country.id }}"{% if country.current %} selected="selected"{% endif %}>
+														{{ country.name }}
+													</option>
+												{% endfor %}
+											{% endif %}
+										</select>
+									</label>
+									{% if global.features.extensions.postcode_shipping %}
+										{# postcode shipping input #}
+										<div class="postcode-container">
+											<div class="input-group mod-custom mod-search">
+												<input type="text" placeholder="Enter your postcode" class="postcode input-group-field required" value="{{ global.basket.postcode }}">
+												<div class="input-group-button">
+													<button type="button" class="button postcode-validate">
+														Gå
+													</button>
+												</div>
+											</div>
+										</div>
+									{% endif %}
+								
+									{# Render rates for Shipmondo #}
+										<fieldset name="rateId" class="rates rates-container">
+											<legend class="field-label">Vælg levering</legend>
+											<div data-rates="{{ basket.shipping_rates | json_encode }}" x-data="{postNummerValue: '', openFreeDeliveryList: false}" class="rateId margin-bottom">
+												{% set freeRate = basket.shipping_rates | filter (v => v.price == 0 and "GLSDK_SD" in v.name) | first %}
+												
+												{% for rate in basket.shipping_rates %}
+													{% set carrierCode = rate.name | split(' ') | first %}
+												
+													{% if freeRate and rate.price != 0 and "GLSDK_SD" in rate.name %}
+													{% else %}
+													{# free delivery rate postnord 500 up total #}
+													<div data-freerate="{{loopRates|json_encode}}" data-test="{{freeRate|json_encode}}" class="shipmondo-rate-container"
+														 {% if rate.current %}
+														 	current-rate-disabled
+														 {% endif %}
+														 
+														 x-on:click="submitButton = 'submit'"
+													>
+														<div class="shipmondo-rate-input" {{ loop.index == 1 ? 'x-ref="recommendedDelivery"' : '' }}>
+															<div>
+																<input data-ratename="{{ rate.name }}" id="rate-{{ rate.id }}" type="radio" class="required shipmondo hide" 
+																   name="rateId" value="{{ rate.id }}" {% if rate.current %} checked="checked"{% endif %}>
+																<h2 class="">
+																	{{ rate.name | split(',') | first | split('(') | first }}
+																</h2>
+																<p>
+																	{{ rate.name | replace({'(DK)':''}) | split ('(')[1] | split(')') | first | raw }}
+																</p>
+																
+															</div>
+															<div style="display: flex; flex-direction: column;">
+																<p stlye="margin-bottom: 0px;">{{ format_price(rate.price) }}</p>
+																{% if rate.name | split(',') | length > 1 %}
+																<img style="height: {{ carrierCode | lower == 'gls' ? '18px' : '25px'}};" src="{{ asset_url('images/'~ carrierCode | lower ~ '.svg')  }}">
+																{% endif %}
+															</div>
+														</div>
+														
+														<div class="loader-spinner" style="display: none;">
+															<div class="spinner"></div>
+														</div>
+														
+														<div class="shipmondo-form-container" style="display: none;">
+
+														</div>
+													</div>
+													{% endif %}
+												{% endfor %}
+											</div>
+										</fieldset>
+									{% if gts.rates_as_radios %}
+										{# Render rates as radio buttons #}
+										<fieldset name="rateId" class="rates rates-container hide">
+											<legend class="field-label">Leveringshastighed</legend>
+											<div class="rateId margin-bottom">
+												{% for rate in basket.shipping_rates %}
+													<div class="row column">
+														<input id="rate-{{ rate.id }}" type="radio" class="required" name="rateId" value="{{ rate.id }}" {% if rate.current %} checked="checked"{% endif %}>
+														<label for="rate-{{ rate.id }}">
+															{{ rate.name }}
+															<span>
+																{{ format_price(rate.price) }}
+															</span>
+														</label>
+													</div>
+												{% endfor %}
+											</div>
+										</fieldset>
+									{% else %}
+										{# Render rate drop down #}
+										<div class="rates rates-container hide">
+											<label>
+												<span class="field-label">Leveringshastighed</span>
+												<select name="rateId" class="required">
+													<option value="">PVælg venligst</option>
+													{% for rate in basket.shipping_rates %}
+														<option value="{{ rate.id }}"{% if rate.current %} selected="selected"{% endif %}>
+															{{ rate.name }}
+															{{ format_price(rate.price) }}
+														</option>
+													{% endfor %}
+												</select>
+											</label>
+										</div>
+									{% endif %}
+									{# Render delivery date field #}
+									{% if gts.checkout_delivery_date %}
+										<div class="delivery-date-outer">
+											<span class="field-label">Vælg en foretrukken dato</span>
+											<div class="delivery-date-container">
+												<input type="text" name="delivery_date" value="{{ basket.delivery_date }}" readonly>
+											</div>
+										</div>
+									{% endif %}
+								{% endif %}
+								<table class="basket-totals unstriped" style="display: none;">
+									<tbody>
+                                        {% if not global.features.shipping_on_checkout %}
+                                            <tr>
+                                                <td>Levering</td>
+                                                <td><span class="basket-delivery">{{ format_price(basket.original_shipping) }}</span></td>
+                                            </tr>
+                                        {% endif %}
+										{% if gts.basket_show_vat %}
+											<tr>
+												<td>
+													CVR
+												</td>
+												<td><span class="basket-vat">{{ format_price(basket.vat) }}</span></td>
+											</tr>
+										{% endif %}
+										{% if gts.basket_show_discount %}
+											<tr>
+												<td>
+													Rabat
+													{% if basket.voucher_discount or basket.has_redeemed_points %}
+														<a data-voucher="{{ basket.voucher_discount ? 1 : 0 }}" data-rewards="{{ basket.has_redeemed_points ? 1 : 0 }}" class="remove-voucher js-remove-discount text-underline" href="/checkout/basket/clear-vouchers">remove</a>
+													{% endif %}
+												</td>
+												<td><span class="basket-discounts">{{ format_price(basket.discount) }}</span></td>
+											</tr>
+										{% endif %}
+										{% if basket.partial_payment_total %}
+											<tr>
+												<td>
+													Gavekort
+												</td>
+												<td><span class="basket-sub-total">-{{ format_price(basket.partial_payment_total) }}</span></td>
+											</tr>
+										{% endif %}
+										<tr>
+											<td>I alt</td>
+											<td><span class="basket-total">{{ format_price(basket.total) }}</span></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<br>
+							{# buttons #}
+							{% if not gts.checkout_disabled %}
+								{# Render checkout button #}
+								{{ html.button('', '', global.theme.settings.button_checkout, 'button basket-proceed-button large text-nocase expanded', '', '', '', 'x-bind:type="submitButton" x-on:click=" submitButton == `button` && Swal.fire({title:`Vælg venligst leveringsmetode.`, confirmButtonColor: `#3085d6`, customClass: {confirmButton: `button basket-proceed-button`}, buttonsStyling: false })"', 'button_checkout') }}
+
+								{% if not basket.has_subscription_products %}
+									{% if basket.payment_methods|length %}
+										<p class="text-center basket-payment-button">
+											or
+										</p>
+										{% for payment_method in basket.payment_methods %}
+											<div class="text-center basket-payment-button">
+												{% if payment_method.id == 33 or payment_method.id == 34 %}
+													<button type="submit" name="{{ payment_method.field_name }}" value="1" class="image-button paypal-button{% if not loop.last %} margin-bottom{% endif %}">
+														<span class="show-for-sr">Checkout with PayPal</span>
+														<img src="https://www.paypalobjects.com/webstatic/en_US/i/btn/png/gold-rect-paypalcheckout-60px.png" alt="Check out with PayPal" width="170">
+													</button>
+												{% else %}
+													<button type="submit" name="{{ payment_method.field_name }}" value="1" class="button large expanded">
+														{{ payment_method.title }}
+													</button>
+												{% endif %}
+											</div>
+										{% endfor %}
+									{% endif %}
+								{% endif %}
+							{% else %}
+								<p class="text-center">{{ theme.text_snippet('checkout_disable') }}</p>
+							{% endif %}
+                            {% if global.features.shipping_on_checkout %}
+                                <p class="text-center">Forsendelse beregnes ved kassen</p>
+                            {% endif %}
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		{{ render(global.theme.sections_below_content_area, { 
+			featured_products: featured_products, 
+			featured_categories: featured_categories, 
+			gts: global.theme.settings, 
+			theme: theme, html: html, 
+			blog_posts: blog_posts, 
+			recently_viewed: global.recently_viewed_products, 
+			product: product,
+			global_theme: global.theme,
+			global_customer: global.customer
+			}) 
+		}}
+	</div>
+{% endblock %}
+
+{% block voucher_entry %}
+	<form action="{{ global.current_url }}" method="post" class="basket-voucher padding-bottom">
+		<div class="input-group mod-custom">
+			<input class="input-group-field" name="voucher_code" placeholder="Indtast din kampagnekode" type="text" value="{{ basket.voucher_codes[0].code }}">
+			<div class="input-group-button">
+				<button type="submit" class="button">Tilføj</button>
+			</div>
+		</div>
+	</form>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% if gts.checkout_delivery_date %}
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    {% endif %}
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+	<script> 
+		var $shipmondoAuth = '{{ shipmondoAuth }}';
+	</script>
+    {% if basket.shipping_rates %}
+        <script>
+            $('[name="countryId"]').on('change', function() {
+                var rateSelect = $(this),
+                    matchText = 'click & collect',
+                    text = rateSelect.find('option:selected').text(),
+                    btnSelector = '.basket-payment-button';
+
+                if (text.toLowerCase().indexOf(matchText) >= 0) {
+                    // is C&C - hide basket payment methods
+                    $(btnSelector).addClass('hide');
+                }
+                else {
+                    // not C&C - show basket payment methods
+                    $(btnSelector).removeClass('hide');
+                }
+            });
+        </script>
+    {% endif %}
+    {% if gts.checkout_delivery_date %}
+
+        {# convert date input #}
+        {% set holidays_raw = global.theme.settings.checkout_delivery_holidays|replace({' ':''})|split(',') %}
+        {% set hols_parsed = [] %}
+        {% for date in holidays_raw %}
+            {% set parsed = date|date('j-n-Y') %} {# format d-m-yy #}
+            {% set hols_parsed = hols_parsed|merge([parsed]) %}
+        {% endfor %}
+        {% set lead = global.theme.settings.checkout_delivery_lead|default(1) %}
+        {% set cutoff = global.theme.settings.checkout_delivery_cut_off|split(':')[0]|default(15) %}
+
+        {# delivery date field #}
+        {{ html.script('//cdn.jsdelivr.net/npm/jquery-ui-dist@1.12.1/jquery-ui.js') }}
+        <script>
+            function canDeliverOnDate(date) {
+                var now = new Date();
+                var day = date.getDay();
+
+                return [(day != 0) && (!isTomorrow(date) || now.getHours() < 24), ''];
+            }
+            function isTomorrow(date) {
+                var today = new Date();
+                var tomorrow = new Date(today.getTime() + (24 * 60 * 60 * 1000));
+                return date.toDateString() === tomorrow.toDateString();
+            }
+            $(function() {
+
+                var country_select = $('select[name="countryId"]'),
+                    picker_field = $('input[name="delivery_date"]'),
+                    container = picker_field.closest('.delivery-date-outer');
+
+                if(!picker_field.length){
+                    return;
+                }
+
+                function init_date_picker() {
+
+                    var now = new Date(),
+                        hrs = now.getHours(),
+                        zones = ['222', '241', '242', '243', '244', '254', '255'], // show for zones
+                        field = $('.delivery-date-container'),
+                        country = country_select.val(),
+                        user_lead = {{ lead }},
+                        user_cutoff = {{ cutoff }},
+                        min_date = country == '222' && hrs < user_cutoff ? (1 + user_lead) : (2 + user_lead);     // allow next for UK (before 3pm)
+                        days_array = [{{ global.theme.settings.checkout_delivery_days|raw }}],
+                        holidays = {{ hols_parsed|json_encode()|raw }};
+
+                    //console.log($.inArray(country, zones));
+                    if(theme_config.debug){
+                        console.log('holidays', holidays);
+                    }
+
+                    // toggle field for zones
+                    if($.inArray(country, zones) !== -1) {
+                        container.show();
+                    }
+                    else {
+                        container.hide();
+                    }
+
+                    // call picker
+                    picker_field.datepicker({
+                        beforeShowDay: unavailable,
+                        minDate: min_date, // min_date
+                        dateFormat: 'dd/mm/yy'
+                    });
+                }
+
+                function unavailable(date) {
+                    // date as str
+                    dmy = date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear();
+                    // check holidays input
+                    if ($.inArray(dmy, holidays) != -1) {
+                        return [false, '', 'Unavailable'];
+                    } else {
+                        return disabledays(date);
+                    }
+                }
+
+                function disabledays(date) {
+                    var day = date.getDay();
+                    // exclude days of week
+                    if(day == 0 && $.inArray(day, days_array) == -1) { return [true] }
+                    if(day == 1 && $.inArray(day, days_array) == -1) { return [true] }
+                    if(day == 2 && $.inArray(day, days_array) == -1) { return [true] }
+                    if(day == 3 && $.inArray(day, days_array) == -1) { return [true] }
+                    if(day == 4 && $.inArray(day, days_array) == -1) { return [true] }
+                    if(day == 5 && $.inArray(day, days_array) == -1) { return [true] }
+                    if(day == 6 && $.inArray(day, days_array) == -1) { return [true] }
+
+                    return [false]
+                }
+
+                country_select.on('change', function() {
+                    //console.log($(this).val());
+                    picker_field.datepicker('destroy');
+                    init_date_picker();
+                    picker_field.datepicker('setDate', null);
+                    picker_field.datepicker('refresh');
+                });
+
+                init_date_picker();
+            });
+        </script>
+    {% endif %}
+    <script>
+        (function(){
+            $('[data-slick]').each(function() {
+                $(this).slick();
+            });
+
+            $('.js-prev-slide').on('click', function() {
+                $(this).closest('[data-slick]').slick('slickPrev');
+            });
+
+            $('.js-next-slide').on('click', function() {
+                $(this).closest('[data-slick]').slick('slickNext');
+            });
+
+        })();
+    </script>
+{% endblock %}

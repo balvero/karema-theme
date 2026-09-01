@@ -1,0 +1,76 @@
+//  display platform messages as banner overlay
+.shopwired-info-message {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	color: #fff;
+	font-size: 24px;
+	font-weight: 400;
+	padding: 25px;
+	background: #000;
+	background-color: rgba(0, 0, 0, 0.8);
+	text-align: center;
+	z-index: 9999;
+	opacity: 0;
+
+	a {
+		color: inherit;
+	}
+}
+
+// position contained images
+.image-container {
+	position: relative;
+	display: block;
+	overflow: hidden;
+	height: 0;
+	padding-top: 100%;
+
+	.category-box &, .media-box &, .featured-slider & {
+		padding-top: $category_aspect_ratio;
+	}
+
+	.product-box &, .media-box & {
+		padding-top: $product_aspect_ratio;
+	}
+
+	.brand-box &, .media-box & {
+		padding-top: $brand_aspect_ratio;
+	}
+
+	&.product-gallery-main-photo {
+		padding-top: $product_page_aspect_ratio;
+	}
+
+	.article-box & {
+		padding-top: $blog_aspect_ratio;
+	}
+
+	img {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: auto;
+		height: auto;
+
+		$lazyload_images: null !default;
+
+		@if $lazyload_images != null and $lazyload_images == 1 {
+			&[src*='images/loading.gif'] {
+				@include vertical-align(absolute, true);
+			}
+		}
+	}
+}
+
+.gallery-aspect-ratio {
+	padding-top: 100% !important;
+}
+.slick-slide {
+	-webkit-transform: translate3d(0, 0, 0);
+	-moz-transform: translate3d(0, 0, 0);
+	-ms-transform: translate3d(0, 0, 0);
+	-o-transform: translate3d(0, 0, 0);
+	transform: translate3d(0, 0, 0);
+}

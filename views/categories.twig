@@ -1,0 +1,17 @@
+{# Extend collection template #}
+{% extends 'templates/collection.twig' %}
+
+{% set title = global.theme.settings.text_our_categories_title %}
+{% set titleClass = 'font-size-collection-other-description padding-bottom' %}
+{% set show_sidebar = false %}
+
+
+{% block sidebar %}
+    {# Render category menu #}
+    {% include 'partials/category_menu.twig' %}
+{% endblock %}
+
+{% block items %}
+	{# Render categories #}
+	{% include 'partials/items.twig' with { 'items': categories, 'item_type': 'category', 'classes': 'small-up-' ~ gts.categories_per_row_mobile ~ ' medium-up-' ~ gts.categories_per_row_tablet ~ ' large-up-' ~ global.theme.settings.categories_per_row_desktop } %}
+{% endblock %}

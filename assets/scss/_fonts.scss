@@ -1,0 +1,318 @@
+/* #-FONTS */
+
+// families
+
+$sofia: 'Poppins', sans-serif;
+$museo: 'Poppins', sans-serif;
+$proxima-font-family: 'Poppins', sans-serif;
+$icon: 'sw-icons' !important;
+
+
+// faces
+
+@font-face {
+    font-family: 'museo_sans';
+    src: url('../fonts/museo_sans_700_normal.eot');
+    src: url('../fonts/museo_sans_700_normal.eot?#iefi700') format('embedded-opentype'),
+         url('../fonts/museo_sans_700_normal.woff2') format('woff2'),
+         url('../fonts/museo_sans_700_normal.woff') format('woff'),
+         url('../fonts/museo_sans_700_normal.ttf') format('truetype'),
+         url('../fonts/museo_sans_700_normal.svg#700') format('svg');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'museo_sans';
+    src: url('../fonts/museo_sans_900_normal.eot');
+    src: url('../fonts/museo_sans_900_normal.eot?#iefi900') format('embedded-opentype'),
+         url('../fonts/museo_sans_900_normal.woff2') format('woff2'),
+         url('../fonts/museo_sans_900_normal.woff') format('woff'),
+         url('../fonts/museo_sans_900_normal.ttf') format('truetype'),
+         url('../fonts/museo_sans/museo_sans_900_normal.svg#900') format('svg');
+    font-weight: 900;
+    font-style: normal;
+}
+
+// icons
+
+@font-face {
+  font-family: 'sw-icons';
+  src:
+    url('../fonts/sw-icons.ttf?2tzm08') format('truetype'),
+    url('../fonts/sw-icons.woff?2tzm08') format('woff'),
+    url('../fonts/sw-icons.svg?2tzm08#sw-icons') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="sw-icon-"], [class*=" sw-icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'sw-icons' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.sw-icon-video:before {
+    content: "\e953";
+}
+.sw-icon-facebook-logo:before {
+  content: "\e92e";
+}
+.sw-icon-twitter1:before {
+  content: "\e92f";
+}
+.sw-icon-instagram1:before {
+  content: "\e930";
+}
+.sw-icon-pinterest1:before {
+  content: "\e931";
+}
+.sw-icon-youtube-logo:before {
+  content: "\e932";
+}
+.sw-icon-linkedin-logo:before {
+  content: "\e933";
+}
+.sw-icon-tumblr-logo:before {
+  content: "\e934";
+}
+.sw-icon-pause-sign:before {
+  content: "\e935";
+}
+.sw-icon-musica-searcher:before {
+  content: "\e938";
+}
+.sw-icon-heart:before {
+  content: "\e940";
+}
+.sw-icon-person:before {
+  content: "\e941";
+}
+.sw-icon-shopping-basket:before {
+  content: "\e942";
+}
+.sw-icon-arrow:before {
+  content: "\e943";
+}
+.sw-icon-arrow1:before {
+  content: "\e952";
+}
+.sw-icon-expand:before {
+  content: "\e944";
+}
+.sw-icon-mark-as-favorite-star:before {
+  content: "\e945";
+}
+.sw-icon-premium-badge:before {
+  content: "\e946";
+}
+.sw-icon-heart-1:before {
+  content: "\e947";
+}
+.sw-icon-zoom-in:before {
+  content: "\e948";
+}
+.sw-icon-film:before {
+  content: "\e949";
+}
+.sw-icon-share:before {
+  content: "\e94a";
+}
+.sw-icon-email:before {
+  content: "\e94b";
+}
+.sw-icon-arrow-pointing-to-right:before {
+  content: "\e94c";
+}
+.sw-icon-arrow-pointing-to-left:before {
+  content: "\e951";
+}
+.sw-icon-equalizer:before {
+  content: "\e94d";
+}
+.sw-icon-calendar2:before {
+  content: "\e94e";
+}
+.sw-icon-calendar1:before {
+  content: "\e94f";
+}
+.sw-icon-equalizer-console-with-three-switches-at-different-levels:before {
+  content: "\e950";
+}
+.sw-icon-log-out:before {
+  content: "\e929";
+}
+.sw-icon-account-home:before {
+  content: "\e92a";
+}
+.sw-icon-box:before {
+  content: "\e92b";
+}
+.sw-icon-eye:before {
+  content: "\e92c";
+}
+.sw-icon-forbidden:before {
+  content: "\e900";
+}
+.sw-icon-glass:before {
+  content: "\e901";
+}
+.sw-icon-calendar:before {
+  content: "\e902";
+}
+.sw-icon-facebook:before {
+  content: "\e903";
+}
+.sw-icon-gift:before {
+  content: "\e904";
+}
+.sw-icon-refresh:before {
+  content: "\e905";
+}
+.sw-icon-pdf:before {
+  content: "\e906";
+}
+.sw-icon-map-marker:before {
+  content: "\e907";
+}
+.sw-icon-twitter:before {
+  content: "\e908";
+}
+.sw-icon-google-plus:before {
+  content: "\e909";
+}
+.sw-icon-linkedin:before {
+  content: "\e90a";
+}
+.sw-icon-pinterest:before {
+  content: "\e90b";
+}
+.sw-icon-youtube:before {
+  content: "\e90c";
+}
+.sw-icon-instagram:before {
+  content: "\e90d";
+}
+.sw-icon-bell:before {
+  content: "\e90e";
+}
+.sw-icon-like:before {
+  content: "\e90f";
+}
+.sw-icon-bars:before {
+  content: "\e910";
+}
+.sw-icon-glass-2:before {
+  content: "\e911";
+}
+.sw-icon-caret-down:before {
+  content: "\e912";
+}
+.sw-icon-caret-up:before {
+  content: "\e913";
+}
+.sw-icon-star:before {
+  content: "\e914";
+}
+.sw-icon-star-on:before {
+  content: "\e915";
+}
+.sw-icon-external-link:before {
+  content: "\e916";
+}
+.sw-icon-plus-zoom:before {
+  content: "\e917";
+}
+.sw-icon-play:before {
+  content: "\e918";
+}
+.sw-icon-copy:before {
+  content: "\e91b";
+}
+.sw-icon-grid:before {
+  content: "\e91c";
+}
+.sw-icon-list:before {
+  content: "\e91d";
+}
+.sw-icon-caret-right:before {
+  content: "\e91e";
+}
+.sw-icon-circle-star:before {
+  content: "\e91f";
+}
+.sw-icon-gift1:before {
+  content: "\e920";
+}
+.sw-icon-mail:before {
+  content: "\e921";
+}
+.sw-icon-map:before {
+  content: "\e922";
+}
+.sw-icon-padlock:before {
+  content: "\e923";
+}
+.sw-icon-phone:before {
+  content: "\e924";
+}
+.sw-icon-shopping-bag:before {
+  content: "\e925";
+}
+.sw-icon-truck:before {
+  content: "\e926";
+}
+.sw-icon-user:before {
+  content: "\e927";
+}
+.sw-icon-down-arrow:before {
+  content: "\e936";
+}
+.sw-icon-down-chevron:before {
+  content: "\e937";
+}
+.sw-icon-left-chevron:before {
+  content: "\e928";
+}
+.sw-icon-move:before {
+  content: "\e939";
+}
+.sw-icon-question:before {
+  content: "\e93a";
+}
+.sw-icon-right-arrow:before {
+  content: "\e93b";
+}
+.sw-icon-left-arrow:before {
+  content: "\e92d";
+}
+.sw-icon-right-chevron:before {
+  content: "\e93c";
+}
+.sw-icon-search:before {
+  content: "\e93d";
+}
+.sw-icon-up-arrow:before {
+  content: "\e93e";
+}
+.sw-icon-up-chevron:before {
+  content: "\e93f";
+}
+.sw-icon-minus:before {
+  content: "\e919";
+}
+.sw-icon-plus:before {
+  content: "\e91a";
+}
+.sw-icon-tumblr:before {
+  content: "\eab9";
+}

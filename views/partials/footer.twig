@@ -1,0 +1,170 @@
+{% extends 'templates/blocks.twig' %}
+
+{% block content %}
+    {% set contact_info = global.business.phone or global.business.email or global.business.address ? true : false %}
+	{% set contact_info = contact_info and (gts.footer_display_telephone or gts.footer_display_email or gts.footer_display_address) ? true : false %}
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="column{{ contact_info ? ' large-12' : '' }}">
+                 
+                        <div class="column large-12">
+                            <div class="row">
+								<div class="column large-3 footer-logo">
+									<img src="https://theme-assets.ecommercedns.uk/8/132418/images/logo-white.png" />
+									<div class="social">
+										<h4 class="social-title">
+										FOLLOW US
+									</h4>
+									 <a href="https://www.facebook.com/profile.php?id=100061615269691&locale=da_DK" target="_blank"><img src="https://theme-assets.ecommercedns.uk/8/132418/images/icon-facebook.png" /></a>
+									 <a href="https://www.instagram.com/karema_foods/" target="_blank"><img src="https://theme-assets.ecommercedns.uk/8/132418/images/icon-instagram.png" /></a>
+									 <a href="https://www.linkedin.com/company/karema-foods-a-s/" target="_blank"><img src="https://theme-assets.ecommercedns.uk/8/132418/images/icon-linkedin.png" /></a>
+									</div>
+								</div>
+								 {% if contact_info %}
+									<div class="column large-3 margin-bottom">
+										{# Render contact info #}
+										{{ block('footer_contact') }}
+									</div>
+								{% endif %}
+                                {# for i in 1..1 #}
+                                    <div class="column large-3 margin-bottom">
+                                        {# Render footer link list #}
+                                        {# theme.link_list('footer_' ~ i, 'footer-list menu vertical', true) #}
+										<h4>INFORMATION</h4>
+										<ul class="footer-list menu vertical">
+											<li><a href="/terms-conditions">Handelsbetingelser</a></li>
+											<li><a href="/privacy-policy">Privatlivspolitik</a></li>
+											<li><a href="https://www.findsmiley.dk/958737" target="_blank">Kontrolrapport</a></li>	
+										</ul>
+									</div>
+										
+                                    
+                                {# endfor #}
+								 <div class="column large-3 margin-bottom">
+									
+									{% if gts.footer_display_newsletter %}
+										{# Render newsletter form #}
+										{{ block('footer_newsletter') }}
+									{% endif %}
+
+									{# Render social links #}
+									{# block('footer_social') #}
+									 
+									 <div class="alcohol-banner">
+										 <img src="https://files.ecommercedns.uk/265038/85ee7ddfd89a34ea2c9d5ece00265eb4.png" />
+									 </div>
+									 <div class="lup margin-top">
+								
+										<a href="https://www.findsmiley.dk/958737" target="_blank" ><img src="https://files.ecommercedns.uk/265038/71c0b9170b57d25f3a8646f287f9eebc.gif" style="max-width: 100px;" /></a>
+
+									</div>
+								</div>
+							
+                            </div>
+                        </div>
+						
+                     
+
+                </div>
+             
+            </div>
+        </div>
+        <div class="row column">
+			  <div class="column large-12 text-center padding-15">
+                {% include 'partials/payment_icons.twig' with { 'classes': 'footer-payment-list' } %}
+            </div>
+			
+            <div class="column large-12">
+                {# Render copyright text #}
+                {{ block('footer_copyright') }}
+            </div>
+          
+        </div>
+    </footer>
+{% endblock %}
+
+
+{% block footer_social %}
+    <ul class="footer-social menu simple large-text-right">
+        {% set icons = {
+        'facebook': 'facebook',
+        'twitter': 'twitter',
+        'googleplus': 'google-plus',
+        'linkedin': 'linkedin',
+        'pinterest': 'pinterest',
+        'youtube': 'youtube',
+        'custom': 'instagram'
+        } %}
+        {% for link in global.social_links %}
+            <li>
+                <a href="{{ link.url }}" target="_blank">
+                    {{ theme.sw_icon(icons[link.name], icons[link.name], gts['icon_' ~ icons[link.name] ]) }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+
+
+{% block footer_copyright %}
+    {# Render copyright statement #}
+    <div class="footer-copy text-center">
+        <p>
+            {{ theme.text_snippet('copyright') }}&nbsp;
+            <a class="text-underline" href="https://www.shopwired.dk" target="_blank">
+                Ecommerce
+            </a> 
+            by {{ global.service_provider.name }}
+        </p>
+    </div>
+{% endblock %}
+
+
+{% block footer_contact %}
+    <div class="footer-contact">
+		<h4>
+			ADRESSE
+		</h4>
+		<div class="address">
+			Karema Foods A/S <br />
+			Tværvejen 1  <br />
+			5580 Nr. Aaby<br />
+			CVR nummer: 16840084
+		</div>
+		<div class="margin-top"> 
+			Telefon: <a href="tel:+4543452002">+45 43 45 20 02 </a><br />
+
+			Email: <a href="mailto:karema@karema.dk">karema@karema.dk</a> 
+		</div>
+        {% if global.business.phone and gts.footer_display_telephone %}
+            <p class="footer-contact-telephone">
+                <span class="footer-contact-label">Tel:</span> <a href="tel:{{ global.business.phone }}">{{ global.business.phone }}</a>
+            </p>
+        {% endif %}
+        {% if global.business.email and gts.footer_display_email  %}
+            <p class="footer-contact-email">
+                <span class="footer-contact-label">Email:</span> <a href="mailto:{{ global.business.email }}">{{ global.business.email }}</a>
+            </p>
+        {% endif %}
+        {% if global.business.address and gts.footer_display_address %}
+           {#<address class="footer-contact-address">
+                {{ global.business.one_line_address|replace({',,':','}) }}
+            </address> #}
+        {% endif %}
+    </div>
+{% endblock %}
+
+
+{% block footer_newsletter %}
+    <div class="footer-newsletter">
+		<form action="/newsletter-subscribe" method="post" class="newsletter-form form-with-validation">
+			<div class="input-group no-margin">
+				{{ html.input('email', '', 'input-group-field jsv_email required', 'Email address') }}
+				<div class="input-group-button">
+					{{ html.button('', '', '', '', true, '', 'arrow', '') }}
+				</div>
+			</div>
+		</form>
+    </div>
+{% endblock %}

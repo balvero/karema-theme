@@ -1,0 +1,123 @@
+{# Import macros #}
+{% import 'macros/html.twig' as html %}
+{% import 'macros/theme.twig' as theme %}
+{% set gts = global.theme.settings %}
+{# Theme configurations #}
+{% set theme_config = {
+    name: 'vivify',
+    version: '5.2.9',
+    debug: 1,
+    nav_style: 0,
+    price_slider: 1,
+    preview: global.theme.is_preview_mode_enabled
+} %}
+{# prices #}
+{% set display_price = not global.customer.trade and gts.hide_prices ? 0 : 1 %}
+{% set shipmondoAuth = 'MmM0YTg1YWMtNTBmYi00Yzc4LTkxYTMtZGNiZDZjMjU2ZjYyOjcwNDg0NzQ4LWE1M2YtNGNiYi1hNGYzLWY1ZmExMDVhZGI2Yw==' %}
+{% set shipmondoBaseApi = 'https://app.shipmondo.com/api/public/v3' %}
+
+<!doctype html>
+{% spaceless %}
+<html lang="en" class="no-js">
+<head data-theme="{{ theme_config|json_encode }}">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+	<meta name="algolia-site-verification"  content="95CD5A02B538E181" />
+    {% if gts.color_theme %}
+        <meta name="theme-color" content="{{ gts.color_theme }}">
+    {% endif %}
+    <style>{% block critical_css %}{% include 'partials/critical_path.twig' %}{% endblock %}</style>
+    {% block stylesheets %}
+        {{ html.stylesheet('//cdnjs.cloudflare.com/ajax/libs/fancybox/3.4.1/jquery.fancybox.min.css') }}
+        {{ html.stylesheet('//cdn.jsdelivr.net/npm/froala-editor@2.8.5/css/froala_style.css') }}
+		{% if gts.heading_font == '' or gts.body_font == '' %}
+	        <link rel="preconnect" href="https://fonts.googleapis.com">
+			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+			<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,300;0,400;0,500;0,600;1,100;1,300;1,400;1,500;1,600&display=swap" rel="stylesheet">
+		{% endif %}
+        {{ html.stylesheet(asset_url('scss/theme.css')) }}
+        {{ html.stylesheet('//cdn.jsdelivr.net/combine/npm/jquery-ui-1-11-4@1.11.4/jquery-ui.min.css') }}
+		{{ html.stylesheet('//cdn.jsdelivr.net/npm/sweetalert2@11.17.2/dist/sweetalert2.min.css') }}
+    {% endblock %}
+    {% if gts.font_awesome_id %}
+        <script src="https://kit.fontawesome.com/{{ gts.font_awesome_id }}.js" crossorigin="anonymous"></script>
+    {% endif %}
+	<!--  CryptoJS -->
+	{{ html.script('//cdn.jsdelivr.net/npm/crypto-js@4.0.0/crypto-js.min.js') }}
+	<!-- AlpineJS -->
+	<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+    <script>
+        var d = document.getElementsByTagName('html')[0];
+        d.className += " loading";
+    </script>
+	{# Render header content #}
+	{{ global.header|raw }}
+</head>
+<body class="{{ bodyClass ? bodyClass : '' }} {{ global.current_path == '/' ? 'home' :''}}" data-pages="{{ total_pages|default(1) }}">
+    <div class="body-content">
+        {% block off_canvas %}
+            {% if global.features.ajax_basket or gts.offcanvas_basket %}
+                {% include 'partials/basket_modal.twig' with { type: 'canvas' } %}
+            {% endif %}
+            {% include 'partials/mobile_menu.twig' %}
+            {% include 'partials/currency_offcanvas.twig' %}
+            {% include 'partials/filters_offcanvas.twig' %}
+        {% endblock %}
+        <div class="off-canvas-content" data-off-canvas-content>
+            {% block header %}
+                {% include 'partials/header.twig' %}
+            {% endblock %}
+            {% block content %}{% endblock %}
+            {% block footer %}
+                {% include 'partials/footer.twig' %}
+                {{ theme.info_message() }}
+            {% endblock %}
+            {% block below_content %}
+                {% include 'partials/global_modals.twig' %}
+            {% endblock %}
+            {% block scripts %}
+                {{ html.script('//cdn.jsdelivr.net/combine/npm/urijs@1.18.3/src/URI.min.js,npm/jquery@3.6.3,npm/foundation-sites@6.3.0,npm/slick-carousel@1.6.0,npm/jquery-validation@1.15.1,npm/jquery-migrate@3.0.1,npm/jquery.cookie@1.4.1') }}
+				<script>$.ajaxSetup({ cache: false });</script>
+                {{ html.script('//cdnjs.cloudflare.com/ajax/libs/fancybox/3.4.1/jquery.fancybox.min.js') }}
+                {{ html.script('//cdnjs.cloudflare.com/ajax/libs/unveil/1.3.0/jquery.unveil.min.js') }}
+                {{ html.script('//s3-eu-west-1.amazonaws.com/shopwired-theme-assets/v3/js/plugins.min.js') }}
+                {{ html.script(asset_url('js/jquery-debounce.min.js')) }}
+				{{ html.script('//cdn.jsdelivr.net/npm/sweetalert2@11.17.2/dist/sweetalert2.all.min.js')}}
+				{# === ALGOLIA SEARCH ONLY === #}
+				{{ html.script('https://cdn.jsdelivr.net/npm/algoliasearch@4.24.0/dist/algoliasearch-lite.umd.js') }}
+
+				<script>
+				const { gts } = {{ _context|json_encode|raw }};
+				</script>
+				{{ html.script(asset_url('js/algolia-search.js')) }}
+				{# END ALGOLIA SEARCH ONLY #}
+ 
+				{{ html.script(asset_url('js/application.js')) }}
+			
+            {% endblock %}
+			{% if gts.header_sticky_menu %}
+				<script>
+					$(window).on('scroll', function() {
+						$(this).trigger('resize');
+					});
+				</script>
+			{% endif %}
+            {% include 'partials/theme_editor.twig' %}
+            {# Render footer content #}
+            {{ global.footer|raw }}
+            {% if theme_config.debug %}
+                <script>
+                    console.info( {{ _context|json_encode|raw }} );
+                </script>
+            {% endif %}
+         </div>
+    </div>
+	{% block schema %}{% endblock %}
+</body>
+</html>
+{% endspaceless %}
+
+
+
+
+

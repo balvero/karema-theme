@@ -1,0 +1,19 @@
+<section class="sw-section sw-section-img-and-text-overlay">
+    <div class="row small-collapse medium-uncollapse" data-equalizer data-equalize-on="medium">
+		<div class="column medium-6 large-5 large-push-1" data-equalizer-watch>
+			<div class="image-block">
+				<div class="image-container" data-fit="{{ section.settings.fill_container ? '1' : '0' }}">
+                    {{ html.image(section.settings.image, section.settings.alt_text, '', '', gts.lazyload_images) }}
+				</div>
+			</div>
+		</div>
+		<div class="column medium-6 large-5 large-pull-1" data-equalizer-watch>
+			<div class="text-overlay">
+				{{ theme.text_snippet('text', '', section.settings) }}
+				{% if section.settings.button_link %}
+					<a href="{{ section.settings.button_link }}" class="sw-section-slide-overlay-btn button border">{{ section.settings.button_text }}</a>
+				{% endif %}
+			</div>
+		</div>
+    </div>
+</section>

@@ -1,0 +1,36 @@
+<section class="sw-section sw-section-newsletter">
+    <div class="row">
+        <div class="column large-6 large-push-3">
+            <h2 class="sw-section-newsletter-heading">
+				{{ theme.text_snippet('newsletter_title_text', '', section.settings) }}
+            </h2>
+            <form action="/newsletter-subscribe" method="post" class="sw-section-newsletter-form form-with-validation">
+                <div class="input-group">
+                    <span class="input-group-label sw-section-newsletter-label">
+                        <svg width="29px" height="20px" viewBox="0 0 29 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                            <g id="homepage" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                <g id="homepage-mobile" transform="translate(-14.000000, -5942.000000)" fill="{{ gts.color_sections_newsletter_email_form }}">
+                                    <g id="newsletter" transform="translate(0.000000, 5740.000000)">
+                                        <path d="M41.3011887,217.561 L32.9352883,211.957 L41.3011887,204.945 L41.3011887,217.561 Z M40.4517831,220.289 L16.5482169,220.289 C16.1379192,220.289 15.7941831,219.994 15.7157,219.604 L25.4267411,213.099 L26.4013223,213.916 C27.0093179,214.425 27.7544106,214.68 28.5004967,214.68 C29.2455894,214.68 29.9906821,214.425 30.5986777,213.916 L31.5732589,213.099 L41.2843,219.604 C41.2058169,219.994 40.8620808,220.289 40.4517831,220.289 L40.4517831,220.289 Z M15.6988113,204.945 L24.0647117,211.957 L15.6988113,217.561 L15.6988113,204.945 Z M40.118975,203.71 L39.7782193,203.995 L29.5108424,212.601 C28.9256963,213.092 28.0743037,213.092 27.4891576,212.601 L17.2217807,203.995 L16.881025,203.71 L40.118975,203.71 Z M40.4517831,202 L16.5482169,202 C15.1434689,202 14,203.151 14,204.565 L14,219.434 C14,220.849 15.1434689,222 16.5482169,222 L40.4517831,222 C41.8565311,222 43,220.849 43,219.434 L43,204.565 C43,203.151 41.8565311,202 40.4517831,202 L40.4517831,202 Z"></path>
+                                    </g>
+                                </g>
+                            </g>
+                        </svg>
+                    </span>
+                    {{ html.input('email', '', 'sw-section-newsletter-input input-group-field jsv_email required', section.settings.email_placeholder) }}
+                    <div class="input-group-button">
+                        {{ html.button('', '', '', '', true, '', 'arrow', '') }}
+                    </div>
+                </div>
+            </form>
+			{{ theme.text_snippet('newsletter_paragraph_text', '', section.settings) }}
+        </div>
+    </div>
+</section>
+<script>
+    (function(){
+        document.getElementsByClassName('sw-section-newsletter-label')[0].addEventListener('click', function() {
+            document.getElementsByClassName('sw-section-newsletter-input')[0].focus();
+        }, false);
+    })();
+</script>

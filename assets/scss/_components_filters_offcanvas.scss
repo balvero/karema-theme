@@ -1,0 +1,22 @@
+.off-canvas-filters {
+    border: 0;
+    box-shadow: none;
+    background: #fff;
+    padding: 1.5rem 40px;
+
+    .offcanvas-heading {
+        color: if(setting-value('product_filters_menu_use_default_website_colors'), $color_global_black_titles, $color_filters_menu_title);
+
+        span:after {
+            background: if(setting-value('product_filters_menu_use_default_website_colors'), $color_global_black_titles, $color_filters_menu_title);
+        }
+    }
+
+    .btn-close.close-button {
+        color: if(setting-value('product_filters_menu_use_default_website_colors'), $color_global_black_titles, $color_filters_menu_title);
+    }
+
+    @media #{$s-only} {
+        padding: 1.5rem 20px;
+    }
+}

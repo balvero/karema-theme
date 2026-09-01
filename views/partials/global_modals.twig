@@ -1,0 +1,48 @@
+{# Age verification #}
+{% if gts.age_modal or global.theme.is_preview_mode_enabled %}
+    <div class="reveal verify-age-modal standard" id="verifyAgeModal" data-reveal data-close-on-click="false" data-close-on-esc="false">
+        <h2>
+            {{ theme.text_snippet('age_modal_title') }}
+        </h2>
+		{{ theme.text_snippet('age_modal_text') }}
+        <button class="button success js-confirm" data-close>
+            I am 18 years or older
+        </button>
+        <br>
+        <button class="link" onclick="{{ gts.text_age_modal_url|length ? 'window.location.href = "' ~ gts.text_age_modal_url ~ '";' : 'window.history.back();' }}">
+            I'm not yet 18
+        </button>
+    </div>
+{% endif %}
+
+
+{# Newsletter #}
+{% if gts.newsletter_modal or global.theme.is_preview_mode_enabled %}
+    <div class="reveal newsletter-modal standard" id="newsletterModal" data-reveal>
+        <div class="row">
+            <div class="column large-10 large-push-1">
+                <div class="text-center">
+                    <h2>
+                        {{ theme.text_snippet('newsletter_modal_title') }}
+                    </h2>
+					{{ theme.text_snippet('newsletter_modal_text') }}
+                </div>
+                {# Render newsletter form #}
+				{% if gts.newsletter_email_field %}
+					<form action="/newsletter-subscribe" method="post" class="newsletter-form form-with-validation">
+						<div class="input-group mod-simple">
+							{{ html.input('email', '', 'input-group-field jsv_email required', gts.text_newsletter_email_instruction_text) }}
+							<div class="input-group-button">
+								{{ html.button('', '', 'Subscribe', 'button', true) }}
+							</div>
+						</div>
+					</form>
+					{{ theme.text_snippet('newsletter_modal_additional_text') }}
+				{% endif %}
+            </div>
+        </div>
+        <button class="close-button btn-close" data-close aria-label="Close modal" type="button">
+            <span>Close</span>
+        </button>
+    </div>
+{% endif %}

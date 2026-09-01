@@ -1,0 +1,94 @@
+{# Extend blog template #}
+{% extends 'templates/blog_page.twig' %}
+
+{% block posts %}
+	<div>
+		{# Render blog post #}
+		{{ render(global.theme.sections_above_content_area, { 
+			featured_products: featured_products, 
+			featured_categories: featured_categories, 
+			gts: global.theme.settings, 
+			theme: theme, html: html, 
+			blog_posts: blog_posts, 
+			recently_viewed: global.recently_viewed_products, 
+			product: product,
+			global_theme: global.theme,
+			global_customer: global.customer
+			}) 
+		}}
+		<article class="blog-post" id="{{ global.theme.content_area_id }}">
+			<div class="row margin-bottom" data-equalizer data-equalize-on="large">
+				<div class="column large-{{ post.thumbnail.image_url ? ( 12 - gts.blog_image_size ) : 12 }}" data-equalizer-watch>
+					<div class="blog-post-header-container">
+						{# share post #}
+						{% if gts.show_blog_social_buttons %}
+							{{ theme.share_buttons(global.current_url, post.title, post.content, post.thumbnail.image_url, true, 'social-menu menu simple') }}
+						{% endif %}
+						{# render title #}
+						<h1 class="blog-post-header">
+							{{ post.title }}
+						</h1>
+						{% if gts.blog_post_show_date %}
+							<div class="blog-post-meta">
+								<time datetime="{{ post.date|date('Y-m-d') }}">{{ post.date|date('jS F Y') }}</time>
+							</div>
+						{% endif %}
+					</div>
+				</div>
+				{% if post.thumbnail.image_url and gts.blog_image_size > 0 %}
+					<div class="column large-{{ gts.blog_image_size }} article-box" data-equalizer-watch>
+						<div class="image-container" data-fit="0">
+							{{ html.image(post.thumbnail.image_url, post.title, 'blog-post-image', '', gts.lazyload_images, true) }}
+						</div>
+					</div>
+				{% endif %}
+			</div>
+			<div class="row column">
+				<div class="blog-content fr-view">
+					{{ post.content|raw }}
+				</div>
+				{% set dsn = global.theme.settings.disqus_id %}
+				{% if dsn|length and not preview %}
+					<div id="disqus_thread"></div>
+
+					<script>
+					(function() { // DON'T EDIT BELOW THIS LINE
+					var d = document, s = d.createElement('script');
+					s.src = 'https://{{ dsn }}.disqus.com/embed.js';
+					s.setAttribute('data-timestamp', +new Date());
+					(d.head || d.body).appendChild(s);
+					})();
+					</script>
+					<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+				{% endif %}
+			</div>
+		</article>
+		{{ render(global.theme.sections_below_content_area, { 
+			featured_products: featured_products, 
+			featured_categories: featured_categories, 
+			gts: global.theme.settings, 
+			theme: theme, html: html, 
+			blog_posts: blog_posts, 
+			recently_viewed: global.recently_viewed_products, 
+			product: product,
+			global_theme: global.theme,
+			global_customer: global.customer
+			}) 
+		}}
+	</div>
+    {% set dsn = global.theme.settings.disqus_shortname %}
+    {% if dsn|length %}
+        <div id="disqus_thread"></div>
+
+        <script>
+        (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        s.src = 'https://{{ dsn }}.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+        })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    {% endif %}
+    
+{% endblock %}

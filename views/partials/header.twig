@@ -1,0 +1,663 @@
+{% extends 'templates/blocks.twig' %}
+
+{% block content %}
+    <noscript>
+        <div class="callout primary">
+            <p>
+               JavaScript appears to be disabled in your browser. JavaScript must be enabled in order to utilise the full functionalilty of this website.
+            </p>
+        </div>
+    </noscript>
+
+
+
+    <header id="main-header">
+
+        <div class="show-for-sr">
+            <a href="#content">Skip to Main Content</a>
+        </div>
+		<div id="header-top">
+
+			<div id="announcement-bar" class="announcement-bar hide callout no-margin" >
+				<div class="row column">
+					<div class="inner">
+						<span><img src="https://theme-assets.ecommercedns.uk/8/132418/images/icon-delivery.png" /> Hurtig levering 1 - 3 hverdage </span> <br class="show-for-small-only" />
+						<span><img src="https://theme-assets.ecommercedns.uk/8/132418/images/icon-bag.png" /> Gratis fragt ved køb over 499 DKK</span> <br class="show-for-small-only" />
+						<span><img src="https://theme-assets.ecommercedns.uk/8/132418/images/icon-delivery.png" /> Vi leverer kun til Danmark & brofaste øer </span> 
+
+						{#  <button class="close-button announcement-bar-close btn-close" aria-label="Dismiss alert" type="button" data-close>
+						<span>Close</span>
+						</button>
+						#}
+					</div>
+				</div>
+			{% if gts.custom_sale %}
+				<div class="sale-header live">
+					{{ gts.custom_sale_top_message}}
+				</div>
+				
+			{% endif %}
+				
+			{% if gts.warehouse_sale %}
+				
+				
+					{% if  "now"|date("d/m/Y", "Europe/Copenhagen") < gts.ws_end  %}
+						{% if  "now"|date("d/m/Y", "Europe/Copenhagen") < gts.ws_start   %}			
+
+
+									<div class="sale-header pre ws-header">
+										
+										{#<strong>Glæd dig til vores lagersalg!</strong><br> #}
+										Lagersalg starter {{ gts.ws_start }} kl. 00:00 – se udvalget nu!
+									</div>	
+
+
+						{% elseif gts.ws_end  > "now"|date("d/m/Y", "Europe/Copenhagen") %}
+							{% if gts.ws_start <= "now"|date("d/m/Y", "Europe/Copenhagen")  %}
+
+										<div class="sale-header live ">
+											{#<strong>Lagersalget er live!</strong><br> #}
+											Lagersalget er live – shop til nedsatte priser indti {{ gts.ws_end }} kl. 23:59!
+										</div>
+
+								{% endif %}
+						{% endif %}
+
+					{% endif %}
+			</script>
+			{% endif %}
+		
+			
+			
+			{% if gts.vat_sale %}
+				
+				{% if "now"|date("d/m/Y", "Europe/Copenhagen")  < gts.vs_start %}								
+					{% if "now"|date("d/m/Y", "Europe/Copenhagen")  > gts.vs_end %}
+					<div class="sale-header pre">
+						{#<strong>Glæd dig til vores lagersalg!</strong><br> #}
+						Spar momsen fra {{ gts.vs_start }} kl. 00:00 – shop med store besparelser!
+					</div>	
+					{% endif %}
+				{% endif %}
+														
+				{% if "now"|date("d/m/Y", "Europe/Copenhagen") <= gts.vs_end and "now"|date("d/m/Y", "Europe/Copenhagen")  >= gts.vs_start %}
+					<div class="sale-header live">
+						Momsen er sparet væk! Shop nu og få rabat på alle varer – kun til  {{ gts.vs_start }} kl. 23:59.
+
+					</div>
+				{% endif %}
+			{% endif %}
+			</div>
+			
+	
+		
+        <div id="header-inner" class="header-top row column logo-align-{{ gts.logo_alignment }}">
+            <div class="row collapse" data-equalizer="header_top" data-equalize-on="large">
+                <div class="column {{ gts.logo_alignment == 'center' ? 'large-4 large-push-4 text-center' : 'large-2' }}  header-top-outer" data-equalizer-watch="header_top">
+                    {% if gts.logo_alignment == 'left' %}
+                      {#  <div class="header-top-inner show-for-large header-menu-toggle-container">
+                            <a class="header-menu-toggle" data-toggle="offCanvasMobile">
+                                {{ theme.sw_icon('pause-sign', 'menu', gts.icon_pause_sign) }}
+                            </a>
+                        </div>
+						#}
+                    {% endif %}
+                    {# logo container #}
+                    {{ block('header_logo') }}
+                </div>
+                <div class="column {{ gts.logo_alignment == 'center' ? 'large-4 large-pull-4' : 'hide-for-large' }}  header-top-outer mobile" {% if gts.logo_alignment == 'center' %} data-equalizer-watch="header_top"{% endif %}{% if gts.header_sticky_menu %} data-sticky-container id="header-nav-outer-mobile"{% endif %}>
+                    <div class="header-top-inner{{ gts.header_sticky_menu ? ' sticky' : '' }}"{% if gts.header_sticky_menu %} data-sticky data-margin-top="0" data-top-anchor="header-nav-outer-mobile:top" data-sticky-on="small"{% endif %}>
+                        {# burger menu button #}
+                        <a class="header-menu-toggle" data-toggle="offCanvasMobile">
+                            {{ theme.sw_icon('pause-sign', 'menu', gts.icon_pause_sign) }}
+                        </a>
+                        {{ block('header_top_menu_icons' ~ (gts.logo_alignment == 'left' ? '_mobile')) }}
+						{% if gts.logo_alignment != 'left' %}
+							{{ block('header_account_dropdown') }}
+						{% endif %}
+                    </div>
+                </div>
+                <div class="column large-{{ gts.logo_alignment == 'center' ? 4 : 10 }} show-for-large text-right header-top-outer" data-equalizer-watch="header_top">
+                    <div class="header-top-inner mod-right">
+                        {# header snippet #}
+                        {% if gts.text_header_disabled %}
+                            <span class="header-text p-margins">{{ theme.text_snippet('header') }}</span>
+                        {% endif %}
+						  {{ block('header_navigation') }}
+                        {% if gts.logo_alignment == 'left' %}
+                            {{ block('header_top_menu_icons') }}
+							{{ block('header_account_dropdown') }}
+                        {% endif %}
+                        {# basket link #}
+                        <a class="header-basket"{% if gts.offcanvas_basket and global.current_path != '/checkout/basket' %} data-toggle="offCanvasBasket"{% else %} href="/checkout/basket"{% endif %}>
+                            {{ theme.sw_icon( 'shopping-basket', 'shopping basket', gts.icon_shopping_basket) }}
+							<span class="basket-count">
+								{{ global.basket.items ? global.basket.items : '' }}
+							</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+			
+        </div>
+			{# block('header_search') #}
+			{{ block('algolia_search') }}
+	</div>
+      
+        
+    </header>
+
+				<script>
+						document.addEventListener("DOMContentLoaded", function(e) {
+						  function DMYToDate(dateString) {
+							  const [day, month, year] = dateString.split('/').map(Number);
+							  return new Date(year, month - 1, day);
+							}
+
+							const dateStringEnd = new String("{{gts.ws_end}}");
+							const dateStringNow = new String("{{"now"|date("d/m/Y", "Europe/Copenhagen") }}");
+							const dateEnd = DMYToDate(dateStringEnd);
+							const dateNow = DMYToDate(dateStringNow);
+							const saleHeader = document.querySelector(".ws-header");
+							const saleBody = document.querySelector(".ws-body");
+							const saleLink = document.querySelector("li.ws-link");
+
+
+
+							if (dateEnd < dateNow) {
+								if (saleHeader) {
+									saleHeader.classList.add("hide");
+								}
+								
+								if (saleBody) {
+									saleBody.classList.add("hide");
+								}
+								
+								if (saleLink) {
+									saleLink.classList.add("hide");
+								}
+							  
+							  
+							  
+							} 
+						});
+						
+					</script>
+{% endblock %}
+
+{% block algolia_search %}
+
+	<div class="header-search hide algolia" id="header-search" data-toggler=".hide">
+		
+		<div class="search-container">
+			<button class="close-button absolute" data-close aria-label="Close modal" type="button" data-toggle="header-search">
+				  <span aria-hidden="true" class="text-black text-4xl">&times;</span>
+			</button>
+			  <div class="input-container">
+                    <div class="input-group mod-search">
+                        <input type="search" name="{{gts.text_algolia_index_name}}[query]" placeholder="Søg" id="header-search-input" class="header-search-input input-group-field" autocomplete="off">
+                        <div class="search-icon">
+                            {{ theme.sw_icon('musica-searcher', 'search', gts.icon_musica_searcher) }}
+                        </div>
+                    </div>
+			  </div>
+				<div class="algolia-pagination"></div>
+				<div id="algolia-search-results" data-equalizer data-equalize-by-row="true"></div>
+				<div id="no-results"></div>
+		  </div>
+	</div>
+
+{% endblock%}
+
+
+{% block header_top_menu_icons %}
+    {# search toggle #}
+    <a class="header-search-toggle" data-toggle="header-search">
+        {{ theme.sw_icon('musica-searcher', 'search', gts.icon_musica_searcher) }}
+    </a>
+    {% if gts.header_display_wishlist %}
+    {# wishlist button #}
+        <a class="header-wishlist show-for-large" href="/wishlist">
+            {{ theme.sw_icon('heart', 'my wishlist', gts.icon_heart) }}
+        </a>
+    {% endif %}
+    {# account menu toggle #}
+    {% if gts.header_display_account_menu %}
+        <a class="header-account-toggle show-for-large{{ gts.logo_alignment == 'left' ? ' float-right' }}" data-toggle="account-dropdown">
+            {{ theme.sw_icon('person', 'open account menu', gts.icon_person) }}
+        </a>
+    {% endif %}
+    {# currency toggle #}
+    {% if global.features.apps.currencies %}
+        <a class="header-currency-toggle show-for-large" data-toggle="offCanvasCurrency">
+            {{ global.currency.name }}
+        </a>
+    {% endif %}
+    {# mobile basket link #}
+    <div class="header-mobile-right hide-for-large float-right">
+        {% if gts.header_display_wishlist %}
+            {# wishlist button #}
+            <a class="header-wishlist" href="/wishlist">
+                {{ theme.sw_icon('heart', 'my wishlist', gts.icon_heart) }}
+            </a>
+        {% endif %}
+        {# currency toggle #}
+        {% if global.features.apps.currencies %}
+            <a class="header-currency-toggle" data-toggle="offCanvasCurrency">
+                {{ global.currency.name }}
+            </a>
+        {% endif %}
+        <a class="header-basket"{% if gts.offcanvas_basket and global.current_path != '/checkout/basket' %} data-toggle="offCanvasBasket"{% else %} href="/checkout/basket"{% endif %}>
+           {{ theme.sw_icon( 'shopping-basket', 'shopping basket', gts.icon_shopping_basket) }}
+			
+        </a>
+    </div>
+{% endblock %}
+
+{% block header_top_menu_icons_mobile %}
+    {# search toggle #}
+    <a class="header-search-toggle" data-toggle="header-search">
+        {{ theme.sw_icon('musica-searcher', 'search', gts.icon_musica_searcher) }}
+    </a>
+    {# mobile basket link #}
+    <div class="header-mobile-right hide-for-large float-right">
+        {% if gts.header_display_wishlist %}
+            {# wishlist button #}
+            <a class="header-wishlist" href="/wishlist">
+                {{ theme.sw_icon('heart', 'my wishlist', gts.icon_heart) }}
+            </a>
+        {% endif %}
+        {# currency toggle #}
+        {% if global.features.apps.currencies %}
+            <a class="header-currency-toggle" data-toggle="offCanvasCurrency">
+                {{ global.currency.name }}
+            </a>
+        {% endif %}
+        <a class="header-basket"{% if gts.offcanvas_basket and global.current_path != '/checkout/basket' %} data-toggle="offCanvasBasket"{% else %} href="/checkout/basket"{% endif %}>
+            {{ theme.sw_icon( 'shopping-basket', 'shopping basket', gts.icon_shopping_basket) }}
+			<span class="basket-count mobile">
+				{{ global.basket.items ? global.basket.items : '' }}
+			</span>
+        </a>
+    </div>
+{% endblock %}
+
+{% block header_account_dropdown %}
+    <div class="account-dropdown dropdown-pane bottom" id="account-dropdown" data-dropdown data-v-offset="{{ gts.logo_alignment == 'center' ? 15 : 25 }}" data-close-on-click="true">
+        <div class="account-dropdown-header">
+            <a href="/contact-us">Har du brug for hjælp? Så kontakt os</a>
+            <button class="close-button" aria-label="Dismiss alert" type="button" data-toggle="account-dropdown">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <ul class="account-dropdown-menu no-bullet no-margin">
+            {% if global.customer.id %}
+                <li>
+                    <a href="/account">
+                        {{ theme.sw_icon('account-home', '', gts.icon_account_home) }}
+                        My Account
+                    </a>
+                </li>
+                <li>
+                    <a href="/account/orders">
+                        {{ theme.sw_icon('box') }}
+                        My Orders
+                    </a>
+                </li>
+                <li>
+                    <a href="/account/logout">
+                        {{ theme.sw_icon('log-out') }}
+                        Logout
+                    </a>
+                </li>
+            {% else %}
+                <li>
+                    <a href="/account/login">
+                        {{ theme.sw_icon('account-home', '', gts.icon_account_home) }}
+                         Log ind
+                    </a>
+                </li>
+                <li>
+                    <a href="/account/create">
+                        {{ theme.sw_icon('user', '', gts.icon_user) }}
+                        Opret
+                    </a>
+                </li>
+                {% if global.features.apps.trade_accounts %}
+                    <li>
+                        <a href="/account/trade-application">
+                            {% if gts.icon_warehouse %}
+                                {{ theme.sw_icon('warehouse', '', gts.icon_warehouse) }}
+                            {% else %}
+                                <i class="icon-warehouse" aria-hidden="true"></i>
+                            {% endif %}
+                            Trade Account Registration
+                        </a>
+                    </li>
+                {% endif %}
+            {% endif %}
+        </ul>
+    </div>
+{% endblock %}
+
+
+{% block header_currency %}
+
+    {% macro region_flag(path) %}
+        {% set country_code =  path|split('.net/')[1]|split('.')[0]|lower %}
+        {# regex = \[A-Z]{2}(?=\.png)\ #}
+        <span class="currency-flag">
+            <span class="flag {{ country_code }}" aria-hidden="true"></span>
+        </span>
+    {% endmacro %}
+
+    {% set global_currencies = [] %}
+
+    {% for item in global.currencies %}
+        {% set global_currencies = global_currencies|merge([item.id]) %}
+    {% endfor %}
+
+    <div class="header-currency">
+        <a class="header-currency-select float-right" data-toggle="currency-dropdown">
+            {% if global.currency_country.flag_url %}
+                {# flag #}
+                {{ _self.region_flag(global.currency_country.flag_url) }}
+            {% endif %}
+            {# name #}
+            <span class="show-for-large">{{ global.currency_country.name }}</span>
+            {# symbol #}
+            {{ global.currency.symbol|raw }}
+            {{ theme.sw_icon('down-arrow') }}
+        </a>
+        <div class="currency-dropdown dropdown-pane bottom right" id="currency-dropdown" data-dropdown data-v-offset="15" data-close-on-click="true">
+            <h3 class="currency-dropdown-heading text-center">
+                Delivery Country &amp; Currency
+            </h3>
+            <p class="currency-dropdown-selected text-center small">
+                You're currenty viewing prices in <strong>{{ global.currency.name }} {{ global.currency.symbol|raw }}</strong>.<br>
+                Select a new currency below.
+            </p>
+            <ul class="currency-dropdown-list no-bullet text-left">
+                {% for country in global.currency_countries if country.current %}
+                    <li>
+                        <a href="{{ currency_url(country.currency_id, country.id) }}" class="active">
+                            {% if country.flag_url %}
+                                {{ _self.region_flag(country.flag_url) }}
+                            {% endif %}
+                            <span class="currency-region">{{ country.name }}</span>
+                            <span class="currency-symbol">{{ country.currency_name }} {{ country.currency_symbol|raw }}</span>
+                        </a>
+                    </li>
+                {% endfor %}
+                {% for country in global.currency_countries if country.name != global.currency_country.name and country.currency_id in global_currencies %}
+                    <li>
+                        <a href="{{ currency_url(country.currency_id, country.id) }}">
+                            {% if country.flag_url %}
+                                {{ _self.region_flag(country.flag_url) }}
+                            {% endif %}
+                            <span class="currency-region">{{ country.name }}</span>
+                            <span class="currency-symbol">{{ country.currency_name }} {{ country.currency_symbol|raw }}</span>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block header_search %}
+    <div class="header-search hide" id="header-search" data-toggler=".hide">
+        <div class="row">
+            <div class="column large-7{{ gts.logo_alignment == 'left' ? ' mod-right' : '' }}">
+                <form class="search-container" action="/search/products" method="get">
+                    <div class="input-group mod-custom mod-search no-margin">
+                        <span class="input-group-label">
+                            {{ theme.sw_icon('musica-searcher', 'search', gts.icon_musica_searcher) }}
+                        </span>
+                        <input type="search" name="keywords" placeholder="Søg" class="header-search-input input-group-field">
+                        <div class="input-group-button">
+                            <button type="submit" class="button"> {{ theme.sw_icon('musica-searcher', 'search', gts.icon_musica_searcher) }}</button>
+                        </div>
+                        <button type="button" class="close-search btn-close show-for-large" data-toggle="header-search">
+                            <span>luk</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block header_logo %}
+    <a href="/" class="header-logo header-top-inner">
+        {% if global.business.logo_url %}
+            <img src="{{ global.business.logo_url }}" alt="{{ global.business.name }}" class="logo-image">
+        {% else %}
+            <span class="logo-text">
+                {{ global.business.name }}
+            </span>
+        {% endif %}
+    </a>
+{% endblock %}
+
+
+{% block header_navigation %}
+    <div class="header-nav-outer show-for-large"{% if gts.header_sticky_menu %} data-sticky-container id="header-nav-outer"{% endif %}>
+        <nav class="row column{{ gts.header_sticky_menu ? ' sticky' : '' }}"{% if gts.header_sticky_menu %} data-sticky data-margin-top="0" data-top-anchor="header-nav-outer:top"{% endif %}>
+            <div class="header-nav">
+                <button type="button" class="mobile-menu-toggle hide-for-large" data-toggle="offCanvasMobile">
+                    {{ theme.sw_icon('bars') }}
+                    Menu
+                </button>
+                <div class="header-mobile-right hide-for-large">
+                    <a class="header-mobile-basket"{% if gts.offcanvas_basket and global.current_path != '/checkout/basket' %} data-toggle="offCanvasBasket"{% else %} href="/checkout/basket"{% endif %}>
+                        {{ theme.sw_icon('shopping-bag', 'Shopping Basket') }}
+                        <span class="show-for-large">Shopping basket</span>
+                        <span class="basket-count">{{ global.basket.items }}</span>
+                    </a>
+                    <button type="button" class="mobile-search-toggle" data-toggle="header-search">
+                        {{ theme.sw_icon('glass', 'Search') }}
+                    </button>
+                    {% if global.features.apps.currencies %}
+                        {% include 'partials/currency_dropdown.twig' with { 'size': 'small' } %}
+                    {% endif %}
+                </div>
+                {# Render main navigation #}
+                <div id="main-nav-wrapper" class="main-nav-wrapper{{ theme_config.nav_style == 1 ? ' click-drop' : '' }} show-for-large" data-toggler=".show-for-large">
+                    <ul class="main-nav vertical large-horizontal menu align-{{ gts.header_category_menu_alignment }}"
+                        data-responsive-menu="accordion large-dropdown"
+                        data-close-on-click-inside
+                    >
+                        {# Render home link #}
+						{% if gts.header_display_home_link %}
+							<li class="main-nav-home-link">
+								<a href="/"{% if global.current_path == '/' %} class="active"{% endif %}>
+									Home
+								</a>
+							</li>
+						{% endif %}
+                        {# Render category links #}
+						<li><a href="/search/products?sort=created&page=1" class="header-link-mod">Shop</a></li>
+						{% if gts.warehouse_sale %}
+							<li class="ws-link"><a href="/lagersalg">Lagersalg</a></li>
+						{% endif %}
+						<li><a href="/search/products?sort=created&page=1" class="is-dropdown-submenu-parent opens-right">Produkter</a>
+							<ul class="menu vertical">
+
+							{% for category in global.categories|slice(0, category_limit|default(30)) %}
+                            <li{% if theme_config.nav_style == 1 %} data-id="{{ category.id }}" class="{{ category.categories ? 'parent-with-sub is-dropdown-submenu-parent' }}"{% endif %}>
+                                <a href="{{ category.url }}?all=1" {% if category.url in global.current_url %}class="active" {% endif %}>
+                                    {{ category.title }}
+                                </a>
+                                {% if category.categories and not theme_config.nav_style == 1 %}
+                                    <ul class="vertical menu nested submenu is-dropdown-submenu">
+                                        {% for subcategory in category.categories %}
+                                            <li class="is-submenu-item is-dropdown-submenu-item">
+                                                <a href="{{ subcategory.url }}?all=1" {% if global.current_url == subcategory.url %}class="active" {% endif %}>
+                                                    {{ subcategory.title }} 
+													 {% if subcategory.categories %}
+													sub
+													{% endif %}
+                                                </a>
+                                            </li>
+                                        {% endfor %}
+                                        {% if gts.header_category_menu_view_all and category.all_products_count %}
+                                            <li>
+                                                <a href="{{ category.url }}?all=1">se alle</a>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+								<li>
+									<a href="/search/products?sort=created&page=1">se alle</a>
+								</li>
+							</ul>
+						</li>
+
+                        {% if global.categories|length > category_limit|default(30) %}
+                            <li>
+                                <a href="/categories">
+                                    se alle
+                                </a>
+                            </li>
+                        {% endif %}
+                        {# category link list #}
+                        {% set category_add_list = global.theme.settings.list_category_add %}
+                        {% if category_add_list and category_add_list.links %}
+                            {# Render custom links #}
+                            {% for link in category_add_list.links %}
+                                <li{% if loop.first %} id="list_category_add"{% endif %}>
+                                    <a href="{{ link.url }}">
+                                        {{ link.title }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        {% endif %}
+                        {# Render brand links #}
+						{% if gts.header_display_brands %}
+							{% if global.brands %}
+								<li{% if theme_config.nav_style == 1 %} data-id="brands" class="parent-with-sub"{% endif %}>
+									<a href="/brands" {% if global.current_path == '/brands' %}class="active" {% endif %}>
+										Brands
+									</a>
+									{% if not theme_config.nav_style == 1 %}
+										<ul class="vertical menu is-dropdown-submenu">
+											{% for brand in global.brands|slice(0, brand_limit|default(20)) %}
+												<li>
+													<a href="{{ brand.url }}" {% if brand.url in global.current_path %}class="active" {% endif %}>
+														{{ brand.title }}
+													</a>
+												</li>
+											{% endfor %}
+											{% if global.brands|length > brand_limit|default(20) %}
+												<li>
+													<a href="/brands">
+														se alle
+													</a>
+												</li>
+											{% endif %}
+										</ul>
+									{% endif %}
+								</li>
+							{% endif %}
+						{% endif %}
+                        {# Render blog link #}
+						{% if gts.header_display_blog %}
+							{% if global.features.apps.blog %}
+								<li>
+									<a href="/blog"{% if global.current_path == '/blog' %} class="active"{% endif %}>
+										Blog
+									</a>
+								</li>
+							{% endif %}
+						{% endif %}
+                    </ul>
+                </div>
+            </div>
+            {% if gts.header_sticky_menu %}
+                <a class="header-basket show-for-sticky"{% if gts.offcanvas_basket and global.current_path != '/checkout/basket' %} data-toggle="offCanvasBasket"{% else %} href="/checkout/basket"{% endif %}>
+                    {{ theme.sw_icon('shopping-basket', 'shopping basket', gts.icon_shopping_basket) }}
+                </a>
+            {% endif %}
+        </nav>
+    </div>
+    {#{{ block('sub_navigation') }}#}
+{% endblock %}
+
+
+{% block sub_navigation %}
+    {% if theme_config.nav_style == 1 %}
+        <div class="sub-nav-container show-for-large">
+            <div class="row column">
+                {% for category in global.categories|slice(0, category_limit|default(20)) if category.categories %}
+                    <ul class="no-bullet" data-id="{{ category.id }}" id="sub-{{ category.id }}" style="display:none;">
+                        {% for subcategory in category.categories %}
+                            <li>
+                                <a href="{{ subcategory.url }}" {% if global.current_url == subcategory.url %}class="active" {% endif %}>
+                                    {{ subcategory.title }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                        {% if gts.header_category_menu_view_all and category.all_products_count %}
+                            <li>
+                                <a href="{{ category.url }}?all=1">se alle</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                {% endfor %}
+                {% if global.brands %}
+                    <ul class="no-bullet" data-id="brands" style="display:none;">
+                        {% for brand in global.brands|slice(0, brand_limit|default(20)) %}
+                            <li>
+                                <a href="{{ brand.url }}" {% if brand.url in global.current_path %}class="active" {% endif %}>
+                                    {{ brand.title }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                        {% if global.brands|length > brand_limit|default(20) %}
+                            <li>
+                                <a href="/brands">
+                                    se alle
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                {% endif %}
+                <span class="selection-triangle hide" aria-hidden="true"></span>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block category_menu %}
+	{% for category in global.categories|slice(0, category_limit|default(20)) %}
+	<li{% if theme_config.nav_style == 1 %} data-id="{{ category.id }}" class="{{ category.categories ? 'parent-with-sub' }}"{% endif %}>
+		<a href="{{ category.url }}?all=1" {% if category.url in global.current_url %}class="active" {% endif %}>
+			{{ category.title }}
+		</a>
+		{% if category.categories and not theme_config.nav_style == 1 %}
+		<ul class="menu vertical is-dropdown-submenu">
+			{% for subcategory in category.categories %}
+			<li>
+				<a href="{{ subcategory.url }}?all=1" {% if global.current_url == subcategory.url %}class="active" {% endif %}>
+					{{ subcategory.title }} 
+					{% if subcategory.categories %}
+					sub
+					{% endif %}
+				</a>
+			</li>
+			{% endfor %}
+			{% if gts.header_category_menu_view_all and category.all_products_count %}
+			<li>
+				<a href="{{ category.url }}?all=1">se alle</a>
+			</li>
+			{% endif %}
+		</ul>
+		{% endif %}
+		</li>
+	{% endfor %}
+{% endblock%}

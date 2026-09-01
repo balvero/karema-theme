@@ -1,0 +1,106 @@
+{% set contains_video = false %}
+
+{% for item in section.blocks if item.type != 'hero_image_slide_with_text' %}
+    {% set contains_video = true %}
+{% endfor %}
+
+{% set img_with_text_slider = {
+    autoplay: section.settings.hero_image_slider_autoplay_checkbox|default(false), 
+	autoplaySpeed: section.settings.hero_image_slider_autoplay_speed~'000',
+    slidesToShow: 1,
+	swipeToSlide: true,
+    infinite: true,
+    arrows: false,
+    dots: section.settings.hero_image_slider_show_dots,
+    dotsClass: 'sw-section-slider-img-with-text-dotnav slick-dots'
+ } %}
+
+{% set no_margin_t = section.settings.hero_image_slider_no_margin_t|default(false) %}
+{% set no_margin_b = false %}
+
+
+<section class="sw-section sw-section-slider-img-with-text{{ (no_margin_t ? ' no-margin-top') ~ (no_margin_b ? ' no-margin-bottom') }}" data-slick="{{ img_with_text_slider|json_encode }}">
+	{% for block in section.blocks %}
+		{% if block.type == 'hero_video_slide' %}
+			<div class="sw-section-slide" data-id="{{ block.id }}" data-index="{{ loop.index0 }}">
+				 <div class="responsive-embed">
+					{{ block.settings.video_slide_code|raw }}
+				</div>
+				{% if section.blocks|length > 1 %}
+					<div class="column small-6 large-12">
+						<div class="sw-section-slide-overlay-nav">
+							<button class="js-prev-slide">{{ theme.sw_icon('arrow1') }}</button>
+							<button class="js-next-slide">{{ theme.sw_icon('arrow') }}</button>
+						</div>
+					</div>
+				{% endif %}
+			</div>	
+		{% elseif block.type == 'hero_image_slide_with_text' %}
+			<div class="sw-section-slide" data-id="{{ block.id }}">
+				<div class="image-container hide-for-medium" data-fit="1">
+                    {{ html.image(block.settings.slide_image_mobile ? block.settings.slide_image_mobile : block.settings.slide_image_desktop, block.settings.hero_image_alt_text, '', '', gts.lazyload_images) }}
+				</div>
+				<div class="image-container show-for-medium" data-fit="1">
+                    {{ html.image(block.settings.slide_image_desktop, block.settings.hero_image_alt_text, '', '', gts.lazyload_images) }}
+				</div>
+				{% if block.settings.hero_image_slide_text or block.settings.hero_image_button_link %}
+					<div class="sw-section-slide-overlay mod-align-{{ block.settings.hero_image_overlay_alignment }}">
+						{{ block.settings.hero_image_slide_text|raw }}
+						<div class="row collapse">
+							{% if block.settings.hero_image_button_link %}
+								<div class="column small-6 large-12">
+									<a href="{{ block.settings.hero_image_button_link }}" class="sw-section-slide-overlay-btn button border">{{ block.settings.hero_image_button_text|raw }}</a>
+								</div>
+							{% endif %}
+							{% if section.blocks|length > 1 %}
+								<div class="column small-6 large-12">
+									<div class="sw-section-slide-overlay-nav{{ block.settings.hero_image_button_link ? '' : ' small-text-left' }}">
+										<button class="js-prev-slide">{{ theme.sw_icon('arrow1') }}</button>
+										<button class="js-next-slide">{{ theme.sw_icon('arrow') }}</button>
+									</div>
+								</div>
+							{% endif %}
+						</div>
+					</div>
+				{% else %}
+					{% if section.blocks|length > 1 %}
+						<div class="column small-6 large-12">
+							<div class="sw-section-slide-overlay-nav{{ block.settings.hero_image_button_link ? '' : ' small-text-left' }}">
+								<button class="js-prev-slide">{{ theme.sw_icon('arrow1') }}</button>
+								<button class="js-next-slide">{{ theme.sw_icon('arrow') }}</button>
+							</div>
+						</div>
+					{% endif %}
+				{% endif %}
+			</div>
+		{% elseif block.type == 'hero_image_slide' %}
+            <div class="sw-section-slide" data-id="{{ block.id }}">
+				{% if block.settings.hero_image_button_link and not block.settings.hero_image_button_text %}
+					<a href="{{ block.settings.hero_image_button_link }}" class="image-container hide-for-medium" data-fit="1">
+				{% else %}
+					<div class="image-container hide-for-medium" data-fit="1">
+				{% endif %}
+					{{ html.image(block.settings.slide_image_mobile ? block.settings.slide_image_mobile : block.settings.slide_image_desktop, block.settings.hero_image_alt_text, '', '', gts.lazyload_images) }}
+				{% if block.settings.hero_image_button_link and not block.settings.hero_image_button_text %}
+					</a>
+				{% else %}
+					</div>
+				{% endif %}
+				{% if block.settings.hero_image_button_link and not block.settings.hero_image_button_text %}
+					<a href="{{ block.settings.hero_image_button_link }}" class="image-container show-for-medium" data-fit="1">
+				{% else %}
+					<div class="image-container show-for-medium" data-fit="1">
+				{% endif %}
+				{{ html.image(block.settings.slide_image_desktop, block.settings.hero_image_alt_text, '', '', gts.lazyload_images) }}
+				{% if block.settings.hero_image_button_link and not block.settings.hero_image_button_text %}
+					</a>
+				{% else %}
+					</div>
+				{% endif %}
+                {% if block.settings.hero_image_button_link and block.settings.hero_image_button_text %}
+                    <a href="{{ block.settings.hero_image_button_link }}" class="sw-section-slide-overlay-btn button border mod-overlay-{{ block.settings.hero_image_overlay_alignment }}">{{ block.settings.hero_image_button_text|raw }}</a>
+                {% endif %}
+            </div>
+		{% endif %}
+	{% endfor %}
+</section>

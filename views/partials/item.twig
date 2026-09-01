@@ -1,0 +1,394 @@
+{% import 'macros/html.twig' as html %}
+{% import 'macros/theme.twig' as theme %}
+{% set type = item_type|default('product') %}
+{% if not gts %}
+    {% set gts = global.theme.settings %}
+{% endif %}
+{% set is_trade = global is defined ? global.customer.trade : global_customer.trade  %}
+{% set display_price = not is_trade and gts.hide_prices ? 0 : 1 %}
+{% if hide_prices == true %}
+	{% set display_price = false %}
+{% endif %}
+{% set soft_button = button|default(true) %}
+{% if not variation_pricing %}
+	{% set variation_pricing = gts.variation_pricing %}
+{% endif %}
+
+{% for item in items|default(products) %}
+    {% if item != 'false' %}
+        <div class="column column-block{{ loop.last ? ' end' : '' }}">
+            {# Determine photo URL #}
+            {% set photo_url = type == 'gallery_photo' ? item.url : item.photo_url %}
+
+            <article class="item-box text-center {{ type }}-box">
+                {# Render photo box #}
+				{% if hover_class_embedded == 'second' %}
+					{% set hover_class = item.photos|length > 1 ? ' mod-img-second' : '' %}
+				{% elseif hover_class_embedded %}
+					{% set hover_class = hover_class_embedded %}
+				{% else %}
+	                {% set hover_class = gts.product_image_hover == 'zoom' ? ' mod-img-zoom' : gts.product_image_hover == 'zoom_out' ? ' mod-img-zoom-out' : gts.product_image_hover == 'second' and item.photos|length > 1 ? ' mod-img-second' : '' %}
+				{% endif %}
+
+                <div class="item-image{{ hover_class }} pos-rel">
+					{% if item.offers %}
+										<div class="offer-badge position-absolute">
+											{% for offer in item.offers %}
+												<div class="product-offer margin-top margin-right">
+													<div class="product-offer-title">
+														{{ offer.title }}
+													</div>
+												</div>
+											{% endfor %}
+										</div>
+								{% endif %}
+						{% if item.sale_price or item.offers %}
+							<div class="sale-marker">
+								<img src="https://theme-assets.ecommercedns.uk/8/132418/images/tilbud_new.png" />
+							</div>
+						{% endif %}
+                    {# Render labels #}
+                    {% if type == 'product' %}
+                        {% if item.three_for_two %}
+                            {{ theme.product_label('3 for 2') }}
+                        {% elseif item.two_for_one %}
+                            {{ theme.product_label('2 for 1') }}
+                        {% endif %}
+                        {% if soft_button and display_price and gts.show_product_quick_view %}
+							<a href="{{ item.url }}" class="quick-view no-margin quick-view-button show-for-large">
+								Hurtig visning
+							</a>
+                        {% endif %}
+
+                        {# Render wishlist button #}
+                        {% if gts.product_image_wishlist_button %}
+                            <a href="/wishlist?action={{ item.in_wishlist ? 'remove' : 'add' }}&amp;product_id={{ item.id }}"
+                               class="product-wishlist-button icon-button js-wishlist-button{{ item.in_wishlist ? ' on' : '' }}"
+                               data-remove="{{ gts.button_remove_from_wishlist }}"
+                               data-add="{{ gts.button_add_to_wishlist }}"
+                            >
+                                {% set heart_icon = item.in_wishlist ? 'heart-1' : 'heart' %}
+                                {{ theme.sw_icon(heart_icon) }}
+                                <span class="show-for-sr">{{ item.in_wishlist ? gts.button_remove_from_wishlist : gts.button_add_to_wishlist }}</span>
+                            </a>
+                        {% endif %}
+
+                        {# render product offers #}
+          
+                    {% endif %}
+                    <a href="{{ item.url }}" class="image-container" 
+					   data-fit=
+					   	{% if container == 1 %}
+					   		"1"
+					   	{% elseif type == 'product' %}
+							"{{ gts.image_container_product ? '1' : '0' }}"
+					   	{% elseif items == brands %}
+					   		"{{ gts.image_container_brand ? '1' : '0' }}"
+					   	{% elseif type == 'category' %}
+					   		"{{ gts.image_container_category ? '1' : '0' }}"
+					   	{% else %}
+					   		"1"
+					   	{% endif %}
+					 >
+                        {# Render image #}
+                        {{ html.image(photo_url, item.photo_description, 'item-img', '', gts.lazyload_images, true) }}
+                        {# Render second image if setting enabled #}
+                        {% if (item.photos|length > 1 and gts.product_image_hover == 'second') or (item.photos|length > 1 and hover_class_embedded == 'second') %}
+                            {{ html.image( item.photos[1].url, item.photos[1].description, 'item-img mod-swap-on-hover', '', gts.lazyload_images) }}
+                        {% endif %}
+                    </a>
+
+                </div>
+                {% set title = type == 'gallery' or type == 'gallery_photo' ? item.name : item.title %}
+				<div class="item-details">
+					
+				
+                <h3 class="item-title" data-equalizer-watch>
+                    {% if type == 'product' %}
+						{% if gts.show_product_brand_name %}
+							{% if item.brand.title %}
+								<p><strong>{{ item.brand.title }}</strong></p>
+							{% endif %}
+						{% endif %}
+					{% endif %}
+					{% if item.new %}
+                        <span class="label secondary new">New!</span>
+                    {% endif %}
+					{% if (type == 'brand' and gts.brand_show_name)
+							or (type == 'brand' and show_name) 
+							or (type!= 'brand') 
+					%}
+	                    <a href="{{ item.url }}">{{ title }}</a>
+					{% endif %}
+                </h3>
+				{% if item.custom_fields.land %}
+					<div class="land">
+						{{item.custom_fields.land}}
+					</div>
+				{% endif %}
+				{% if type == 'category' %}
+					{% if gts.category_show_from_price and item.from_price > 0 %}
+						<div class="box-data">
+							<span class="price category-from-price">From {{ format_price(item.from_price) }}</span>
+						</div>
+					{% endif %}
+				{% endif %}
+                {% if type == 'product' %}
+                    <div class="box-data">
+						{% set sale = false %}
+							{% for c in item.categories %}
+								{% if c.id == '1529412'%}
+									{% set sale = true %}
+								{% endif %}
+							{% endfor %}
+						{% if sale and (gts.warehouse_sale and "now"|date("d/m/Y")  < gts.ws_start) %}
+							{# hide price #}
+						{% else %}
+                        {# Render product prices #}
+                        {% if display_price %}
+							{% if item.options and item.lowest_variation_price !=  item.highest_variation_price %}
+								{% if variation_pricing == 'no' %}
+									{% if item.sale_price > 0 %}
+										<span class="price mod-sale">{{ format_price(item.sale_price) }}</span>
+									{% endif %}
+									<span class="price">{{ format_price(item.price ? item.price : item.lowest_variation_price) }}</span>
+								{% elseif variation_pricing == 'from' %}
+									From <span class="price">{{ format_price(item.lowest_variation_price) }}</span>
+								{% elseif variation_pricing == 'range' %}
+									<span class="price">{{ format_price(item.lowest_variation_price) }}</span> - <span class="price">{{ format_price(item.highest_variation_price) }}</span>
+								{% endif %}
+							{% else %}
+								{% if item.sale_price > 0 %}
+									<span class="price mod-sale">{{ format_price(item.sale_price) }}</span>
+								{% endif %}
+								<span class="price">{{ format_price(item.price ? item.price : item.lowest_variation_price) }}</span>
+							{% endif %}
+                        {% else %}
+                            {% include 'partials/hidden_prices.twig' %}
+                        {% endif %}
+						{# End Price #}
+						
+						{% endif %}
+						
+                        {% if item.subscription %}
+                            <p class="item-subscription">
+                                subscription{{ item.one_off_purchasing ? ' available' }}
+                            </p>
+                        {% endif %}
+                        {# render mobile product offers #}
+                    
+                    </div>
+                {% endif %}
+					</div>
+            </article>
+			{% if type == 'product' and not omit_list_boxes %}
+            <article class="item-box item-box--list product-box">
+<!--                 <div class="row"> -->
+<!--                     <div class="row-table"> -->
+                        <div class="grid-item">
+                            <div class="inner image-box item-image{{ hover_class }}">
+                                {# Render labels #}
+                                {% if type == 'product' %}
+                                    {% if item.two_for_one %}
+                                        {{ theme.product_label('2 for 1') }}
+                                    {% endif %}
+                                    {% if item.three_for_two %}
+                                        {{ theme.product_label('3 for 2') }}
+                                    {% endif %}
+                                {% endif %}
+                                {% if type == 'category' and items != brands %}
+                                    {% if category.from_price %}
+                                        <div class="cat-box__price">
+                                            <span>Prices from:</span>
+                                            <span class="cat-box__price__value">{{ currency_value(category.from_price) }}</strong>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+
+                                {% set container = container == 1 ? '1' : type == 'product' ? (global.theme.settings.image_container_product ? '1' :'0') : type == 'brand' ? (global.theme.settings.image_container_brand ? '1' : '0') : type == 'category' ? (global.theme.settings.image_container_category ? '1' : '0') : '0' %}
+
+                                {# Render photo box #}
+                                <a href="{{ item.url }}" class="image-container" data-fit="{{ container }}">
+                                    {# Render image #}
+                                    {{ html.image(photo_url, item.photo_description, 'item-img', '', global.theme.settings.lazyload_images, true) }}
+                                </a>
+                                {% if (item.photos|length > 1 and global.theme.settings.product_image_hover == 'second') or (item.photos|length > 1 and hover_class_embedded == 'second') %}
+                                    <a href="{{ item.url }}" class="image-container mod-swap-container" data-fit="{{ container }}">
+                                        {# Render second image if setting enabled #}
+                                        {{ html.image( item.photos[1].url('medium'), item.photos[1].description, 'item-img mod-swap-on-hover', '', global.theme.settings.lazyload_images) }}
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="grid-item">
+                            <div class="inner content-box dislay-flex flex-direction-column">
+                                <h3 class="list-item-heading display-flex">
+                                    <a href="{{ item.url }}">{{ title }}</a>
+									{% if item.sale_price %}
+										<span class="list-sale-marker">TILBUD</span>
+									{% endif %}
+										{# Render wishlist button #}
+										{% if gts.product_image_wishlist_button %}
+											<a href="/wishlist?action={{ item.in_wishlist ? 'remove' : 'add' }}&amp;product_id={{ item.id }}"
+											   class="product-wishlist-button list icon-button js-wishlist-button{{ item.in_wishlist ? ' on' : '' }}"
+											   data-remove="{{ gts.button_remove_from_wishlist }}"
+											   data-add="{{ gts.button_add_to_wishlist }}"
+											>
+												{% set heart_icon = item.in_wishlist ? 'heart-1' : 'heart' %}
+												{{ theme.sw_icon(heart_icon) }}
+												<span class="show-for-sr">{{ item.in_wishlist ? gts.button_remove_from_wishlist : gts.button_add_to_wishlist }}</span>
+											</a>
+										{% endif %}
+                               </h3>
+
+								
+                                {% if type == 'product' %}
+                                    {% if global.theme.settings.show_product_brand_name %}
+                                        {% if item.brand.title %}
+                                            <p class="product-box-brand">by <strong>{{ item.brand.title }}</strong></p>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+							<div class="flex-item">
+                                <div class="row-table list-item-prices">
+                                    <div class="col-cell">
+                                        {# Render product prices #}
+                                        {% if display_price %}
+                                            {% if item.options and item.lowest_variation_price != item.highest_variation_price %}
+                                                {% if variation_pricing == 'no' %}
+                                                    {% if item.sale_price > 0 %}
+                                                        <span class="price mod-sale">{{ format_price(item.sale_price) }}</span>
+                                                    {% endif %}
+                                                    <span class="price">{{ format_price(item.price ? item.price : item.lowest_variation_price) }}</span>
+                                                {% elseif variation_pricing == 'from' %}
+                                                    From <span class="price">{{ format_price(item.lowest_variation_price) }}</span>
+                                                {% elseif variation_pricing == 'range' %}
+                                                    <span class="price">{{ format_price(item.lowest_variation_price) }}</span> - <span class="price">{{ format_price(item.highest_variation_price) }}</span>
+                                                {% endif %}
+                                            {% else %}
+                                                {% if item.sale_price > 0 %}
+                                                    <span class="price mod-sale fw-normal">{{ format_price(item.sale_price) }}</span>
+                                                {% endif %}
+                                                <span class="price fw-normal">{{ format_price(item.price ? item.price : item.lowest_variation_price) }}</span>
+                                            {% endif %}
+                                        {% else %}
+                                            {% include 'partials/hidden_prices.twig' %}
+                                        {% endif %}
+                                    </div>
+                                    {% if item.new %}
+                                        <div class="col-cell text-right">
+                                            <div class="label new">new!</div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                {# render product offers - hide as tilbud badge will cover desktop #}
+                              
+								<div class="product-meta display-flex">
+									{% if item.sku %}
+										<span>
+											SKU: <strong>{{ item.sku }}</strong>
+										</span>
+									{% endif%}
+									{% if item.weight %}
+										<span>
+											Vægt pr. stk. <strong>{{ item.weight }} kg</strong>
+										</span>
+									{% endif%}
+									{% if item.brand.custom_fields.land %}
+										<span>
+											Land: <strong>{{ item.brand.custom_fields.land }} </strong>
+										</span>
+									{% endif%}
+									
+									<div class="quick-view-list margin-left-auto">
+										<a href="{{ item.url }}" class="quick-view button no-margin link-button show-for-large">
+											Hurtig visning
+										</a
+									</div>
+								</div>
+							</div>
+
+                                <div class="list-item-description show-for-medium">
+                                    {# item.description|striptags|length > 150 ? item.description|striptags|slice(0, 150) ~ '...' : item.description|striptags #}
+                                </div>
+
+                                {% if soft_button and global.theme.settings.show_product_quick_view %}
+<!--                                     <a href="{{ item.url }}" class="quick-view button no-margin link-button mod2 quick-view-button show-for-large">
+                                        <span class="text-top" data-name="button_quick_look">{{ gts.button_quick_look }}</span>
+                                    </a> -->
+                                {% else %}
+<!--                                     <a href="{{ item.url }}" class="link-button mod2">
+                                        View details
+                                    </a> -->
+                                {% endif %}
+
+                                {% if global.theme.settings.product_image_wishlist_button_disabled %}
+                                    <div class="list-item-wishlist{{ global.current_path == '/wishlist' ? ' js-wish-list-view' : '' }}">
+                                        {% if item.in_wishlist %}
+                                            <a href="/wishlist?action=remove&amp;product_id={{ item.id }}" class="no-margin wishlist-button show-for-large js-wishlist-button on">
+                                                {{ theme.sw_icon('like', gts.button_remove_from_wishlist|default('Remove from wishlist')) }}
+                                            </a>
+                                        {% else %}
+                                            <a href="/wishlist?action=add&amp;product_id={{ item.id }}" class="no-margin wishlist-button show-for-large js-wishlist-button">
+                                                {{ theme.sw_icon('favorite', gts.button_add_to_wishlist|default('Add to wishlist')) }}
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            </div>
+						
+                        </div>
+<!--                     </div> -->
+<!--                 </div> -->
+            </article>
+        {% endif %}
+        </div>
+    {% endif %}
+{% else %}
+    <div class="column">
+        <h2 class="subheader">
+			{% if global.current_path == '/wishlist'%}
+				Du har ingen favoritter
+			{% else %}
+            	Ingen genstande fundet.
+			{% endif %}
+        </h2>
+    </div>
+{% endfor %}
+
+{% block offers %}
+				
+ {# render product offers #}
+				{% if item.offers %}
+				<div class="product-offer-container show-for-medium">
+					{% for offer in item.offers %}
+					<div class="product-offer">
+						<div class="product-offer-title">
+							{{ offer.title }}
+						</div>
+					</div>
+					{% endfor %}
+				</div>
+				{% endif %}
+				{# desktop#}
+	  {% for offer in item.offers %}
+		<div class="product-offer">
+					<div class="product-offer-title">
+						{{ offer.title }}
+					</div>
+		</div>
+	{% endfor %}
+	
+	{# mobile #}
+	    {% if item.offers %}
+                            <div class="product-offer-container-mobile hide-for-medium">
+                                {% for offer in item.offers %}
+                                    <div class="product-offer">
+                                        <div class="product-offer-title">
+                                            {{ offer.title }}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+{% endblock %}

@@ -1,0 +1,323 @@
+{# Extend page template #}
+{% extends 'templates/page_wrap.twig' %}
+
+{% set gts = global.theme.settings %}
+{% set title = gts.text_create_account_title %}
+{% set bodyClass = 'account-page' %}
+{% if global.theme.sections_above_content_area or global.theme.sections_below_content_area %}{% else %}
+	{% set contentClass = 'split-right' %}
+{% endif %}
+{% set titleClass = 'account-header' %}
+{% set breadcrumb_title = 'Opret din konto' %}
+{% set hideTitle = 0 %}
+
+{% block page_content %}
+	{{ render(global.theme.sections_above_content_area, { 
+		featured_products: featured_products, 
+		featured_categories: featured_categories, 
+		gts: global.theme.settings, 
+		theme: theme, html: html, 
+		blog_posts: blog_posts, 
+		recently_viewed: global.recently_viewed_products, 
+		product: product,
+		global_theme: global.theme,
+		global_customer: global.customer
+		}) 
+	}}
+    <div class="row" id="{{ global.theme.content_area_id }}">
+        <div class="large-8 column">
+			<p class="text-forgotten-password">{{ theme.text_snippet('create_account_description') }}</p>
+            {{ theme.errors(errors) }}
+            <form class="form-with-validation account-create" action="{{ global.current_url }}" method="post">
+                {% if (global.theme.settings.company_name_field and not is_trade_account) or is_trade_account %}
+                    <label>
+                        <span class="field-label">Virksomhedens navn</span>
+                        {{ html.input('company', form_field_value('firstname', global.customer.company), 'required') }}
+                    </label>
+                {% endif %}
+                <div class="row">
+                    <div class="column large-6">
+                        {# first name #}
+                        <label>
+                            <span class="field-label">Dit fornavn</span>
+                            {{ html.input('firstname', form_field_value('firstname', global.customer.first_name), 'required') }}
+                        </label>
+                    </div>
+                    <div class="column large-6">
+                        {# surname #}
+                        <label>
+                            <span class="field-label">Dit efternavn</span>
+                            {{ html.input('lastname', form_field_value('lastname', global.customer.last_name), 'form-control required') }}
+                        </label>
+                    </div>
+                </div>
+                {% if (global.theme.settings.date_of_birth_field and not is_trade_account) or (global.theme.settings.trade_date_of_birth_field and is_trade_account) %}
+                    <div class="row">
+                        <div class="large-6 column">
+                            <label>
+                                <span class="field-label">Fødselsdag</span>
+                                {{ html.input('date_of_birth', form_field_value('date_of_birth', global.customer.date_of_birth), 'form-control', '', '', 'readonly') }}
+                            </label>
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="row">
+                    <div class="column large-6">
+                        {# email address #}
+                        <label>
+                            <span class="field-label">Din e-mailadresse</span>
+                            {{ html.input('email', form_field_value('email', global.customer.email), 'required jsv_email', '','email', 'autocomplete="off"') }}
+                        </label>
+                    </div>
+                    <div class="column large-6">
+                        {# telephone number #}
+                        <label>
+                            <span class="field-label">Din telefon</span>
+                            {{ html.input('phone', form_field_value('phone', global.customer.phone), 'jsv_digits') }}
+                        </label>
+                    </div>
+                </div>
+                {% if global.theme.settings.trade_mobile_number_field and is_trade_account %}
+                    <div class="row">
+                        <div class="column large-6">
+                            <label>
+                                <span class="field-label">Din mobil</span>
+                                {{ html.input('mobile', form_field_value('mobile', global.customer.mobile), 'jsv_digits') }}
+                            </label>
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="row">
+                    <div class="column large-6">
+                        {# password #}
+                        <label>
+                            <span class="field-label">Din adgangskode</span>
+                            <input type="password" name="password" id="password1" value="" placeholder="" required>
+                        </label>
+                    </div>
+                    <div class="column large-6">
+                        {# password confirm #}
+                        <label>
+                            <span class="field-label">Bekræft din adgangskode</span>
+                            <input type="password" name="password_confirm" value="" placeholder="" required>
+                        </label>
+                    </div>
+                </div>
+                <fieldset>
+                    <legend class="section-header">Din adresse</legend>
+                    <div class="row">
+                        <div class="column large-6">
+                            {# 1st line address #}
+                            <label>
+                                <span class="field-label">Adresselinje 1</span>
+                                {{ html.input('address_line1', form_field_value('address_line1', global.customer.address_line1), '') }}
+                            </label>
+                        </div>
+                        <div class="column large-6">
+                            {# 2nd line address #}
+                            <label>
+                                <span class="field-label">Adresselinje 2</span>
+                                {{ html.input('address_line2', form_field_value('address_line2', global.customer.address_line2), '') }}
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="column large-6">
+                            {# 3rd line address #}
+                            <label>
+                                <span class="field-label">Adresselinje 3</span>
+                                {{ html.input('address_line3', form_field_value('address_line3', global.customer.address_line3), '') }}
+                            </label>
+                        </div>
+                        <div class="column large-6">
+                            {# town #}
+                            <label>
+                                <span class="field-label">By</span>
+                                {{ html.input('city', form_field_value('city', global.customer.city), '') }}
+                            </label>
+                        </div>
+                    </div>
+<!-- 					<div class="row">
+                        <div class="column large-12">
+                            {# State #}
+                            <label>
+                                <span class="field-label">State / County</span>
+                                <input class="{{ form_fields.country.value != 223 ? '' : ' hide' }}" type="text" name="province" value="{{ global.customer.province }}">
+								<select class="{{ form_fields.country.value == 223 ? '' : ' hide' }}" name="state_id" data-state="{{ global.customer.state_id }}">
+									<option value="">Please select...</option>
+									{% for state in states %}
+										<option value="{{ state.id }}"{% if state.id == global.customer.state_id %} selected="selected"{% endif %}>
+											{{ state.name }}
+										</option>
+									{% endfor %}
+								</select>
+                            </label>
+                        </div>
+                    </div> -->
+                    <div class="row">
+                        <div class="column large-6">
+                            {# postcode #}
+                            <label>
+                                <span class="field-label">Postnummer</span>
+                                {{ html.input('zip', form_field_value('zip', global.customer.zip), '') }}
+                            </label>
+                        </div>
+                        <div class="column large-6">
+                            {# country #}
+                            <label>
+                                <span class="field-label">Land</span>
+								{% if global.business.location == 'GB' %}
+	                                {{ html.select('country_id', countries, form_field_value('country_id', global.customer.country_id|default(222)), 'form-control medium custom-select', 'Select...') }}
+								{% elseif global.business.location == 'US' %}
+									{{ html.select('country_id', countries, form_field_value('country_id', global.customer.country_id|default(223)), 'form-control medium custom-select', 'Select...') }}
+								{% else %}
+									{{ html.select('country_id', countries, form_field_value('country_id', global.customer.country_id|default(0)), 'form-control medium custom-select', 'Select...') }}
+								{% endif %}
+                            </label>
+                        </div>
+                    </div>
+                    {% if is_trade_account %}
+                        <div class="row">
+                            {% if global.theme.settings.trade_company_website_field %}
+                                <div class="large-6 column">
+                                    <label>
+                                        <span class="field-label">Website</span>
+                                        {{ html.input('website', form_field_value('website', global.customer.website), 'required') }}
+                                    </label>
+                                </div>
+                            {% endif %}
+                            {% if global.theme.settings.trade_vat_number_field %}
+                                <div class="large-6 column">
+                                    <label>
+                                        <span class="field-label">CVR nummer</span>
+                                        {{ html.input('vat_number', form_field_value('vat_number', global.customer.vat_number), 'required') }}
+                                    </label>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </fieldset>
+                {% if customer_sources|length %}
+                    <div class="row">
+                        <div class="column large-6">
+                            <label>
+                                <span class="field-label">Hvordan du hørte om os</span>
+                                {{ html.select('source', customer_sources, form_field_value('source'), 'form-control medium custom-select', 'Select...') }}
+                            </label>
+                        </div>
+                    </div>
+                {% endif %}
+               {# <div class="row column padding-bottom padding-top margin-bottom">
+                    <input id="newsletter" type="checkbox" name="marketing">
+                    <label for="newsletter" class="text-bold">Vil du gerne modtage markedsføringskommunikation fra os?</label>
+                </div>  #}
+				<div class="row column padding-bottom">
+					
+				</div>
+                <input type="text" name="{{ global.honeypot_field_name }}" class="hide" autocomplete="off">
+                {% if recaptcha %}
+                    <div class="g-recaptcha margin-bottom"></div>
+                {% endif %}
+                {% set button_setting = is_trade_account ? 'button_create_trade_account' : 'button_create_account' %}
+                {% set button_text = is_trade_account ? gts.button_create_trade_account : gts.button_create_account %}
+                <button type="submit" class="button text-nocase" data-name="{{ button_setting }}">{{ button_text }}</button>
+            </form>
+        </div>
+    </div>
+	{{ render(global.theme.sections_below_content_area, { 
+		featured_products: featured_products, 
+		featured_categories: featured_categories, 
+		gts: global.theme.settings, 
+		theme: theme, html: html, 
+		blog_posts: blog_posts, 
+		recently_viewed: global.recently_viewed_products, 
+		product: product,
+		global_theme: global.theme,
+		global_customer: global.customer
+		}) 
+	}}
+{% endblock %}
+
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% if global.theme.settings.date_of_birth_field or global.theme.settings.trade_date_of_birth_field %}
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    {% endif %}
+{% endblock %}
+
+
+{% block scripts %}
+    {{ parent() }}
+	<script>
+		// pull in states list
+		$.ajax({
+			url: '/checkout/states?country=223',
+			success: success,
+			dataType: 'JSON'
+		});
+
+		function success(data) {
+			var state_field = $('[name="state_id"]'),
+				county_field = $('[name="province"]'),
+				country_select = $('[name="country_id"]');
+
+			if(state_field.children().length < 2) {
+				var states = ['<option value="">Please select...</option>'];
+				// iterate states
+				$.each(data.states, function( index, value ) {
+					var selected = value.id == state_field.data('state') ? ' selected="selected"' : ''
+					states.push('<option value="'+value.id+'" '+selected+'>'+value.name+'</option>');
+				});
+				// select option
+				state_field.html(states.join(''));
+			}
+
+			// state/province visibility
+			function swapFields() {
+				if(country_select.val() == 223) {
+					county_field.addClass('hide');
+					state_field.removeClass('hide');
+				} else {
+					state_field.addClass('hide');
+					county_field.removeClass('hide');
+				}
+			}
+
+			swapFields();
+
+			country_select.on('change', swapFields);
+		}
+	</script>
+    {% if global.theme.settings.date_of_birth_field or global.theme.settings.trade_date_of_birth_field %}
+        {{ html.script('//cdn.jsdelivr.net/npm/jquery-ui-dist@1.12.1/jquery-ui.js') }}
+        <script>
+            // call picker
+            $('[name="date_of_birth"]').datepicker({
+                dateFormat: 'dd/mm/yy',
+                changeMonth: true,
+                changeYear: true,
+                yearRange: "1900:+0",
+                maxDate: '0'
+            }).autocomplete({
+                disabled: true
+            });
+        </script>
+    {% endif %}
+	<script>
+        (function(){
+            $('[data-slick]').each(function() {
+                $(this).slick();
+            });
+
+            $('.js-prev-slide').on('click', function() {
+                $(this).closest('[data-slick]').slick('slickPrev');
+            });
+
+            $('.js-next-slide').on('click', function() {
+                $(this).closest('[data-slick]').slick('slickNext');
+            });
+
+        })();
+    </script>
+{% endblock %}

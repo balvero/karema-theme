@@ -1,0 +1,12 @@
+{% set featured_categories = featured_categories(section.settings.categories_to_show) %}
+{% set embedded_category = category(section.settings.categories) %}
+
+<div class="row column">
+    <div class="section-block">
+		{% if section.settings.show_featured_categories == 'yes' %}
+			{% include 'partials/items.twig' with { 'items': featured_categories, 'item_type': 'category', 'classes': 'small-up-' ~ section.settings.categories_per_row_mobile ~ ' medium-up-'~ section.settings.categories_per_row_tablet ~ ' large-up-'~ section.settings.categories_per_row_desktop, 'container': gts.image_container_category } %}
+		{% else %}
+			{% include 'partials/items.twig' with { 'items': embedded_category.categories|slice(0, section.settings.categories_to_show), 'item_type': 'category', 'classes': 'small-up-' ~ section.settings.categories_per_row_mobile ~ ' medium-up-'~ section.settings.categories_per_row_tablet ~ ' large-up-'~ section.settings.categories_per_row_desktop, 'container': gts.image_container_category }%}
+		{% endif %}
+	</div>
+</div>

@@ -1,0 +1,40 @@
+{# Extend master template #}
+{% extends 'templates/master.twig' %}
+
+{% block content %}
+    <div id="content" class="content homepage">
+        {{ render(page.sections, { 
+			featured_products: featured_products, 
+			featured_categories: featured_categories, 
+			gts: global.theme.settings, 
+			theme: theme, 
+			html: html, 
+			blog_posts: blog_posts, 
+			recently_viewed: global.recently_viewed_products,
+			brands: global.brands,
+			global_theme: global.theme,
+			global_customer: global.customer
+			}) 
+		}}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script>
+        (function(){
+            $('[data-slick]').each(function() {
+                $(this).slick();
+            });
+
+            $('.js-prev-slide').on('click', function() {
+                $(this).closest('[data-slick]').slick('slickPrev');
+            });
+
+            $('.js-next-slide').on('click', function() {
+                $(this).closest('[data-slick]').slick('slickNext');
+            });
+
+        })();
+    </script>
+{% endblock %}

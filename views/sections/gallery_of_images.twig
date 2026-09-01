@@ -1,0 +1,77 @@
+{% if section.settings.gallery_slider == 'slider' %}
+	{% set gallery_slider = {
+		autoplay: section.settings.gallery_autoplay_checkbox|default(false),
+		autoplaySpeed: section.settings.gallery_autoplay_speed~'000',
+		slidesToShow: section.settings.images_to_show_desktop,
+		swipeToSlide: true,
+		centerMode: false,
+		centerPadding: '0',
+		arrows: section.settings.gallery_show_arrows,
+		prevArrow: '<button class="arrow arrow-prev"><i class="sw-icon-arrow1" aria-hidden="true"></i></button>',
+		nextArrow: '<button class="arrow arrow-next"><i class="sw-icon-arrow" aria-hidden="true"></i></button>',
+		dots: section.settings.gallery_show_three_dots|default(false),
+		dotsClass: 'sw-section-testimonials-dotnav slick-dots',
+		responsive: [
+			{
+				breakpoint: 1023,
+				settings: {
+					slidesToShow: section.settings.images_to_show_tablet,
+					centerMode: false
+				}
+			},
+			{
+				breakpoint: 640,
+				settings: {
+					slidesToShow: section.settings.images_to_show_mobile,
+					centerMode: false
+				}
+			}
+		]
+	} %}
+{% endif %}
+
+<section class="sw-section sw-section-image-gallery">
+	{% if section.settings.gallery_slider != 'slider' %}
+		<div class="row collapse 
+					small-up-{{ section.settings.images_to_show_mobile }} 
+					medium-up-{{ section.settings.images_to_show_tablet }} 
+					large-up-{{ section.settings.images_to_show_desktop }}
+					{{ section.blocks|length < section.settings.images_to_show_desktop ? ' mod-center' :'' }}
+					">
+	{% else %}
+		<div class="row collapse sw-section-image-gallery-slider" data-slick="{{ gallery_slider|json_encode }}">
+	{% endif %}
+		{% for block in section.blocks %}
+			{% if block.type == 'gallery_image' %}
+				<div class="column">
+					{% if block.settings.gallery_link %}
+						<a href="{{ block.settings.gallery_link }}">
+					{% endif %}
+					<div class="image-container" data-fit="{{ section.settings.fill_container == 'true' ? '1' : '0' }}" style="padding-top: {{ section.settings.gallery_image_aspect_ratio }}%">
+                        {{ html.image(block.settings.gallery_image, block.settings.gallery_image_alt_text, '', '', gts.lazyload_images) }}
+					</div>
+					{% if block.settings.gallery_link %}
+						</a>
+					{% endif %}
+				</div>
+			{% elseif block.type == 'gallery_gallery' %}
+				{% set gallery = block.settings.gallery_of_images %}
+				{% for image in gallery %}
+					<div class="column">
+						{% if image.target_url %}
+							<a href="{{ image.target_url }}">
+						{% endif %}
+						<div class="image-container" data-fit="{{ section.settings.fill_container == 'true' ? '1' : '0' }}" style="padding-top: {{ section.settings.gallery_image_aspect_ratio }}%">
+                            {{ html.image(image.url, image.name, '', '', gts.lazyload_images) }}
+						</div>
+						{% if image.target_url %}
+							</a>
+						{% endif %}
+					</div>
+				{% endfor %}
+			{% endif %}
+		{% endfor %}
+
+	</div>
+</section>
+

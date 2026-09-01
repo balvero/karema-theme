@@ -1,0 +1,38 @@
+{# Extend page template #}
+{% extends 'templates/page.twig' %}
+
+{% set title = gallery.name %}
+{% set titleClass = 'galleries-header text-center' %}
+
+{% block breadcrumbs %}
+
+	{# Add breadcrumb #}
+	<li>
+		<a href="/galleries">
+			Galleries
+		</a>
+	</li>
+
+{% endblock %}
+
+{% block page_content %}
+    {# Render gallery photos #}
+    <div class="row small-up-2 items-container">
+        {% for photo in gallery.photos %}
+            <div class="column column-block">
+                <article class="item-box gallery-box media-box">
+                    <div class="item-image shadow-box">
+                        <a class="image-container gallery-aspect-ratio" data-fit="1" data-fancybox="gallery" data-src="{{ photo.url }}">
+                            <img alt="{{ photo.name }}" src="{{ photo.url }}">
+                        </a>
+                    </div>
+                    {% if photo.name %}
+                        <h4 class="item-title">
+                            {{ photo.name }}
+                        </h4>
+                    {% endif %}
+                </article>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

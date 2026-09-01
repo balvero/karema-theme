@@ -1,0 +1,94 @@
+{%- set product_data = ({
+	"@context": "https://schema.org/",
+	"@type": "Product",
+	"name": product.title,
+	"description": product.description|striptags,
+	"mpn": product.mpn,
+	"gtin": product.gtin,
+	"sku": product.sku
+})|filter(v => v) -%}
+
+{%- if product.photos|length > 1 -%}
+	{%- set product_data = product_data|merge({
+		"image": product.photos|map(photo => 'https:' ~ photo.url)
+    }) -%}
+{%- else -%}
+	{%- set product_data = product_data|merge({
+		"image": "https:" ~ product.photo_url
+    }) -%}
+{%- endif -%}
+
+{%- if product.brand -%}
+	{%- set product_data = product_data|merge({
+		"brand": {
+        	"@type": "Brand",
+        	"name": product.brand.title
+		}
+    }) -%}
+{%- endif -%}
+
+{%- if global.features.apps.product_reviews -%}
+	{%- if product.reviews|length -%}
+		{%- set reviews = [] -%}
+	    {%- for review in product.reviews -%}
+	    	{%- set reviews = reviews|merge([{
+	        	"@type": "Review",
+	        	"reviewRating": {
+	        		"@type": "Rating",
+	        		"ratingValue": review.rating,
+	        		"bestRating": "5",
+					"worstRating": "1"
+	        	},
+	        	"author": {
+	        		"@type": "Person",
+	        		"name": review.name
+	        	}
+	    	}]) -%}
+	    {%- endfor -%}
+	    {%- set product_data = product_data|merge({
+			"aggregateRating": {
+	        	"@type": "AggregateRating",
+	        	"ratingValue": product.rating,
+	        	"reviewCount": product.reviews|length
+	    	}
+		})|merge({ 'review': reviews }) -%}
+	{%- endif -%}
+{%- endif -%}
+
+{%- if product.variations -%}
+	{%- set offers = [] -%}
+	{%- for variation in product.variations -%}
+		{%- set offers = offers|merge([{ 
+			"@type": "Offer",
+			"price": variation.sale_price ?: variation.price,
+			"priceCurrency": global.business.currency,
+			"priceValidUntil": "2039-12-31",
+			"itemCondition": "http://schema.org/" ~ ['NewCondition','UsedCondition','RefurbishedCondition'][product.google.condition|default(0)],
+			"url": variation.url,
+			"sku": variation.sku ?: product.sku,
+			"gtin": variation.gtin ?: product.gtin,
+			"availability": "https://schema.org/" ~ (product.is_pre_order ? 'PreOrder' : (variation.in_stock ? 'InStock' : (product.purchasable_when_out_of_stock ? 'BackOrder' : 'OutOfStock'))),
+			"seller": {
+				"@type": "Organization",
+				"name": global.business.name
+			}
+		}|filter(v => v)]) -%}
+	{%- endfor -%}
+	{%- set product_data = product_data|merge({ 'offers': offers }) -%}
+{%- else -%}
+	{%- set product_data = product_data|merge({"offers": {
+		"@type": "Offer",
+		"priceCurrency": global.business.currency,
+		"price": product.sale_price ?: product.price,
+		"url": product.url,
+		"priceValidUntil": "now"|date_modify('+1 Year')|date('Y-m-d'),
+		"itemCondition": "http://schema.org/" ~ ['NewCondition','UsedCondition','RefurbishedCondition'][product.google.condition|default(0)],
+		"availability": "https://schema.org/" ~ (product.is_pre_order ? 'PreOrder' : (product.in_stock ? 'InStock' : (product.purchasable_when_out_of_stock ? 'BackOrder' : 'OutOfStock'))),
+		"seller": {
+			"@type": "Organization",
+			"name": global.business.name
+		}
+	} } ) -%}
+{%- endif -%}
+
+<script type="application/ld+json" data-version="2">{{- product_data|json_encode|raw -}}</script>

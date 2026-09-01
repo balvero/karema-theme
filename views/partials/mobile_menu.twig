@@ -1,0 +1,180 @@
+<div class="off-canvas position-left medium off-canvas-mobile custom-offcanvas" id="offCanvasMobile" data-off-canvas>
+    <a class="btn-close close-button" data-toggle="offCanvasMobile">
+        <span>luk</span>
+    </a>
+    <h3 class="offcanvas-heading">
+        <span>Menu</span>
+    </h3>
+    <nav class="off-canvas-mobile-lists">
+        {#{% set category_add_list = global.theme.settings.list_category_add %}#}
+        {% set large_list = global.theme.settings.list_off_canvas_large %}
+        {% set small_list = global.theme.settings.list_off_canvas_small %}
+
+        <ul class="vertical menu drilldown off-canvas-mobile-menu hide-for-large" data-drilldown data-auto-height="true">
+            {# Render account links #}
+            <li class="hide">
+                <a href="/">
+                    Home
+                </a>
+            </li>
+			{% if gts.header_display_account_menu %}
+				{% if global.customer.id %}
+					<li>
+						<a href="/account">
+							Din konto
+						</a>
+					</li>
+					<li>Mine ordrer
+						<a href="/account/orders">
+							Mine ordrer
+						</a>
+					</li>
+					<li class="margin-bottom">
+						<a href="/account/logout">
+							Log ud	
+						</a>
+					</li>
+				{% else %}
+					<li>
+						<a href="/account/login">
+							Din konto
+						</a>
+					</li>
+					<li class="{{ global.features.apps.trade_accounts ? '' : 'margin-bottom' }}">
+						<a href="/account/create">
+							 Opret
+						</a>
+					</li>
+					{% if global.features.apps.trade_accounts %}
+						<li class="no-margin-bottom">
+							<a href="/account/trade-application">
+								Trade Account Registration
+							</a>
+						</li>
+					{% endif %}
+				{% endif %}
+			{% endif %}
+            {% if global.categories %}
+                <li>
+                    <h3 class="offcanvas-heading"> 
+                       {# <span>Kategorier</span> #}
+						 <span>Produkter</span>
+                    </h3>
+                </li>
+            {% endif %}
+            {# Render category links #}
+            {% for category in global.categories|slice(0, category_limit|default(20)) %}
+                <li>
+                    <a href="{{ category.url }}" {% if category.url in global.current_url %}class="active" {% endif %}>
+                        {{ category.title }}
+                    </a>
+                    {% if category.categories %}
+                        <ul class="menu vertical nested">
+                            {% for subcategory in category.categories %}
+                                <li>
+                                    <a href="{{ subcategory.url }}" {% if global.current_url == subcategory.url %}class="active" {% endif %}>
+                                        {{ subcategory.title }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                            {% if gts.header_category_menu_view_all and category.all_products_count %}
+                                <li>
+                                    <a href="{{ category.url }}?all=1">Se alle</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    {% endif %}
+                </li>
+            {% endfor %}
+            {% if global.categories|length > category_limit|default(20) %}
+                <li>
+                    <a href="/categories">
+                        Alle kategorier
+                    </a>
+                </li>
+            {% endif %}
+            {# mobile brands #}
+			{% if gts.header_display_brands %}
+				{% if global.brands %}
+					<li>
+						<a href="/brands" {% if global.current_path == '/brands' %}class="active" {% endif %}>
+							Mærker
+						</a>
+						<ul class="menu vertical nested">
+							{% for brand in global.brands|slice(0, brand_limit|default(20)) %}
+								<li>
+									<a href="{{ brand.url }}" {% if brand.url in global.current_path %}class="active" {% endif %}>
+										{{ brand.title }}
+									</a>
+								</li>
+							{% endfor %}
+							{% if global.brands|length > brand_limit|default(20) %}
+								<li>
+									<a href="/brands">
+										Se alle
+									</a>
+								</li>
+							{% endif %}
+						</ul>
+					</li>
+				{% endif %}
+			{% endif %}
+            {# Render blog link #}
+			{% if gts.header_display_blog %}
+				{% if global.features.apps.blog %}
+					<li>
+						<a href="/blog"{% if global.current_path == '/blog' %} class="active"{% endif %}>
+							Blog
+						</a>
+					</li>
+				{% endif %}
+			{% endif %}
+        </ul>
+        {# responsive menu #}
+        {% set responsive_list = global.theme.settings.list_responsive %}
+        {% if responsive_list and responsive_list.links %}
+            <ul class="vertical menu off-canvas-mobile-menu hide-for-large">
+                <li>
+                    <h3 class="offcanvas-heading">
+                        <span>Menu</span>
+                    </h3>
+                </li>
+				{% if gts.warehouse_sale %}
+							<li class="sub-list"><a href="/lagersalg">Lagersalg</a></li>
+						{% endif %}
+                {% for link in responsive_list.links %}
+                    <li class="sub-list"{% if loop.first %} id="list_responsive"{% endif %}>
+                        <a href="{{ link.url }}">
+                            {{ link.title }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {# large off canvas link list #}
+        {% if large_list and large_list.links %}
+            <ul class="vertical menu off-canvas-mobile-menu mod-large show-for-large">
+                {# Render custom links #}
+                {% for link in large_list.links %}
+                    <li{% if loop.first %} id="list_off_canvas_large"{% endif %}>
+                        <a href="{{ link.url }}">
+                            {{ link.title }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {# small off canvas link list #}
+        {% if small_list and small_list.links %}
+            <ul class="vertical menu off-canvas-mobile-menu show-for-large">
+                {% for link in small_list.links %}
+                    <li class="sub-list"{% if loop.first %} id="list_off_canvas_small"{% endif %}>
+                        <a href="{{ link.url }}">
+                            {{ link.title }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </nav>
+</div>

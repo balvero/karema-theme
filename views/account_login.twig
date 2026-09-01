@@ -1,0 +1,102 @@
+{# Extend page template #}
+{% extends 'templates/page_wrap.twig' %}
+
+{% set title = 'Login To Your Account' %}
+{% set bodyClass = 'account-page' %}
+{% if global.theme.sections_above_content_area or global.theme.sections_below_content_area %}{% else %}
+	{% set contentClass = 'split' %}
+{% endif %}
+{% set breadcrumb_title = 'Login' %}
+{% set hideTitle = 1 %}
+{% set hideDesc = 1 %}
+
+
+{% block page_content %}
+	{{ render(global.theme.sections_above_content_area, { 
+		featured_products: featured_products, 
+		featured_categories: featured_categories, 
+		gts: global.theme.settings, 
+		theme: theme, html: html, 
+		blog_posts: blog_posts, 
+		recently_viewed: global.recently_viewed_products, 
+		product: product,
+		global_theme: global.theme,
+		global_customer: global.customer
+		}) 
+	}}
+    <div class="row collapse" id="{{ global.theme.content_area_id }}">
+        {{ theme.errors(errors) }}
+        <div class="column large-6">
+            {# login form #}
+            <section class="account-login shadow-box lg bg-blank">
+                <h1 class="account-header">
+                    {{ theme.text_snippet('login_account_title') }}
+                </h1>
+				<p>
+					{{ theme.text_snippet('login_account_description') }}
+				</p>
+                <form action="{{ global.current_url }}" method="post" class="form-with-validation">
+                    <label>
+                        <span class="field-label">Din e-mailadresse</span>
+                        {{ html.input('email', '', 'required','', 'email' ) }}
+                    </label>
+                    <label>
+                        <span class="field-label">Din adgangskode</span>
+                        {{ html.input('password', '', 'required', '', 'password') }}
+                    </label>
+                    <p class="text-small padding-top">
+                        <a href="/account/forgotten-password" class="text-body text-underline">{{ theme.text_snippet('login_account_forgotten_password') }}</a>
+                    </p>
+                    <button type="submit" class="button pad-x margin-top">{{ gts.button_login_account }}</button>
+                </form>
+            </section>
+        </div>
+		{% if gts.display_signup_section %}
+			<div class="column large-6">
+				{# register link #}
+				<div class="shaded-form-container">
+					<section class="account-create shadow-box lg bg-blank">
+						<h2 class="account-header">
+							{{ theme.text_snippet('login_signup_account_title') }}
+						</h2>
+						<p>
+							{{ theme.text_snippet('login_signup_account_description') }}
+						</p>
+						<a class="button pad-x margin-top" href="/account/create">{{ theme.text_snippet('button_login_signup_account') }}</a>
+					</section>
+				</div>
+			</div>
+		{% endif %}
+    </div>
+	{{ render(global.theme.sections_below_content_area, { 
+		featured_products: featured_products, 
+		featured_categories: featured_categories, 
+		gts: global.theme.settings, 
+		theme: theme, html: html, 
+		blog_posts: blog_posts, 
+		recently_viewed: global.recently_viewed_products, 
+		product: product,
+		global_theme: global.theme,
+		global_customer: global.customer
+		}) 
+	}}
+{% endblock %}
+{% block scripts %}
+    {{ parent() }}
+    <script>
+        (function(){
+            $('[data-slick]').each(function() {
+                $(this).slick();
+            });
+
+            $('.js-prev-slide').on('click', function() {
+                $(this).closest('[data-slick]').slick('slickPrev');
+            });
+
+            $('.js-next-slide').on('click', function() {
+                $(this).closest('[data-slick]').slick('slickNext');
+            });
+
+        })();
+    </script>
+{% endblock %}

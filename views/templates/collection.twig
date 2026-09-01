@@ -1,0 +1,258 @@
+{# Extend page template #}
+{% extends 'templates/page.twig' %}
+{% set bodyClass = 'collection-container' %}
+{% set contentClass = 'no-padding-bottom important' %}
+{% set full_width = true %}
+{% set collection_page = true %}
+
+{# Product filters #}
+{% set filter_product_count = 0 %}
+{% for filter_group in filter_groups %}
+    {% for filter in filter_group.filters %}
+        {% set filter_product_count = filter_product_count + filter.product_count %}
+    {% endfor %}
+{% endfor %}
+
+
+{% block breadcrumbs %}
+
+	{# Add category / product breadcrumbs #}
+	{% for breadcrumb in breadcrumbs %}
+		<li>
+			<a href="{{ breadcrumb.url }}">
+				{{ breadcrumb.name }}
+			</a>
+		</li>
+	{% endfor %}
+
+{% endblock %}
+
+{% block page_content %}
+	<div class="collection">
+        {% if products|length %}
+            <div class="sort-form">
+                <div class="row">
+                    <div class="medium-12 large-12 column flex-item-ends">
+                        
+							
+                            {% if global.features.extensions.product_filters and filter_product_count %}
+                                <div class="flex-item hide-for-large">
+                                    <button type="button" class="filters-toggle" data-toggle="offCanvasFilters">
+                                        {{ theme.sw_icon('equalizer-console-with-three-switches-at-different-levels', '', gts.icon_equalizer_console_with_three_switches_at_different_levels) }}
+                                        <span>Filtre</span>
+                                    </button>
+                                </div>
+                            {% endif %}
+                            <div class="flex-item show-for-large">
+                                {# sort form #}
+                               {{ block('sort_dropdown') }}
+                            </div>
+							
+                        
+						<div class="flex-item grid-list-btns">
+								{{ block('grid_buttons') }}
+                         </div>
+                    </div>
+                    <div class="large-7 column text-right ">
+				
+						
+                        {# pagination #}
+                        {# include 'partials/paginator.twig' with {'position_class': 'text-right', 'container_class': 'inner' } #}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+		<div class="row column">
+			{%if not brands %}
+			<aside class="column large-3 show-for-large collection-sidebar {{ global.current_path == '/wishlist' ? 'hide' : 'wishlist' }}">
+				<section class="filters">
+					{% if context == 'mobile' %}
+						<div class="off-canvas-header">
+							<div class="row-table">
+								<div class="col-cell">
+									<a href="#" class="close-text" data-toggle="offCanvasFilters">
+										Apply filters
+									</a>
+								</div>
+								<div class="col-cell text-right">
+									<a href="#" class="off-canvas-close" data-toggle="offCanvasFilters">
+										{{ theme.sw_icon('add') }}
+										<span class="show-for-sr">Luk menu</span>
+									</a>
+								</div>
+							</div>
+						</div>
+						<h3 class="show-for-sr">Filtre</h3>
+					{% else %}
+						<h3 class="side-divider">
+							Filtre
+						</h3>
+					{% endif %}
+					{% if context == 'mobile' %}
+						<div class="inner">
+					{% endif %}
+					<ul class="accordion" data-accordion data-multi-expand="true" data-allow-all-closed="true">
+					  {% for filter_group in filter_groups %}
+						  {% set filter_group_count = 0 %}
+						  {% for filter in filter_group.filters %}
+							  {% set filter_group_count = filter_group_count + filter.product_count %}
+						  {% endfor %}
+						  <li class="accordion-item is-active{{ filter_group.type == 1 and theme_config.price_slider ? ' filter-box' : ' filter-group' }}" data-accordion-item>
+							  <a href="#" class="accordion-title">{{ filter_group.name }}</a>
+							  <div class="accordion-content" data-tab-content>
+								  {% for filter in filter_group.filters %}
+									  <div class="filter-container" style="{{ filter.product_count > 0 ? '' : 'display: none;' }}">
+										  {% if filter_group.type != 1 %}
+											  <input id="{{ filter.id ~ '-' ~ identifier }}" class="filter {{ filter.active ? 'current' : '' }}" type="checkbox" value="{{ filter.id }}" data-value="{{ filter.id }}" {{ filter.active ? 'checked="checked"' : '' }}>
+											  <label for="{{ filter.id ~ '-' ~ identifier }}" class="field-label">
+												  {{ filter.name }}
+												  <span class="count-container">
+													(<span class="filter-count">{{ filter.product_count }}</span>)
+												  </span>
+											  </label>
+										  {% else %}
+												{% if theme_config.price_slider and (identifier == 'mobile' and not global.visitor.is_mobile or identifier == 'desktop' and global.visitor.is_mobile) %}
+												  <input id="filter-{{ filter.id ~ '-' ~ identifier }}" class="price-range {{ filter.active ? 'current' : '' }}" type="checkbox" value="{{ filter.id }}" data-value="{{ filter.id }}" {{ filter.active ? 'checked="checked"' : '' }}>
+												  <label for="filter-{{ filter.id ~ '-' ~ identifier }}" class="field-label">
+													  {{ filter.name|raw }}
+													  <span class="count-container">
+														(<span class="filter-count">{{ filter.product_count }}</span>)
+													  </span>
+												  </label>
+												{% endif %}
+										  {% endif %}
+									  </div>
+								  {% endfor %}
+								  {% if filter_group.type == 1 and theme_config.price_slider and (identifier == 'desktop' and not global.visitor.is_mobile or identifier == 'mobile' and global.visitor.is_mobile) %}
+									  <div class="price-range-container">
+										  <div class="price-range-slider slider"
+												 data-slider
+												 data-start="{{ min_price|round(0, 'floor') }}"
+												 data-end="{{ max_price|round(0, 'ceil') }}"
+												 data-initial-start="{{ min_price|round(0, 'floor') }}"
+												 data-initial-end="{{ max_price|round(0, 'ceil') }}"
+											>
+												<span class="slider-handle" data-slider-handle role="slider" tabindex="1" aria-controls="sliderOutputMin" aria-valuemax="{{ max_price|round(0, 'ceil')|default('0') }}" aria-valuemin="{{ min_price|round(0, 'floor')|default('0') }}" aria-valuenow="{{ min_price|round(0, 'floor')|default('0') }}"></span>
+												<span class="slider-fill" data-slider-fill></span>
+												<span class="slider-handle" data-slider-handle role="slider" tabindex="1" aria-controls="sliderOutputMax" aria-valuemin="{{ min_price|round(0, 'floor')|default('0') }}" aria-valuemax="{{ max_price|round(0, 'ceil')|default('0') }}" aria-valuenow="{{ max_price|round(0, 'ceil')|default('0') }}"></span>
+											</div>
+										  <div class="slider-output">
+											  <div class="row hide">
+												  <div class="column small-6">
+													  <label>Min</label>
+													  <div class="input-group">
+														  <input type="text" class="input-group-field" id="sliderOutputMin" value="{{ min_price|round(0, 'floor')|default('0') }}">
+													  </div>
+												  </div>
+												  <div class="column small-6">
+													  <label>Max</label>
+													  <div class="input-group">
+														  <input type="text" class="input-group-field" id="sliderOutputMax" value="{{ max_price|round(0, 'ceil')|default('0') }}">
+													  </div>
+												  </div>
+											  </div>
+											  <span class="slider-range-values">From
+												  <strong class="range-min" data-currency="{{ global.currency.symbol|raw }}">{{ min_price|round(0, 'floor')|default('0') }}</strong> to
+												  <strong class="range-max" data-currency="{{ global.currency.symbol|raw }}">{{ max_price|round(0, 'ceil')|default('0') }}</strong>
+											  </span>
+										  </div>
+										  <input type="checkbox" class="price-range hide">
+									  </div>
+								  {% endif %}
+							  </div>
+						  </li>
+					  {% endfor %}
+					</ul>
+					<button class="reset-all-button">Nulstil</button>
+					{% if context == 'mobile' %}
+						</div>
+					{% endif %}
+				</section>
+
+    		</aside>
+			
+			
+			{% endif %}
+			{% if brands or global.current_path == '/wishlist' %}
+				<div class="large-12 column brands">
+			{% else %}
+				<div class="large-9 column products">
+			{% endif %}
+                           {% block items %}{% endblock %}
+			</div>
+		</div>
+        {# Render collection items #}
+        
+        <br>
+        {# Render page links #}
+        {% include 'partials/paginator.twig' with {'position_class': 'text-center large-text-right'} %}
+	</div>
+{% endblock %}
+
+
+{% block grid_buttons %}
+    <div class="collection-controls button-group show-for-medium ">
+        <button class="button hollow collection-button js-grid_view active">
+            {{ theme.sw_icon('grid') }}
+            <span class="show-for-sr">Grid</span>
+        </button>
+        <button class="button hollow collection-button js-list_view">
+            {{ theme.sw_icon('list') }}
+            <span class="show-for-sr">list</span>
+        </button>
+    </div>
+    {% if global.features.extensions.product_filters and filter_product_count %}
+<!--         <button type="button" class="button hide-for-large" data-toggle="offCanvasFilters">
+            <span>Refine Results</span>
+        </button> -->
+    {% endif %}
+{% endblock %}
+
+
+{% block sort_dropdown %}
+
+    {% set sort_options = {
+		'sort_order_asc': 'Relevans',
+        'price_asc': 'Pris stigende',
+        'price_desc': 'Pris faldende',
+        'title_desc': 'Produktnavn alfabetisk',
+		'created': 'Nyheder'
+    } %}
+
+    <form action="{{ global.current_url }}" method="get">
+        <label>
+            <span class="show-for-sr">Sorter efter</span>
+            <select name="sort" class="sort-drop-down">
+                {% for key, value in sort_options %}
+                    <option value="{{ key }}"{{ sort_option == key ? ' selected="selected"' : '' }}>
+                        {{ value }}
+                    </option>
+                {% endfor %}
+            </select>
+        </label>
+        {{ html.input('page', '1', '', '', 'hidden') }}
+        {% if keywords %}
+            {{ html.input('keywords', keywords, '', '', 'hidden') }}
+        {% endif %}
+    </form>
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script>
+        (function(){
+            $('[data-slick]').each(function() {
+                $(this).slick();
+            });
+
+            $('.js-prev-slide').on('click', function() {
+                $(this).closest('[data-slick]').slick('slickPrev');
+            });
+
+            $('.js-next-slide').on('click', function() {
+                $(this).closest('[data-slick]').slick('slickNext');
+            });
+
+        })();
+    </script>
+{% endblock %}

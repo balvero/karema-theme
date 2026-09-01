@@ -1,0 +1,103 @@
+{% import 'macros/theme.twig' as theme %}
+{% for item in items %}
+    <div class="item">
+        <div class="row collapse medium-uncollapse">
+            <div class="column small-4 medium-4">
+                {# Render photo #}
+                <div class="item__image">
+                    <a href="{{ item.product.url }}" class="image-container" data-fit="0">
+                        <img src="{{ item.product.photo_url }}" alt="{{ item.is_gift_voucher ? 'Gift voucher' : 'item.product.photo_description' }}">
+                    </a>
+                </div>
+            </div>
+            <div class="column small-8 medium-5">
+               <a href="{{ item.product.url }}" > 
+				   <h4>
+                    {# Render title #}
+                    {% if item.is_gift_voucher %}
+                        {{ item.product.title|raw }}
+                    {% else %}
+                        {{ item.product.title }}
+                    {% endif %}
+				   </h4></a>
+
+                <div class="price hide-for-medium">
+                    {# Render price #}
+                    {% if item.product.reward_points_enabled %}
+                        {{ item.original_price }}
+                        points
+                    {% else %}
+                        {{ format_price(item.original_price) }}
+                    {% endif %}
+                </div>
+
+                {# Render options and extras #}
+                {% if item.options %}
+                    <div>
+                        {% for name, value in item.options %}
+                            {{ name }}
+                            <b>{{ theme.filter_hex(value) }}</b>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {% if item.alt_options %}
+                    <div>
+                        {% for name, value in item.alt_options %}
+                            {{ name }}
+                            <b>{{ value }}</b>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+				{% if item.subscription_interval %}
+					<div>
+						Subscription Interval
+						<strong>{{ item.subscription_interval.description|capitalize }}</strong>
+				    </div>
+					{% if item.subscription_interval.billing_intervals %}
+						<div>
+							Instalments
+							<strong>{{ item.subscription_interval.billing_intervals }}</strong>
+				    	</div>
+					{% endif %}
+				{% endif %}
+                {% if item.comments|length %}
+                   {% set opts = item.comments|split('|') %}
+                   {% for option in opts %}
+                       {% set name = option|split(':')[0] %}
+                       {% set value = option|split(':')[1] %}
+                       <div>
+                           {{ name }}
+                           <strong>{{ value }}</strong>
+                       </div>
+                   {% endfor %}
+                {% endif %}
+                {% for extra in item.extras %}
+                    <div>
+                        {{ extra.name }}
+                        <b>{{ format_price(extra.price) }}</b>
+                    </div>
+                {% endfor %}
+                <div class="basket-offset-qty">
+                    Antal: <b>{{ item.quantity }}</b>
+                </div>
+                <div>
+                    <a href="{{ item.remove_url }}" class="remove-button">Fjern</a>
+                </div>
+            </div>
+            <div class="column small-3 text-right show-for-medium">
+                <div class="price">
+                    {# Render price #}
+                    {% if item.product.reward_points_enabled %}
+                        {{ item.original_price }}
+                        points
+                    {% else %}
+                        {{ format_price(item.original_price) }}
+                    {% endif %}
+                </div>
+                <a class="remove-button" href="{{ item.remove_url }}">
+                    <span class="show-for-sr">Fjern</span>
+                </a>
+            </div>
+        </div>
+    </div>
+{% endfor %}

@@ -1,0 +1,114 @@
+{# Extend collection template #}
+{% extends 'templates/collection.twig' %}
+
+{% set title = brand.title %}
+{% set description = brand.description %}
+{% set show_sidebar = true %}
+{% set show_bct = global.theme.settings.header_show_breadcrumbs ? true : false %}
+{% set titleClass = 'font-size-category-title' %}
+{% set descriptionClass = 'font-size-category-description' %}
+
+{% block content %}
+<div  class="content">
+
+<div id="brand">
+	
+	<section id="page-section-header" class="brand row">
+		<div class="column">
+			<div class="text-center">
+				<img src="{{ brand.photo_url }}" class="brand-logo"/>
+
+				<h1 class="brand-title">{{ brand.title }}</h1>
+				{% if brand.custom_fields.land %}
+					<div class="land">
+						Land: <strong>{{ brand.custom_fields.land }}</strong>
+					</div>
+				{% endif %}
+			</div>
+			
+			<div class="brand-description">
+				{{ brand.description|raw }}
+			</div>
+			
+		</div>
+		
+<!-- 		<div class="column large-6 text-center" style="background-image: url({{ brand.custom_fields.image_url ? brand.custom_fields.image_url : 'https://theme-assets.ecommercedns.uk/5/130975/images/brands_bg.jpg'}})"> -->
+		<div class="column header-right">
+			{% if brand.custom_fields.image_url %}
+				<img src="{{ brand.custom_fields.image_url }}" class="header-image"/>
+			{% elseif brand.custom_fields.video_embed %}
+			<div class="embed-container">
+				{{ brand.custom_fields.video_embed |raw }}
+			</div>
+			{% endif %}
+		</div>
+	</section>
+	</div>
+{% block more_info %}
+{% if brand.custom_fields.unique_process %}
+<section id="moreInfo" class="row column">
+	<div class="column row brand-info section salmon-bg">
+
+		<div class="column large-12 brand-content">
+		
+			<h2>
+				{# brand.custom_fields.process_header #} Sådan skaber vi smagsoplevelser
+			</h2>
+			
+			<div class="text-justify">
+				{{ brand.custom_fields.unique_process|raw }}
+			</div>
+						
+			{#<a class="button outline" href="{{ product.brand.url }}" >Læs mere</a>#}
+						
+	  </div>
+	</div>
+
+</section>
+{% endif %}
+{% endblock %}
+
+	<section id="brand-products" class="brand">
+		{%include 'partials/paginator.twig' with {'position_class': 'text-right', 'container_class': 'inner' } %}
+
+		{% include 'partials/items.twig' with { 'classes': 'small-up-'~ global.theme.settings.products_per_row_mobile ~'  medium-up-' ~ global.theme.settings.products_per_row_tablet ~' large-up-4' } %}
+	</section>
+</div>
+{% endblock %}
+
+{% block sidebar %}
+	{# Render brand menu #}
+	{% include 'partials/category_menu.twig' with { 'categories': global.brands, nav_title: 'Our Brands' } %}
+
+{% endblock %}
+
+{% block items %}
+	{# Render products #}
+	{% include 'partials/items.twig' with { 'classes': 'small-up-'~ global.theme.settings.products_per_row_mobile ~'  medium-up-' ~ global.theme.settings.products_per_row_tablet ~' large-up-' ~ global.theme.settings.products_per_row_desktop } %}
+
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+<style>
+	
+	#moreInfo {
+		margin-bottom: 3rem;
+	}
+
+	#moreInfo .section {
+/* 		margin: 60px 0; */
+		margin-bottom: 60px;
+	}
+	
+	#moreInfo .our-process .process-image img {
+    	min-height: 320px;
+		
+	}
+	
+	#page-section-header {
+		margin-top: 2rem;
+	}
+</style>
+
+{% endblock %}

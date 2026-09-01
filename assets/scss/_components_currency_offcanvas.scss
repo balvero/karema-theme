@@ -1,0 +1,178 @@
+.custom-offcanvas {
+    .offcanvas-heading {
+        font-size: 1.01rem;
+        margin-bottom: 1.5rem;
+        color: if(setting-value('currency_menu_use_default_website_colors'), $color_global_black_titles, $color_currency_title);
+
+        span {
+            display: inline-block;
+            vertical-align: middle;
+
+            &:after {
+                content: "";
+                height: 1px;
+                background: $colour_bodytxt;
+                width: 23px;
+                display: inline-block;
+                vertical-align: middle;
+                margin-left: 10px;
+            }
+        }
+    }
+
+    .close-button {
+        position: absolute;
+        color: $black;
+        right: 40px;
+        top: 1.9rem;
+    }
+
+    &:after {
+        display: none;
+    }
+}
+
+.off-canvas-currency {
+    border: 0;
+    box-shadow: none;
+    background: if(setting-value('currency_menu_use_default_website_colors'), #ffffff, $color_currency_background);
+
+    .offcanvas-heading {
+        color: if(setting-value('currency_menu_use_default_website_colors'), $color_global_black_titles, $color_currency_title);
+
+        span:after {
+            background: if(setting-value('currency_menu_use_default_website_colors'), $color_global_black_titles, $color_currency_title);
+        }
+    }
+
+    .close-button {
+        color: if(setting-value('currency_menu_use_default_website_colors'), $color_global_black_titles, $color_currency_title);
+    }
+
+    .currency-header {
+        padding: 1.5rem 40px;
+    }
+
+    .small {
+        color: if(setting-value('currency_menu_use_default_website_colors'), $color_global_black_titles, $color_currency_title);
+        font-size: .873rem;
+        margin: 0;
+    }
+
+    @media #{$s-only} {
+        .close-button {
+            right: 20px;
+        }
+
+        .currency-header {
+            padding: 1.5rem 20px;
+        }
+    }
+}
+
+.currency-dropdown {
+    &-list {
+        a {
+            display: block;
+            color: if(setting-value('currency_menu_use_default_website_colors'), $color_global_black_text, $color_currency_option);
+            position: relative;
+            padding: .5rem 40px;
+            padding-left: 77px;
+        }
+
+        li.active {
+            margin-bottom: .7rem;
+
+            a {
+                background: if(setting-value('currency_menu_use_default_website_colors'), $color_global_yellow_accent, $color_currency_selected_background);
+                color: if(setting-value('currency_menu_use_default_website_colors'), $color_global_black_text, $color_currency_selected_text);
+                padding-top: 1.45rem;
+                padding-bottom: 1.45rem;
+            }
+
+            .currency-symbol {
+                color: if(setting-value('currency_menu_use_default_website_colors'), $color_global_black_text, $color_currency_selected_text);
+            }
+
+            .currency-region:after {
+                content: '(selected)';
+                padding-left: .25rem;
+            }
+        }
+    }
+
+    @media #{$s-only} {
+        &-list {
+            a {
+                padding: .5rem 20px;
+                padding-left: 57px;
+            }
+        }
+    }
+}
+
+.currency-region {
+    position: relative;
+    width: 81%;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: middle;
+    font-size: 1.09rem;
+    vertical-align: text-top;
+}
+
+.currency-symbol {
+    float: right;
+    font-size: 1.09rem;
+    font-weight: 700;
+}
+
+.currency-flag {
+    position: absolute;
+    left: 40px;
+    top: 50%;
+    margin-top: -11px;
+    width: 22px;
+    height: 22px;
+    border-radius: 100%;
+    z-index: 1;
+    overflow: hidden;
+
+    @media #{$s-only} {
+        left: 20px;
+    }
+}
+
+.flag {
+    width: 32px;
+    height: 32px;
+    display: block;
+    position: absolute;
+    z-index: 0;
+    top: -5px;
+    left: -5px;
+}
+
+@media #{$m-up} {
+    .custom-offcanvas {
+        width: 550px;
+        @include transform( translateX(-550px) );
+
+        &.is-open ~ .off-canvas-content {
+            @include transform( translateX(550px) );
+        }
+    }
+}
+
+@media #{$s-only} {
+    .custom-offcanvas {
+        width: 350px;
+        @include transform( translateX(-350px) );
+
+        &.is-open ~ .off-canvas-content {
+            @include transform( translateX(350px) );
+        }
+    }
+}

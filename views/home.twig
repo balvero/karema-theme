@@ -1,0 +1,678 @@
+{# Extend master template #}
+{% extends 'templates/master.twig' %}
+
+{% block content %}
+    <div id="content" class="content homepage">
+        {{ render(global.theme.sections, { 
+			featured_products: featured_products, 
+			featured_categories: featured_categories, 
+			gts: global.theme.settings, 
+			theme: theme, 
+			html: html, 
+			blog_posts: blog_posts, 
+			recently_viewed: global.recently_viewed_products,
+			brands: global.brands,
+			global_theme: global.theme,
+			global_customer: global.customer
+			}) 
+		}}
+		
+		<section id="main-header-home" class="pos-rel" 
+			style="position: relative;
+			  width: 100%;
+			  height: 100vh; /* Fullscreen */
+			  overflow: hidden;
+			  display: flex;
+			  align-items: center;
+			  justify-content: center;
+			  text-align: center;">
+			<div class="video-background" 
+				 style="position: absolute;
+				  top: 0;
+				  left: 0;
+				  width: 100%;
+				  height: 100%;
+				  overflow: hidden;">
+				<!-- Thumbnail Image -->
+    			<img id="vimeo-thumbnail" style="width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transition: opacity 1s ease;" src="{{asset_url('images/thumbnail_home.jpg')}}" alt="Vimeo Thumbnail">
+			  <iframe 
+				id="vimeo-video"
+				src="https://player.vimeo.com/video/1055509457?h=84a8ab628a&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&background=1&loop=1&muted=1&controls=0"
+				frameborder="0" 
+				allow="autoplay; fullscreen" 
+				allowfullscreen 
+				style="position: absolute;
+				  top: 50%;
+				  left: 50%;
+				  width: 100vw;
+				  height: 56.25vw; /* Maintain 16:9 aspect ratio */
+				  min-height: 100vh;
+				  min-width: 177.78vh; /* Ensures full cover */
+				  transform: translate(-50%, -50%);
+					opacity:0;
+				  pointer-events: none;transition: opacity 1s ease;">
+			  </iframe>
+			<script src="https://player.vimeo.com/api/player.js"></script>
+			<script>
+			  var iframe = document.getElementById("vimeo-video");
+				var thumbnail = document.getElementById("vimeo-thumbnail");
+				var player = new Vimeo.Player(iframe);
+
+				// Wait until the video is ready
+				player.ready().then(function() {
+				  // Fade out thumbnail and fade in video
+// 				  thumbnail.style.opacity = "0";
+				  iframe.style.opacity = "1";
+				});
+			</script>
+				
+			</div>
+
+<!-- 			<video class="hide" id="background-video" autoplay="autoplay" muted="" loop="" playsinline="">
+				<source src="https://files.ecommercedns.uk/265038/1bf662d40784c441cff21697df310c3c.mp4" type="video/mp4">
+				
+			</video> -->
+			
+			<div class="image-overlay"></div>
+			<div class="flex-container row column flex-v-center">
+			
+					<div class="medium-6 large-6 text-content">
+					<h1 class="font-large">
+						Specialiteter til alle lejligheder
+					</h1>
+					<p>
+						Gå på opdagelse i vores udvalg af gastronomiske specialiteter fra hele verden, med særlig fokus på Frankrig, Italien, Tyskland og Spanien. Kvalitet og smag i verdensklasse.
+					</p>
+					<p>
+						<a href="/search/products?sort=created&page=1" class="button">Se alle produkter</a>	
+						
+					</p>
+				</div>
+			</div>
+		</section>
+		
+			{% if gts.custom_sale %}
+				<section class="sale-section pre text-center">
+							<div class="row column">
+								<h3>{{gts.custom_sale_title}}</h3>
+								<p>
+									{{gts.custom_sale_body}}						
+								</p>
+								<p class="no-margin">
+									<a href="/search/products?sort=created&page=1" class="button">Shop nu</a>
+								</p>
+							</div>
+				</section>
+		
+			{% endif %}
+
+			{% if gts.warehouse_sale %}
+				
+		
+					{% if "now"|date("d/m/Y", "Europe/Copenhagen")  < gts.ws_start %}								
+						<section class="sale-section pre text-center ws-body ">
+							<div class="row column">
+								<h3>Kom til lagersalg – spar stort!</h3>
+								<p>
+
+									Glæd dig til vores lagersalg fra den {{ gts.ws_start }} kl. 12AM. 
+									Her finder du udvalgte produkter til stærkt reducerede priser. 
+									Produkterne kan allerede ses og købes til normal pris – men de særlige tilbud gælder kun i salgsperioden.							
+								</p>
+								<p class="no-margin">
+									<a href="/lagersalg" class="button">Se lagersalget her </a>
+								</p>
+							</div>
+						</section>								
+					
+														
+					{% elseif "now"|date("d/m/Y", "Europe/Copenhagen")  <= gts.ws_end and "now"|date("d/m/Y", "Europe/Copenhagen")  >= gts.ws_start %}
+						<section class="sale-section live text-center">
+							<div class="row column">
+								<h3>Lagersalget er i gang – shop nu!</h3>
+								<p>
+									Velkommen til Karema Foods' lagersalg. Køb dine favoritter til nedsatte priser – men kun i en begrænset periode. Lagersalget slutter den {{ gts.ws_end  }} kl. 23:59, og mange varer har begrænset antal.							
+								</p>
+								<p class="no-margin">
+									<a href="/lagersalg" class="button">Se lagersalget her </a>
+								</p>
+							</div>
+						</section>
+					{% endif %}
+				
+			{% endif %}
+						
+			{% if gts.vat_sale %}
+
+					{% if "now"|date("d/m/Y", "Europe/Copenhagen")   < gts.vs_start %}	
+						{% if "now"|date("d/m/Y", "Europe/Copenhagen")   > gts.vs_end %}	
+						<section class="sale-section pre text-center">
+							<div class="row column">
+								<h3>Snart kan du spare momsen!</h3>
+								<p>
+									Fra den {{ gts.vs_start }} kl. 00:00 fjerner vi momsen på alle varer i butikken. Gør dig klar til at shoppe med store besparelser – det gælder kun i en begrænset periode!							
+								</p>
+								<p class="no-margin">
+									<a href="/search/products?sort=created&page=1=" class="button">Se udvalget</a>
+								</p>
+							</div>
+						</section>								
+						{% endif %}
+														
+					{% elseif "now"|date("d/m/Y", "Europe/Copenhagen") <= gts.vs_end and "now"|date("d/m/Y", "Europe/Copenhagen")   >= gts.vs_start %}
+						<section class="sale-section live text-center">
+							<div class="row column">
+								<h3>Momsen er sparet væk – shop nu!</h3>
+								<p>
+									Lige nu kan du shoppe alle varer uden moms! Spar stort på dine favoritter, men skynd dig – kampagnen slutter den {{ gts.vs_end  }} kl. 23:59.						
+								</p>
+								<p class="no-margin">
+									<a href="/search/products?sort=created&page=1" class="button">Shop nu</a>
+								</p>
+							</div>
+						</section>
+					{% endif %}
+				
+			{% endif %}
+		<section class="section featured-products bg-white">
+			<div class="row text-center">
+				<h2 class="font-medium padding-bottom">
+					Udvalgt til sæsonen
+				</h2>
+				<p>
+					Autentiske kvalitetsprodukter fra passionerede lokale producenter
+				</p>
+			</div>
+			<!-- <div class="products items-container row small-up-2 medium-up-3 large-up-5">
+
+				{% set featured_products = featured_products(10) %}
+				{# include 'partials/item.twig' with { 'items': featured_products, 'container': gts.image_container_product, 'hide_prices': hide_prices, 'variation_pricing': gts.variation_pricing } #}
+
+			</div> -->
+					
+			<div class="row column">
+				  {% set product_slider = {
+                        infinite: true,
+                        autoplay: false,
+                        slidesToShow: 4,
+                        responsive: [
+                            {
+                                breakpoint: 1023,
+                                settings: {
+                                    slidesToShow: 2
+                                }
+                            },
+                            {
+                                breakpoint: 639,
+                                settings: {
+                                    slidesToShow: 1
+                                }
+                            }
+                        ],
+                        prevArrow: '<button class="slick-prev prev"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></button>',
+                        nextArrow: '<button class="slick-next next"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></button>'
+                    } %}
+					
+				
+				<div class="brands-slider column">
+					<div class="products items-container row small-up-2 medium-up-3 large-up-5 medium-up- large-up-5" data-slick="{{ product_slider|json_encode }}">
+						
+					
+					{% for item in featured_products %}
+						
+					
+					<div class="column column-block">
+						<article class="item-box text-center featured-box">
+							
+							<div class="item-image pos-rel">
+								{% if item.offers %}
+										<div class="offer-badge position-absolute">
+											{% for offer in item.offers %}
+												<div class="product-offer margin-top margin-right">
+													<div class="product-offer-title">
+														{{ offer.title }}
+													</div>
+												</div>
+											{% endfor %}
+										</div>
+								{% endif %}
+								{% if item.sale_price or item.offers %}
+									<div class="sale-marker">
+										<img src="https://theme-assets.ecommercedns.uk/8/132418/images/tilbud_new.png" />
+									</div>
+								{% endif %}
+								<a href="{{item.url}}" class="image-container-home" data-fit="0">
+									{% if item.photos[1].url %}
+										<img src="{{item.photos[1].url }}" alt="" class="item-img main" >
+										<img src="{{item.photos[0].url }}" alt="" class="item-img alt" >
+									{% else %}
+										<img src="{{item.photo_url}}" alt="" class="item-img" >
+									{% endif %}
+								</a>
+								
+							</div>
+							<div class="item-info">
+									
+								<h4>
+									<a href="{{item.url}}">{{item.title}}</a>
+								</h4>
+									<div class="box-data">
+									{# Render product prices #}
+									{% if display_price %}
+										{% if item.options and item.lowest_variation_price !=  item.highest_variation_price %}
+											{% if variation_pricing == 'no' %}
+												{% if item.sale_price > 0 %}
+													<span class="price mod-sale">{{ format_price(item.sale_price) }}</span>
+												{% endif %}
+												<span class="price">{{ format_price(item.price ? item.price : item.lowest_variation_price) }}</span>
+											{% elseif variation_pricing == 'from' %}
+												From <span class="price">{{ format_price(item.lowest_variation_price) }}</span>
+											{% elseif variation_pricing == 'range' %}
+												<span class="price">{{ format_price(item.lowest_variation_price) }}</span> - <span class="price">{{ format_price(item.highest_variation_price) }}</span>
+											{% endif %}
+										{% else %}
+											{% if item.sale_price > 0 %}
+												<span class="price mod-sale">{{ format_price(item.sale_price) }}</span>
+											{% endif %}
+											<span class="price">{{ format_price(item.price ? item.price : item.lowest_variation_price) }}</span>
+										{% endif %}
+									{% else %}
+										{% include 'partials/hidden_prices.twig' %}
+									{% endif %}
+									{% if item.subscription %}
+										<p class="item-subscription">
+											subscription{{ item.one_off_purchasing ? ' available' }}
+										</p>
+									{% endif %}
+									{# render mobile product offers #}
+							
+								</div>
+							</div>
+						</article>
+					</div>
+					
+					
+					{% endfor%}
+					</div>
+				</div>
+			</div>
+
+		</section>
+		<section class="section bg-white two">
+			<div class="row flex-container mobile-column lg:column">
+				<div class="column large-6 image-content">
+					<img src="https://files.ecommercedns.uk/265038/f2ceb10701727af652eae1d910b864cd.jpg" class="round-border"/>
+				</div>
+				<div class="column large-6 display-flex flex-center flex-v-center">
+					<div class="text-content">
+						<h2 class="font-medium text-center">
+						Oplev smagen af italiensk perfektion
+						</h2>
+						<p class="text-justify">
+						Hos Karema Foods finder du et stort udvalg af kvalitetspasta fra Delverde – kendt for sin unikke smag og tekstur, skabt med naturlige ingredienser og kildevand fra Abruzzo-regionen. Uanset om du søger klassisk spaghetti, fyldig penne eller silkeblød tagliatelle, har vi pastaen til dit næste måltid.						</p>
+						<p class="text-center">
+							<a href="/delverde" class="button outline ">Shop</a>
+						</p>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row flex-container mobile-column ">
+				
+				<div class="column large-6 display-flex flex-center flex-v-center show-for-large">
+					<div class="text-content">
+						<h2 class="font-medium text-center">
+						Fiordifrutta – naturlig nydelse
+						</h2>
+						<p class="text-justify">
+							Oplev den rene smag af naturen med Fiordifrutta marmelade, lavet af 100% økologisk frugt og sødet med æblesaft. Hvert glas er fyldt med smagen af solmoden frugt, høstet med omtanke. Perfekt til brød, bagværk eller som en sød detalje i hverdagen.						<p class="text-center">
+						</p>
+						<p class="text-center">
+							<a href="/rigoni-di-asiago" class="button outline ">Shop</a>
+						</p>
+					</div>
+				</div>
+				<div class="column large-6 video-content pos-rel">
+					<video class="background-video" autoplay="autoplay" muted="" loop="" playsinline=""><source src="https://files.ecommercedns.uk/265038/63ddd315647262890b17707712802eca.mp4" type="video/mp4"></video>
+				</div>
+				<div class="column large-6 display-flex flex-center flex-v-center hide-for-large">
+					<div class="text-content">
+						<h2 class="font-medium text-center">
+						Fiordifrutta – naturlig nydelse
+						</h2>
+						<p class="text-justify">
+							Oplev den rene smag af naturen med Fiordifrutta marmelade, lavet af 100% økologisk frugt og sødet med æblesaft. Hvert glas er fyldt med smagen af solmoden frugt, høstet med omtanke. Perfekt til brød, bagværk eller som en sød detalje i hverdagen.						<p class="text-center">
+						</p>
+						<p class="text-center">
+							<a href="/rigoni-di-asiago" class="button outline ">Shop</a>
+						</p>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row flex-container mobile-column ">
+				<div class="column large-6 image-content">
+					<img src="https://files.ecommercedns.uk/265038/a9ad29c309873e82cd329a9e0959d876.jpg" class="round-border"/>
+				</div>
+				<div class="column large-6 display-flex flex-center flex-v-center">
+					<div class="text-content">
+						<h2 class="font-medium text-center">
+						Smagfulde cremer fra Castellino
+						</h2>
+						<p class="text-justify">
+							Opdag Castellinos delikate cremer lavet af nøje udvalgte ingredienser som artiskokker, soltørrede tomater og oliven. Disse cremer er perfekte som dip, smørelse på brød eller som smagfuldt tilbehør til dine retter. Ægte italiensk kvalitet til hverdagens og festens måltider.</p>
+						<p class="text-center">
+							<a href="/castellino" class="button outline ">Shop</a>
+						</p>
+					</div>
+				</div>
+			</div>
+		
+		</section>
+		<section class="section brands small-pad padding-bottom-0">
+			<div class="row text-center">
+				<h2 class="font-medium">
+					Mød vores producenter
+				</h2>
+				<p>
+					Udforsk historierne bag vores lokale leverandører
+				</p>
+			</div>
+			<div class="row column">
+				  {% set features_slider = {
+                        infinite: true,
+                        autoplay: false,
+                        slidesToShow: 5,
+                        responsive: [
+                            {
+                                breakpoint: 1023,
+                                settings: {
+                                    slidesToShow: 3
+                                }
+                            },
+                            {
+                                breakpoint: 639,
+                                settings: {
+                                    slidesToShow: 2
+                                }
+                            }
+                        ],
+                        prevArrow: '<button class="slick-prev prev"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></button>',
+                        nextArrow: '<button class="slick-next next"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></button>'
+                    } %}
+					
+		
+				<div class="brands-slider column">
+					<div class="products items-container row small-up-2 medium-up-3 large-up-5 medium-up- large-up-5" data-slick="{{ features_slider|json_encode }}">
+						
+					
+					{% for brand in global.brands|filter(brand => brand.custom_fields.featured) %}
+						
+					
+					<div class="column column-block">
+						<article class="item-box text-center brand-box">
+							<div class="item-image pos-rel">
+								<a href="{{brand.url}}" class="image-container" data-fit="1">
+									<img src="{{brand.photo_url}}" alt="" class="item-img" ></a>
+							</div>
+					</div></article>
+					
+					
+					{% endfor%}
+					</div>
+					{# include 'partials/items.twig' with { 'items': global.brands, 'item_type': 'brand', 'classes': 'small-up-2 medium-up-3 large-up-5' ~ section.settings.brands_per_row_mobile ~ ' medium-up-'~ section.settings.brands_per_row_tablet ~ ' large-up-'~ section.settings.brands_per_row_desktop, 'show_name': gts.brand_show_name } #}
+				</div>
+			</div>
+		</section>
+		
+		{#<section id="text-image-bg" class="section flex-container flex-center">
+			<div class="bg-white text-content text-center column">
+				<h2 class="font-medium">
+					Lorem ipsum dolor sit amet
+				</h2>
+				<p>
+					In aliquet tristique euismod. Phasellus molestie iaculis velit, sit amet pretium nisi laoreet non. Duis nec commodo metus, sed egestas elit. Nunc ut interdum magna. Aliquam interdum est at blandit consectetur. Praesent laoreet aliquam nisi, porttitor volutpat purus placerat et. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Donec vitae velit rhoncus, semper metus ac, condimentum velit. Duis est massa, gravida ut turpis a, vulputate condimentum ex.
+				</p>
+				<p>
+					<a href="#" class="button outline margin-s">Læs mere</a>
+				</p>
+			</div>
+		
+		</section> #}
+		
+
+		<section class="section bottom-text flex-container row column flex-center bg-white">
+			<div class="salmon-bg text-content text-center ">
+				<h2 class="font-medium">
+					Oplev verden gennem smag
+				</h2>
+				<p class="text-justify">
+					Karema Foods har siden 1993 leveret gastronomiske specialiteter fra hele verden. Vi importerer med fokus på de bedste produkter fra Frankrig, Italien, Tyskland og Spanien. 
+				</p>
+				<p class="text-justify">
+					Vores dedikerede team arbejder tæt sammen for at sikre hurtig og effektiv service, og vi er altid på udkig efter nye trends og produkter. Med et stærkt netværk af leverandører kan vi tilbyde en spændende og varieret produktportefølje til både forbrugere og B2B indkøbere. Vi brænder for at bringe de bedste smagsoplevelser til dig.
+
+				</p>
+			</div>
+		
+		</section>
+		
+		<section id="ig" class="section padding-top-0 bg-white">
+			<div class="row">
+				<h2 class="font-medium text-center">
+					Direkte fra vores Instagram
+				</h2>
+				<p class="padding-bottom text-center">
+					Bliv inspireret af vores udvalg af delikatesser og følg med i vores smagsunivers
+				</p>
+			</div>
+			{% set ig_slider = {
+                        infinite: true,
+                        autoplay: false,
+                        slidesToShow: 4,
+                        responsive: [
+                            {
+                                breakpoint: 1023,
+                                settings: {
+                                    slidesToShow: 3
+                                }
+                            },
+                            {
+                                breakpoint: 639,
+                                settings: {
+                                    slidesToShow: 2
+                                }
+                            }
+                        ],
+                        prevArrow: '<button class="slick-prev prev"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></button>',
+                        nextArrow: '<button class="slick-next next"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></button>'
+                    } %}
+	
+			
+			<div class="row column">
+				{% set ig_images = gallery(1154600).photos %}
+				
+				
+			<div class="row column" data-slick="{{ ig_slider|json_encode }}">
+				{% for i in ig_images %}
+					<div class="large-3 column">
+						<img src="{{i.url}}" class="round-border" />
+					</div>
+				{% endfor %}
+			
+			</div>
+			</div>
+			
+		</section>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script>
+        (function(){
+            $('[data-slick]').each(function() {
+                $(this).slick();
+            });
+
+            $('.js-prev-slide').on('click', function() {
+                $(this).closest('[data-slick]').slick('slickPrev');
+            });
+
+            $('.js-next-slide').on('click', function() {
+                $(this).closest('[data-slick]').slick('slickNext');
+            });
+
+        })();
+    </script>
+
+{{ html.script(asset_url('js/vendor/slick.min.js')) }}
+
+{% endblock %}
+
+{% block schema %}
+	<script type="application/ld+json" data-version="1">
+		{{- ({
+			"@context": "https://schema.org",
+			"@type": "WebSite",
+			"name": global.business.name,
+			"url": global.business.full_url
+		})|json_encode|raw -}}
+	</script>
+	{%- set organization_data = ({
+		"@context": "https://schema.org",
+		"@type": "OnlineStore",
+		"url": global.business.full_url,
+		"logo": global.business.logo_url,
+		"name": global.business.name,
+		"email": global.business.email,
+		"telephone": global.business.phone
+	})|filter(v => v) -%}
+
+	{%- if global.business.address -%}
+		{%- set organization_data = organization_data|merge({
+			"address": {
+				"@type": "PostalAddress",
+				"streetAddress": global.business.address,
+				"addressCountry": global.business.location,
+				"postalCode": global.business.address|split('\n')|reduce((postcode, current_section) => (current_section matches '/^([A-Za-z][A-Ha-hJ-Yj-y]?[0-9][A-Za-z0-9]? ?[0-9][A-Za-z]{2}|[Gg][Ii][Rr] ?0[Aa]{2})$/') ? current_section : postcode, '')
+			}
+		})|filter(v => v) -%}
+	{%- endif -%}
+	<script type="application/ld+json" data-version="1">{{- organization_data|json_encode|raw -}}</script>
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+{{ html.stylesheet(asset_url('css/vendor/slick.css')) }}
+{{ html.stylesheet(asset_url('css/vendor/slick-theme.css')) }}
+
+<style>
+	.slick-next:before, .slick-prev:before {
+		display: none;
+	}
+	
+/* 	.item-box .price, .item-box .mod-sale+.price {
+    	color: #2F2F66;
+	}
+	
+	.item-box .mod-sale {
+    	color: #d96b44 !important;
+	} */
+	
+	.item-details {
+		display: flex;
+    	flex-direction: column-reverse;
+		margin-top: 8px;
+	}
+	
+	.item-title {
+		font-weight: normal !important;
+		font-size: 14px !important;
+		line-height: 130%;
+		text-transform: none !important;
+		margin-top: 12px;
+	}
+	
+	.image-container img {
+		max-width: 100% !important;
+		height: auto !important;
+		left: 0 !important;
+	}
+	
+	.background-video {
+		border-radius: 28px;
+		padding: 1.5rem;
+	}
+	
+	.image-content img {
+		border-radius: 8px;
+		max-height: 480px;
+		width: auto;
+		object-fit: cover;
+	}
+	
+	.video-content {
+		min-height: 480px;
+	}
+	
+	.featured-products h2, .brands h2 {
+		padding-bottom: 0;
+	}
+	
+	.featured-products .row.text-center, .brands .row.text-center {
+		margin-bottom: 2rem;
+	}
+	
+	.brands-slider .slick-prev, .brands-slider .slick-next {
+		top: 42%;
+	}
+	
+	.slick-slider .prev {
+		left: 0;
+	}
+	
+	.slick-slider .next {
+    	right: 0;
+	}
+	
+	
+	.slick-arrow svg {
+		opacity: 0.2;
+	}
+	
+	.section.bottom-text {
+		max-width: 100%;
+	}
+	
+	section#ig {
+		padding-bottom: 6rem;
+	}
+	
+	.brands h2 {
+		margin: 0;
+	}
+	
+	.brands .row.text-center {
+		margin-bottom: 0;
+	}
+	
+	.brands .slick-slide {
+		margin-bottom: 0;
+	}
+	
+	.item-box .item-image .sale-marker img {
+		max-height: 72px;
+		margin-top: 4px;
+		margin-right: 4px;
+	}
+	
+</style>
+
+{% endblock %}

@@ -1,0 +1,39 @@
+
+// ZF breakpoints  -- eg use @media #{$s-only} {
+$s-only: 'screen and (max-width: 39.9375em)'; // Small only
+$m-up: 'screen and (min-width: 40em)'; // Medium and up
+$m-down: 'screen and (max-width: 63.9375em)'; // Medium and down
+$m-only: 'screen and (min-width: 40em) and (max-width: 63.9375em)'; // Medium only
+$l-up: 'screen and (min-width: 64em)'; // Large and up
+$l-only: 'screen and (min-width: 64em) and (max-width: 74.9375em)'; // Large only
+
+// specify site width:
+$site-width: 85rem;
+
+$base-font-size: 13.75;
+
+// colours
+$colour_main: if(setting-value('website_colours_use_default_website_colors'), $color_global_red_accent, $color_website_accent);
+$colour_second: if(setting-value('website_colours_use_default_website_colors'), $color_global_yellow_accent, $color_website_accent_2);
+$colour_third: #979797; // grey
+$colour_forth: #333; // light black
+$colour_fifth: #333; // text grey
+$colour_bodytxt: if(setting-value('website_colours_use_default_website_colors'), $color_global_black_text, $color_website_text);
+$colour_titles: if(setting-value('website_colours_use_default_website_colors'), $color_global_black_titles, $color_website_titles);
+$colour_bg: if(setting-value('website_colours_use_default_website_colors'), $color_global_content_background, $color_website_content);
+
+$black: #000;
+$white: #fff;
+$transparent: rgba(255, 255, 255, 0);
+$input-grey: #eeeeee;
+$light-grey: #f9f9f9;
+$text-grey: #b7b7b7;
+
+// fonts
+$heading_font: if($heading_font == '', $sofia, $heading_font);
+$body_font: if($body_font == '', $sofia, $body_font);
+$font_main: $body_font;
+$font_second: $heading_font;
+
+$font_heading: $heading_font;
+$font_body: $body_font;

@@ -1,0 +1,133 @@
+{# Extend master template #}
+{% extends 'templates/master.twig' %}
+{% set bodyClass = 'gift-voucher' %}
+
+
+{% block content %}
+	{{ render(global.theme.sections_above_content_area, { 
+		featured_products: featured_products, 
+		featured_categories: featured_categories, 
+		gts: global.theme.settings, 
+		theme: theme, html: html, 
+		blog_posts: blog_posts, 
+		recently_viewed: global.recently_viewed_products, 
+		product: product
+		}) 
+	}}
+    <div id="{{ global.theme.content_area_id }}" class="content full-height split">
+        <div class="expanded">
+            <section class="main-content">
+				<div class="row">
+					<div class="column large-{{ 12 - gts.voucher_form_width }}">
+						<div class="gift-voucher-inner gift-voucher-text">
+							<div class="section-block">
+								<h1 class="account-header">
+									{{ theme.text_snippet('voucher_heading') }}
+								</h1>
+								{% if gts.text_voucher %}
+									<div class="padding-top">
+										{{ theme.text_snippet('voucher') }}
+									</div>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+					<div class="column large-{{ gts.voucher_form_width }} bg-shade bg-form-block">
+						<div class="gift-voucher-inner gift-voucher-form-container shaded-form-container">
+							<div class="section-block">
+								<form action="{{ global.current_url }}" method="post" class="form-with-validation voucher-form">
+									{{ theme.errors(errors) }}
+									<label>
+										<span class="field-label">
+											Gift Voucher Amount ({{ global.currency.symbol|raw }})
+										</span>
+										{% if values %}
+											<select name="amount" class="custom_select country required">
+												<option value="">Select...</option>
+												{% for value in values %}
+													<option value="{{ value }}">{{ value|number_format(2) }}</option>
+												{% endfor %}
+											</select>
+										{% elseif value %}
+											{{ html.input('amount', value|number_format(2), '', '', 'text', 'readonly="readonly"') }}
+										{% else %}
+											{{ html.input('amount', '', 'required jsv_number') }}
+										{% endif %}
+									</label>
+									<fieldset class="margin-bottom">
+										<legend class="field-label">
+											Gift Voucher Style
+										</legend>
+										<ul class="menu simple">
+											{% for style in styles %}
+												<li>
+													<input type="radio"
+														   name="type"
+														   value="{{ style.id }}"
+														   id="{{ 'type-' ~ loop.index }}"
+														   {% if loop.index == 1 %} checked {% endif %}
+													>
+													<label for="{{ 'type-' ~ loop.index }}">
+														{{ style.name }}
+														{% if style.price %}
+															({{ format_price(style.price) }})
+														{% endif %}
+													</label>
+												</li>
+											{% endfor %}
+										</ul>
+									</fieldset>
+									<label>
+										<span class="field-label">Your Name</span>
+										{{ html.input('extra_data[customers_name]', '', 'required') }}
+									</label>
+									<label>
+										<span class="field-label">Recipient's Name</span>
+										{{ html.input('extra_data[recipients_name]', '', 'required') }}
+									</label>
+									<label>
+										<span class="field-label">Your Message</span>
+										{{ html.textarea('extra_data[message]', '', '', '', 8) }}
+									</label>
+									<div class="row column large-5 padding-top">
+										<button type="submit" class="button text-nocase expanded" data-name="button_gift_card">{{ gts.button_gift_card }}</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+            </section>
+        </div>
+    </div>
+	{{ render(global.theme.sections_below_content_area, { 
+		featured_products: featured_products, 
+		featured_categories: featured_categories, 
+		gts: global.theme.settings, 
+		theme: theme, html: html, 
+		blog_posts: blog_posts, 
+		recently_viewed: global.recently_viewed_products, 
+		product: product
+		}) 
+	}}
+
+{% endblock %}
+{% block scripts %}
+    {{ parent() }}
+    <script>
+        (function(){
+            $('[data-slick]').each(function() {
+                $(this).slick();
+            });
+
+            $('.js-prev-slide').on('click', function() {
+                $(this).closest('[data-slick]').slick('slickPrev');
+            });
+
+            $('.js-next-slide').on('click', function() {
+                $(this).closest('[data-slick]').slick('slickNext');
+            });
+
+        })();
+    </script>
+{% endblock %}

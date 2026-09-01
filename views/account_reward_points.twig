@@ -1,0 +1,57 @@
+{% extends 'templates/account_pages.twig' %}
+
+{% set title = 'My Reward Points Statement' %}
+
+{% block page_content %}
+    <h1 class="sw-account-heading">
+        <i class="icon-reward-points" aria-hidden="true"></i>
+        <span>Reward Points</span>
+    </h1>
+    <div class="sw-account-block">
+        <div class="sw-account-block-label">Current points</div>
+        <strong class="stat">{{ global.customer.reward_points }}</strong>
+    </div>
+    <h2 class="sw-account-heading">
+        Points activity
+    </h2>
+    {% if global.theme.settings.ref_friends_accounts_pages %}
+        <p>
+            <a href="/account/referred-friends" class="sw-account-link">Click here</a> to see points earned by referring friends.
+        </p>
+    {% endif %}
+    {# activity list #}
+    <ul class="sw-account-activity-list">
+        {% for order in global.customer.orders if order.status %}
+            {% if order.reward_points.earned %}
+                <li>
+                    <div class="row">
+                        <div class="column medium-6">
+                            <div>
+                                <strong>{{ order.reward_points.earned ? '+' ~ order.reward_points.earned : 0 }}</strong> points earned
+                            </div>
+                            <small>Order <a href="{{ order.url }}" class="sw-account-link">#{{ order.reference }}</a></small>
+                        </div>
+                        <div class="column medium-6 medium-text-right">
+                            <time datetime="{{ order.date|date('Y-m-d') }}">{{ order.date|date('jS F Y') }}</time>
+                        </div>
+                    </div>
+                </li>
+            {% endif %}
+            {% if order.reward_points.converted %}
+                <li>
+                    <div class="row">
+                        <div class="column medium-6">
+                            <div>
+                                <strong>{{ order.reward_points.converted ? '-' ~ order.reward_points.converted : 0 }}</strong> points used
+                            </div>
+                            <small>Order <a href="{{ order.url }}" class="sw-account-link">#{{ order.reference }}</a></small>
+                        </div>
+                        <div class="column medium-6 medium-text-right">
+                            <time datetime="{{ order.date|date('Y-m-d') }}">{{ order.date|date('jS F Y') }}</time>
+                        </div>
+                    </div>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% endblock %}

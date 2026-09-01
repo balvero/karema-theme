@@ -1,0 +1,53 @@
+{# Extend page template #}
+{% extends 'templates/page.twig' %}
+
+{% set title = global.theme.settings.text_galleries_page_title %}
+{% set titleClass = 'font-size-collection-other-description text-center' %}
+{% set collection_page = true %}
+
+{% block page_content %}
+    <div class="featured-galleries-slider featured-slider section-block">
+        {% for gallery in galleries %}
+            <div class="row featured-box">
+                <div class="column large-8">
+                    <div class="shadow-box lg">
+                        <a href="{{ gallery.url }}" class="image-container gallery-aspect-ratio">
+                            <img src="{{ gallery.photo_url }}" alt="{{ gallery.name }}">
+                        </a>
+                    </div>
+                </div>
+                <div class="column large-4">
+                    <div class="featured-heading">
+                        <h2>
+                            <a href="{{ gallery.url }}">{{ gallery.name }}</a>
+                        </h2>
+                    </div>
+                    <a href="{{ gallery.url }}" class="button border">
+                        <span class="text-top">
+                            Browse images
+                        </span>
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+{% block scripts %}
+    {{ parent() }}
+    <script>
+        (function(){
+            $('[data-slick]').each(function() {
+                $(this).slick();
+            });
+
+            $('.js-prev-slide').on('click', function() {
+                $(this).closest('[data-slick]').slick('slickPrev');
+            });
+
+            $('.js-next-slide').on('click', function() {
+                $(this).closest('[data-slick]').slick('slickNext');
+            });
+
+        })();
+    </script>
+{% endblock %}

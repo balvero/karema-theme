@@ -1,0 +1,12 @@
+{# Extend collection template #}
+{% extends 'templates/collection.twig' %}
+
+{% set gts = global.theme.settings %}
+{% set title = gts.text_wishlist_page_title %}
+{% set titleClass = 'font-size-collection-other-description' %}
+{% set classes = classes|default('small-up-1 large-up-5') %}
+
+{% block items %}
+	{# Render products #}
+	{% include 'partials/items.twig' %}
+{% endblock %}

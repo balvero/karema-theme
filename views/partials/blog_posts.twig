@@ -1,0 +1,37 @@
+{# Render blog posts #}
+{% if preview %}
+    <div class="blog-posts-container" data-equalizer="blogOuter" data-equalize-by-row="true">
+        <div class="row small-up-{{ gts.blogs_per_row_mobile }} medium-up-{{ gts.blogs_per_row_tablet }} large-up-{{ gts.blogs_per_row_desktop }}" data-equalizer="blogInner" data-equalize-by-row="true">
+            {% for post in posts %}
+                <div class="columns column-block">
+                    <article class="article-box">
+                        <a href="{{ post.url }}" class="image-container" data-fit="{{ gts.image_container_blog ? '1' : '0'}}">
+                            {{ html.image(post.thumbnail.image_url, post.title, 'blog-post-image', '', gts.lazyload_images, true) }}
+                        </a>
+                        <div class="item-inner" data-equalizer-watch="blogOuter">
+                            <h3 class="item-title">
+                                {{ post.title }}
+                            </h3>
+        					{% if gts.blog_show_date %}
+        						<div class="blog-post-meta">
+        							<time datetime="{{ post.date|date('Y-m-d') }}">{{ post.date|date('jS F Y') }}</time>
+        						</div>
+        					{% endif %}
+                            <div class="article-description" data-equalizer-watch="blogInner">
+    							{% set post_excerpt = post.excerpt|striptags|slice(0, gts.blog_posts_excerpt_length) %}
+    							<p>
+    								{{ post_excerpt|raw }}{{ post.excerpt|length > post_excerpt|length ? (post_excerpt|length == 0 ? '' : '...') : '' }}
+    							</p>
+                            </div>
+                        </div>
+                        <a href="{{ post.url }}" class="blog-post-button button border md no-margin">
+                            <span class="text-top">
+                                {{ theme.text_snippet('blog_button_text') }}
+                            </span>
+                        </a>
+                    </article>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}

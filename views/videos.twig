@@ -1,0 +1,87 @@
+{# Extend page template #}
+{% extends 'templates/master.twig' %}
+
+{% block content %}
+	<div id="content" class="content">
+		{{ render(global.theme.sections_above_content_area, { 
+			featured_products: featured_products, 
+			featured_categories: featured_categories, 
+			gts: global.theme.settings, 
+			theme: theme, html: html, 
+			blog_posts: blog_posts, 
+			recently_viewed: global.recently_viewed_products, 
+			product: product,
+			global_theme: global.theme,
+			global_customer: global.customer
+			}) 
+		}}
+        <div class="inner-wrapper" id="{{ global.theme.content_area_id }}">
+        	<div class="row column">
+        		<section class="main-content">
+					<div class="block-header">
+						<h1 class="font-size-collection-other-description text-center padding-bottom">
+							{{ theme.text_snippet('videos_page_title') }}
+						</h1>
+						{% if description and not hideDesc %}
+							<div class="page-description"{% if description_setting %} data-name="{{ description_setting }}" id="{{ description_setting }}"{% endif %}>
+								{{ description|raw }}
+							</div>
+						{% endif %}
+					</div>
+        			<div class="row small-up-1 medium-up-2 videos-container">
+						{# Render videos #}
+						{% for video in videos %}
+							<div class="column column-block">
+								<article class="video-box media-box">
+									<div class="shadow-box">
+										<div class="responsive-embed widescreen no-margin">
+											<iframe src="{{ video.embed_code }}" class="no-border" allowfullscreen></iframe>
+										</div>
+									</div>
+									<h4 class="item-title">
+										{{ video.title }}
+									</h4>
+								</article>
+							</div>
+						{% else %}
+							<div class="column">
+								<h2 class="subheader">No videos found.</h2>
+							</div>
+						{% endfor %}
+					</div>
+        		</section>
+        	</div>
+        </div>
+		{{ render(global.theme.sections_below_content_area, { 
+			featured_products: featured_products, 
+			featured_categories: featured_categories, 
+			gts: global.theme.settings, 
+			theme: theme, html: html, 
+			blog_posts: blog_posts, 
+			recently_viewed: global.recently_viewed_products, 
+			product: product,
+			global_theme: global.theme,
+			global_customer: global.customer
+			}) 
+		}}
+    </div>
+{% endblock %}
+{% block scripts %}
+    {{ parent() }}
+    <script>
+        (function(){
+            $('[data-slick]').each(function() {
+                $(this).slick();
+            });
+
+            $('.js-prev-slide').on('click', function() {
+                $(this).closest('[data-slick]').slick('slickPrev');
+            });
+
+            $('.js-next-slide').on('click', function() {
+                $(this).closest('[data-slick]').slick('slickNext');
+            });
+
+        })();
+    </script>
+{% endblock %}

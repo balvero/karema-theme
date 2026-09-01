@@ -1,0 +1,58 @@
+{# Extend page template #}
+{% extends 'templates/master.twig' %}
+
+{# Set labels #}
+{% set labels = {
+'name': 'Name',
+'email_address': 'Email Address',
+'phone': 'Telephone Number',
+'message': 'Enquiry'
+} %}
+
+{% block content %}
+	<div id="content" class="content no-padding-bottom important">
+		<div class="expanded">
+			<section class="main-content">
+				<div class="row">
+					<div class="small-12 column">
+						<h1 class="font-size-contact-title text-center">
+							{{ theme.text_snippet('contact_page_title') }}
+						</h1>
+					</div>
+				</div>
+				{{ render(global.theme.sections, { 
+					featured_products: featured_products, 
+					featured_categories: featured_categories, 
+					gts: global.theme.settings, 
+					theme: theme, 
+					html: html, 
+					blog_posts: blog_posts, 
+					recently_viewed: global.recently_viewed_products,
+					brands: global.brands,
+					global_business: global.business,
+                    recaptcha: recaptcha
+					}) 
+				}}
+			</section>
+		</div>
+	</div>
+{% endblock %}
+{% block scripts %}
+    {{ parent() }}
+    <script>
+        (function(){
+            $('[data-slick]').each(function() {
+                $(this).slick();
+            });
+
+            $('.js-prev-slide').on('click', function() {
+                $(this).closest('[data-slick]').slick('slickPrev');
+            });
+
+            $('.js-next-slide').on('click', function() {
+                $(this).closest('[data-slick]').slick('slickNext');
+            });
+
+        })();
+    </script>
+{% endblock %}

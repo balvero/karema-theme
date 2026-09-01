@@ -1,0 +1,181 @@
+// generic
+
+html, body {
+    @include rem(font-size, $base-font-size + px);
+    line-height: 1.2;
+    font-family: $font_body;
+}
+
+// headings
+
+h1 { font-size: 2rem; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.56rem; }
+h4 { font-size: 1.25rem; }
+h5 { font-size: 1.125rem; }
+h5 { font-size: 1rem; }
+
+
+// subheaders
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: $font_heading;
+    &.subheader {
+
+    }
+}
+
+h1 {
+    color: if(setting-value('website_colours_use_default_website_colors'), $color_global_black_titles, $color_website_titles);
+
+    $headers: (
+        'regular': 30px,
+        'galleries': 46px, // videos
+        'blog-post': $font_size_blog_post_title,
+        'stockists': 56px,
+        'account': $font_size_page_titles, // gift voucher
+        'newsletter': 86px
+    );
+
+    @each $name, $value in $headers {
+
+        &.#{$name}-header {
+            @include rem(font-size, $value);
+            font-weight: if($name == 'regular', 400, 900);
+            line-height: 1;
+            margin-bottom: .5em;
+
+            @if $name == 'blog-post' {
+                color: if(setting-value('blog_use_default_website_colors'), $color_global_black_text, $color_blog_post_page_title);
+            }
+
+            @if $name == 'account' or $name == 'newsletter' {
+                @media #{$s-only} {
+                    @include rem(font-size, $font_size_page_titles);
+                }
+            }
+        }
+    }
+
+    &.blog-home-title {
+		font-size: $font_size_blog_home_title;
+        color: if(setting-value('blog_use_default_website_colors'), $color_global_black_titles, $color_blog_home_page_title);
+    }
+}
+
+h2 {
+    color: if(setting-value('website_colours_use_default_website_colors'), $color_global_black_titles, $color_website_titles);
+
+    $headers: (
+        'account': 66px, // gift voucher
+    );
+
+    @each $name, $value in $headers {
+
+        &.#{$name}-header {
+            @include rem(font-size, $value);
+            font-weight: if($name == 'regular', 400, 900);
+            line-height: 1;
+            margin-bottom: .5em;
+
+            @if $name == 'blog-post' {
+                color: if(setting-value('blog_use_default_website_colors'), $color_global_black_text, $color_blog_post_page_title);
+            }
+
+            @if $name == 'account' or $name == 'newsletter' {
+                @media #{$s-only} {
+                    @include rem(font-size, 40px);
+                }
+            }
+        }
+    }
+
+}
+
+.section-header {
+    @include rem(font-size, 14px);
+    font-weight: 800;
+    @include rem(padding, 20px 0 15px);
+}
+
+
+// elements
+
+address {
+    font-style: normal;
+}
+
+a {
+    color: if(setting-value('website_colours_use_default_website_colors'), $color_global_red_accent, $color_website_accent);
+
+    @include is-active {
+        color: if(setting-value('website_colours_use_default_website_colors'), $color_global_red_accent, $color_website_accent);
+    }
+}
+
+// no highlight outline
+
+:focus {
+    outline: none;
+}
+
+hr {
+    max-width: $site-width;
+}
+
+.page-description {
+    @include rem(padding-bottom, 25px);
+}
+
+// raw text styles
+
+.snippet-container {
+
+    a {
+        color: if(setting-value('website_colours_use_default_website_colors'), $color_global_black_text, $color_website_text);
+        text-decoration: underline;
+
+        @include is-active {
+            color: if(setting-value('website_colours_use_default_website_colors'), $color_global_black_text, $color_website_text);
+        }
+    }
+}
+
+// font size settings
+
+.font-size-category-title { 
+	font-size: $font_size_category_title;
+}
+
+.font-size-category-description {
+	font-size: $font_size_category_description;
+}
+
+.font-size-collection-other-description {
+	font-size: $font_size_other_page_titles;
+}
+
+.font-size-contact-title {
+	font-size: $font_size_contact_title;
+}
+
+.contact-information p {
+	font-size: $font_size_contact_information;
+}
+
+.main-content .field-label {
+	font-size: $font_size_page_text;
+}
+
+.text-forgotten-password {
+	font-size: $font_size_page_text;
+	padding-bottom: $font_size_page_text;
+}
+
+.blog-content { 
+	font-size: $font_size_blog_post_description; 
+}
+
+
+
+

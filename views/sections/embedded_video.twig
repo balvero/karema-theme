@@ -1,0 +1,28 @@
+{% for block in section.blocks %}
+	{% if block.type == 'video_with_overlay' %}
+		<section class="sw-section sw-section-video">
+			<h4 class="show-for-sr">
+				Play video
+			</h4>
+			<a class="image-container" data-fit="1" data-fancybox href="{{ block.settings.embedded_video_link }}">
+				{% if block.settings.embedded_image_thumbnail %}
+                    {{ html.image(block.settings.embedded_image_thumbnail, block.settings.embedded_image_alt_text, '', '', gts.lazyload_images) }}
+				{% endif %}
+				<div class="sw-section-video-overlay">
+					<span class="sw-section-video-btn">
+						{{ theme.sw_icon('video') }}
+						<span>{{ block.settings.text_video_button_text }}</span>
+					</span>
+				</div>
+			</a>
+		</section>
+	{% elseif block.type == 'video' %}
+		<section class="sw-section sw-section-slider-img-with-text">
+			<div class="sw-section-slide">
+				<div class="responsive-embed">
+					{{ block.settings.embedded_video_link|raw }}
+				</div>
+			</div>
+		</section>
+	{% endif %}
+{% endfor %}

@@ -1,0 +1,71 @@
+{% set blog_posts = blog_posts(section.settings.blog_posts_to_show) %}
+
+{% set blog_slider = {
+    autoplay: section.settings.blog_posts_autoplay_checkbox,
+	autoplaySpeed: section.settings.blog_posts_autoplay_speed~'000',
+    slidesToShow: blog_posts|length >= 3 ? '3' : (blog_posts|length == 2 ? '2' : '1'),
+    infinite: true,
+    arrows: true,
+	prevArrow: '<button class="arrow arrow-prev"><i class="sw-icon-arrow1" aria-hidden="true"></i></button>',
+    nextArrow: '<button class="arrow arrow-next"><i class="sw-icon-arrow" aria-hidden="true"></i></button>',
+    dots: false,
+	swipeToSlide: true,
+    responsive: [
+        {
+            breakpoint: 1023,
+            settings: {
+                slidesToShow: blog_posts|length >=2 ? '2' : '1'
+            }
+        },
+        {
+            breakpoint: 640,
+            settings: {
+                slidesToShow: 1
+            }
+        }
+    ]
+} %}
+{% if blog_posts %}
+	<section class="sw-section sw-section-blog 
+					{{ blog_posts|length == 1 ? 'mod-single' : '' }} 
+					{{ blog_posts|length > 3 ? 'mod-medium-arrows' : '' }}
+	">
+		<div class="row column">
+			<h2 class="sw-section-blog-heading text-center">
+				{{ theme.text_snippet('blog_title_text', '', section.settings) }}
+			</h2>
+			<div class="sw-section-blog-items" data-slick="{{ blog_slider|json_encode }}" data-equalizer data-equalize-by-row="true">
+				{% for post in blog_posts %}
+					<article class="article-box">
+						<a href="{{ post.url }}" class="image-container" data-fit="{{ gts.image_container_blog ? '1' : '0'}}">
+                            {{ html.image(post.thumbnail.image_url, post.thumbnail.photo_description, '', '', gts.lazyload_images) }}
+						</a>
+                        <div class="item-inner" data-equalizer-watch>
+    						<h3 class="item-title">
+    							{{ post.title }}
+    						</h3>
+    						{% if gts.blog_show_date %}
+    							<div class="blog-post-meta">
+    								<time datetime="{{ post.date|date('Y-m-d') }}">{{ post.date|date('jS F Y') }}</time>
+    							</div>
+    						{% endif %}
+    						<div class="article-description">
+    							{% set post_excerpt = post.excerpt|slice(0, section.settings.blog_posts_excerpt_length) %}
+    							<p>
+    								{{ post_excerpt|raw }}{{ post.excerpt|length > post_excerpt|length ? (post_excerpt|length == 0 ? '' : '...') : '' }}
+    							</p>
+    						</div>
+                        </div>
+						<a href="{{ post.url }}" class="blog-post-button button border md no-margin">
+							<span class="text-top">
+								{{ gts.text_blog_button_text }}
+							</span>
+						</a>
+					</article>
+				{% endfor %}
+			</div>
+		</div>
+	</section>
+{% endif %}
+
+

@@ -1,0 +1,76 @@
+{% if section.settings.testimonials_to_show == 1 %} 
+	{% set slides_to_show = 1 %}
+{% elseif section.settings.testimonials_to_show == 2 %}
+	{% if section.blocks|length == 1 %}
+		{% set slides_to_show = 1 %}
+	{% elseif section.blocks|length > 1 %}
+		{% set slides_to_show = 2 %}
+	{% endif %}
+{% elseif section.settings.testimonials_to_show == 3 %}
+	{% if section.blocks|length == 1 %}
+		{% set slides_to_show = 1 %}
+	{% elseif section.blocks|length == 2 %}
+		{% set slides_to_show = 2 %}
+	{% elseif section.blocks|length > 2 %}	
+		{% set slides_to_show = 3 %}
+	{% endif %}
+{% elseif section.settings.testimonials_to_show > 3 %}
+	{% if section.blocks|length == 1 %}
+		{% set slides_to_show = 1 %}
+	{% elseif section.blocks|length == 2 %}
+		{% set slides_to_show = 2 %}
+	{% elseif section.blocks|length == 3 %}	
+		{% set slides_to_show = 3  %}
+	{% elseif section.blocks|length > 3 %}	
+		{% set slides_to_show = 4  %}
+	{% endif %}
+{% endif %}
+
+
+
+{% set testimonials_slider = {
+    autoplay: section.settings.testimonial_autoplay_checkbox|default(false),
+	autoplaySpeed: section.settings.testimonial_autoplay_speed~'000',
+    slidesToShow: slides_to_show,
+    centerMode: false,
+    centerPadding: '25%',
+    arrows: section.settings.testimonial_show_arrows|default(false),
+    prevArrow: '<button class="arrow arrow-prev"><i class="sw-icon-arrow1" aria-hidden="true"></i></button>',
+    nextArrow: '<button class="arrow arrow-next"><i class="sw-icon-arrow" aria-hidden="true"></i></button>',
+    dots: section.settings.testimonial_show_dots,
+    dotsClass: 'sw-section-testimonials-dotnav slick-dots',
+	swipeToSlide: true,
+    responsive: [
+        {
+            breakpoint: 1023,
+            settings: {
+                slidesToShow: 2,
+                centerMode: false
+            }
+        },
+        {
+            breakpoint: 640,
+            settings: {
+                slidesToShow: 1,
+                centerMode: false
+            }
+        }
+    ]
+} %}
+<section class="sw-section sw-section-testimonials{{ section.blocks|length == 1 ? ' mod-single' : '' }}{{ slides_to_show == 1 ? ' mod-show-1' : '' }}">
+    <div class="row column">
+        <h2 class="sw-section-testimonials-heading large-text-center">
+			{{ theme.text_snippet('section_header', '', section.settings) }}
+        </h2>
+    </div>
+    <div class="sw-section-testimonials-items{{ section.settings.testimonial_show_arrows ? ' mod-arrows' : '' }}" data-equalizer data-slick="{{ testimonials_slider|json_encode }}">
+		{% for block in section.blocks %}
+			<div class="testimonials-box" data-equalizer-watch data-id="{{ block.id }}" data-index="{{ loop.index0 }}">
+				{{ block.settings.testimonial_text|raw }}
+				<div class="testimonials-box-name">
+					{{ block.settings.testimonial_name }}
+				</div>
+			</div>
+		{% endfor %}
+    </div>
+</section>

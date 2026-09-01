@@ -1,0 +1,155 @@
+// =============================================================================
+/* #Page-foot */
+// =============================================================================
+
+.footer {
+    background-color: if(setting-value('footer_use_default_website_colors'), $color_global_footer_background, $color_footer_background);
+    @include rem(padding, 30px 0);
+
+    h4 {
+        color: if(setting-value('footer_use_default_website_colors'), $color_global_footer_text, $color_footer_menu_titles);
+        text-transform: uppercase;
+        font-weight: 900;
+        margin-bottom: 1rem;
+		font-size: $font_size_footer_title;
+		
+
+        &.social-title {
+            color: if(setting-value('footer_use_default_website_colors'), $color_global_footer_text, $color_footer_social_title);
+            margin-bottom: 1.5rem;
+        }
+    }
+
+    &-list {
+        margin-bottom: 1rem;
+
+        &.menu > li > a {
+            padding: .5rem 0;
+			font-size: $font_size_footer_main;
+        }
+
+        a {
+            color: if(setting-value('footer_use_default_website_colors'), $color_global_footer_text, $color_footer_menu_links);
+        }
+    }
+
+    &-bottom {
+        font-size: $font_size_footer_main;
+        padding-top: .5rem;
+    }
+
+    &-newsletter {
+        background: if(setting-value('footer_use_default_website_colors'), #676767, $color_footer_newsletter_background);
+        color: if(setting-value('footer_use_default_website_colors'), $color_global_footer_text, $color_footer_newsletter_text);
+        margin-bottom: 1.75rem;
+
+        @media #{$m-down} {
+            max-width: 60%;
+        }
+
+        input, button {
+            background: transparent;
+            border: 0 !important;
+            color: if(setting-value('footer_use_default_website_colors'), $color_global_footer_text, $color_footer_newsletter_text);
+
+            @include is-active {
+                background: transparent;
+            }
+        }
+
+        input {
+            padding-right: 0;
+            @include placeholder {
+                color: if(setting-value('footer_use_default_website_colors'), $color_global_footer_text, $color_footer_newsletter_text);
+            }
+        }
+
+        button {
+            font-size: 30px;
+            padding-right: 1rem;
+
+            i {
+                float: right;
+            }
+        }
+    }
+
+    &-social {
+        margin-bottom: 1rem;
+
+        &.simple {
+
+            li {
+
+                @media #{$l-up} {
+                    margin: 0;
+
+                    & + li {
+                        margin-left: 1rem;
+                    }
+                }
+            }
+        }
+
+        a {
+            color: if(setting-value('footer_use_default_website_colors'), $color_global_grey_text_icons, $color_footer_social_icons);
+            font-size: $font_size_social_icons;
+        }
+    }
+
+    &-contact {
+        color: if(setting-value('footer_use_default_website_colors'), $color_global_footer_text, $color_footer_contact_information);
+		font-size: $font_size_footer_main;
+
+        &-label {
+            display: inline-block;
+            @include rem(min-width, 55px);
+            @include rem(padding-right, 10px);
+            position: relative;
+            top: 1px;
+        }
+
+        a {
+            color: if(setting-value('footer_use_default_website_colors'), $color_global_footer_text, $color_footer_contact_information);
+            text-decoration: underline;
+            //padding-left: 1.5em;
+        }
+
+        &-address {
+            margin-bottom: 1rem;
+        }
+
+        p {
+            @media #{$m-down} {
+                @include rem(margin-bottom, 2px);
+            }
+        }
+    }
+
+    &-copy {
+        color: if(setting-value('footer_use_default_website_colors'), $color_global_grey_text_icons, $color_footer_copyright_statement);
+		font-size: $font_size_footer_main;
+
+        a {
+            color: if(setting-value('footer_use_default_website_colors'), $color_global_grey_text_icons, $color_footer_copyright_statement);
+        }
+
+        p {
+            @media #{$l-up} {
+                margin-bottom: 0;
+            }
+        }
+    }
+
+    &-payment-list {
+        @include rem(margin-right, -4px);
+
+        li {
+            @include rem(margin, 0 4px 4px 0);
+
+            & + li {
+                margin-left: 0;
+            }
+        }
+    }
+}

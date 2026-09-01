@@ -1,0 +1,25 @@
+{% if section.blocks|length %}
+	<div class="contact-information text-center sw-section margin-top">
+		{% for block in section.blocks %}
+			{% if block.type == 'address' %}
+				{% if global_business.address %}
+					<p>
+						{{ global_business.address|nl2br }}
+					</p>
+				{% endif %}
+			{% elseif block.type == 'telephone' %}
+				{% if global_business.phone %}
+					<p>
+						Tlf: <a href="tel:43452002">43 45 20 02</a>
+					</p>
+				{% endif %}
+			{% elseif block.type == 'email' %}
+				{% if global_business.email %}
+					<p>
+						Email: <a href="mailto:{{ global_business.email }}">{{ global_business.email }}</a>
+					</p>
+				{% endif %}
+			{% endif %}
+		{% endfor %}
+	</div>
+{% endif %}

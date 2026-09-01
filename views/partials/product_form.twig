@@ -1,0 +1,833 @@
+{# Extend page template #}
+{% extends 'templates/blocks.twig' %}
+
+{% import 'macros/html.twig' as html %}
+{% import 'macros/theme.twig' as theme %}
+
+{% set gts = global.theme.settings %}
+{% set display_price = not global.customer.trade and gts.hide_prices ? 0 : 1 %}
+{% set modal = breadcrumb_title == product.title ? false : true %}
+
+{% block content %}
+    {% if product %}
+        {# Render product #}
+        <div class="product-container{{ product.current_variation.in_stock ?? product.in_stock ? ' in-stock' : '' }}{{ product.current_variation.sale_price|default(product.sale_price) ? ' has-sale-price' : '' }}"
+            data-sku="{{ product.current_variation.sku|default(product.sku) }}"
+			data-reward-points="{{ product.current_variation.reward_points|default(product.reward_points) }}"
+			data-is-in-stock="{{ product.current_variation.in_stock|default(product.in_stock) ? 1 : 0 }}"
+			data-can-be-added="{{ product.current_variation.purchasable ?? product.can_be_added ? 1 : 0 }}"
+			data-has-sale-price="{{ product.current_variation.sale_price|default(product.sale_price) > 0 ? 1 : 0 }}"
+			data-price="{{ product.reward_points_enabled ? product.current_variation.price|default(product.price) : format_price(product.current_variation.price|default(product.price)) }}"
+    		data-sale-price="{{ product.reward_points_enabled ? product.current_variation.sale_price|default(product.sale_price) : format_price(product.current_variation.sale_price|default(product.sale_price)) }}"
+        >
+            <div class="row">
+                <div class="large-{{ modal ? 6 : gts.product_image_size }} column product-images-outer">
+                    {{ block('product_images') }}
+                </div>
+                <div class="large-{{ modal ? 6 : (12 - gts.product_image_size) }} column product-info-outer">
+                    {{ block('product_info') }}
+                    <div id="product-bulk-hide" data-toggler=".hide">
+                        {{ block('product_form') }}
+                        {% if not modal %}
+                            {{ block('send_to_friend') }}
+                            {{ block('product_share') }}
+                            {{ block('product_rewards') }}
+                            {{ block('product_stock_request') }}
+                        {% endif %}
+                    </div>
+                    {{ block('product_bulk_pricing') }}
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <h1>
+            {{ breadcrumb_title }}
+        </h1>
+    {% endif %}
+{% endblock %}
+
+
+{% block product_images %}
+    {# Render brand name #}
+    {% if product.brand.title %}
+      {#  <a class="product-brand-title hide-for-large" href="{{ product.brand.url }}" target="_blank">{{ product.brand.title }}</a> #}
+    {% endif %}
+    {# Render product title #}
+  {#  <p class="product-title hide-for-large">
+        {{ product.title }}
+    </p> #}
+    <div class="info-details hide-for-large margin-bottom">
+        {# Render prices #}
+        {# Render bulk discount link #}
+        {% if gts.bulk_discount_tables and (product.bulk_prices or product.bulk_variations) and display_price %}
+            <a class="product-bulk-link" data-toggle="product-bulk-hide product-bulk-pricing">bulk savings</a>
+        {% endif %}
+        {# Render labels #}
+        {% if product.three_for_two %}
+            {{ theme.product_label('3 for 2') }}
+        {% elseif product.two_for_one %}
+            {{ theme.product_label('2 for 1') }}
+        {% endif %}
+    </div>
+    <div class="product-image{{ product.photos|length > 1 and not modal ? '' : '' }} pos-rel">
+		{% if product.sale_price or product.offers  %}
+			<div class="sale-marker">
+				<img src="https://theme-assets.ecommercedns.uk/8/132418/images/tilbud_new.png" />
+			</div>
+		{% endif %}
+        <div role="region" aria-label="Product Images" class="product-main-image">
+            {# Render photo box #}
+            {% if product.photo_url %}
+                {% if product.photos|length > 1 %}
+			  {% set product_slider = {
+                        infinite: true,
+                        autoplay: false,
+                        slidesToShow: 1,
+                        responsive: [
+                            {
+                                breakpoint: 1023,
+                                settings: {
+                                    slidesToShow: 1
+                                }
+                            },
+                            {
+                                breakpoint: 639,
+                                settings: {
+                                    slidesToShow: 1
+                                }
+                            }
+                        ],
+                        prevArrow: '<button class="arrow arrow-prev"><i class="sw-icon-left-arrow" aria-hidden="true"></i></button>',
+                        nextArrow: '<button class="arrow arrow-next"><i class="sw-icon-right-arrow" aria-hidden="true"></i></button>'
+                    } %}
+					
+			
+                    <div class="main-image-slider  {{ product.photos|length > 1 ? ' show-for-medium' }}{{ modal ? ' hide' : '' }}" data-slick="{{ product_slider|json_encode }}">
+                        {% for photo in product.photos %}
+                            <div class="slide">
+                                <a class="image-container-new product-gallery-main-photo"
+                                   data-fit="0"
+                                   {% if gts.product_lightbox and not modal and product.photos|length %}
+                                   data-fancybox-trigger="gallery"
+                                   data-fancybox-index="{{ loop.index0 }}"
+                                   {% endif %}
+                                >
+                                    <img src="{{ photo.url }}" alt="{{ photo.description }}" {% if not modal and product.photos|length and gts.product_zoom %} class="js-zoom"{% endif %}>
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% elseif not modal %}
+                    <a class="image-container-new product-gallery-main-photo"
+                       data-fit="0"
+                       {% if not modal and product.photos|length %}
+                       data-zoom="{{ gts.product_zoom }}"
+                       {% endif %}
+                       {% if gts.product_lightbox and not modal and product.photos|length %}
+                       data-fancybox-trigger="gallery"
+                       data-fancybox-index="0"
+                       {% endif %}
+                    >
+                        <img src="{{ product.photo_url }}" class="product-gallery-photo{{ not modal and product.photos|length and gts.product_zoom ? ' js-zoom' : '' }}" alt="{{ product.photo_description }}">
+                    </a>
+                {% endif %}
+                {# render mobile slider #}
+                {% if product.photos|length > 1 or modal %}
+                    <div class="modal-carousel carousel margin-bottom{{ modal ? '' : ' hide-for-medium' }}">
+                        {% for photo in product.photos %}
+                            <div class="modal-carousel-slide slide">
+                                <a class="image-container"
+                                    data-fit="0"
+                                    {% if gts.product_lightbox and not modal and product.photos|length %}
+                                    data-fancybox="gallery"
+                                    data-src="{{ photo.url }}"
+                                    {% endif %}
+                                >
+                                    <img src="{{ photo.url }}" alt="{{ photo.description }}">
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {% if not modal and product.photos|length and gts.product_lightbox %}
+                    <span class="zoom hide-for-ts">
+                        {{ theme.sw_icon('zoom-in', '', gts.icon_zoom) }}
+                    </span>
+                {% endif %}
+                {% if product.photos|length %}
+                    {# hidden thumbnails #}
+                    <div class="product-carousel product-thumbs carousel {{ product.photos|length > 1 and not modal and gts.product_image_thumbnails ? '' : ' hide' }}">
+                        {% for photo in product.photos %}
+                            <div class="product-thumbs-slide slide">
+                                <a href="{{ photo.url }}" class="js-item-image p{{ loop.index0 }} image-container {{ loop.first ? 'active' : '' }}" data-fit="{{ gts.image_container_product ? '1' : '0' }}" {% if gts.product_lightbox %}data-fancybox="gallery" data-src="{{ photo.url }}" {% endif %}data-idx="{{ loop.index0 }}">
+                                    <img src="{{ photo.url }}" alt="{{ photo.description }}">
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+        {# render video button #}
+        {% if product.raw_video_embed_code and not modal %}
+            <div class="text-right margin-top padding-top padding-bottom">
+                <a class="link-with-icon info-video" data-fancybox href="{{ product.video_embed_code }}">
+                    {{ theme.sw_icon('film', '', gts.icon_film) }}
+                    <span>Play video</span>
+                </a>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+
+{% block product_info %}
+    <div class="product-info">
+        {# render pre-order shipping date #}
+        {% if product.shipping_date %}
+            <div class="product-ship-date">
+                {% include 'partials/delivery_svg.twig' %}
+                <span class="inner">
+                    This product will be shipped on <span>{{ product.shipping_date|date('jS F Y', 'Europe/London') }}</span>
+                </span>
+            </div>
+            <br>
+        {% endif %}
+        <div class="row collapse">
+            <div class="column ">
+            
+                {# Render product title #}
+                <h1 class="product-title display-flex">
+                    {{ product.title }}
+					{% if gts.product_display_wishlist %}
+					{# Render wishlist buttons #}
+					<a href="/wishlist?action={{ product.in_wishlist ? 'remove' : 'add' }}&amp;product_id={{ product.id }}"
+					   class="product-wishlist-button icon-button js-wishlist-button{{ product.in_wishlist ? ' on' : '' }}"
+					   data-remove="{{ gts.button_remove_from_wishlist }}"
+					   data-add="{{ gts.button_add_to_wishlist }}"
+					>
+						{% set heart_icon = product.in_wishlist ? 'heart-1' : 'heart' %}
+						{{ theme.sw_icon(heart_icon) }}
+						<span class="show-for-sr">{{ product.in_wishlist ? gts.button_remove_from_wishlist : gts.button_add_to_wishlist }}</span>
+					</a>
+				{% endif %}
+                </h1>
+					
+			 <div class="info-details">
+           		{# hide price for sale event #}
+				 {% set sale = false %}
+					 {% for c in product.categories %}
+
+						{% if c.id == '1529412'%}
+							 {% set sale = true %}
+				 		{% endif %}
+				 	{% endfor %}
+				 {% if sale and (gts.warehouse_sale and "now"|date("d/m/Y")  < gts.ws_start) %}
+						{# hide price #}
+				 {% else %}
+
+																							
+						 {# Render prices #}	 
+						{% if display_price %}
+							<div class="product-cost">
+								{% if product.options and (product.lowest_variation_price != product.highest_variation_price) %}
+									{% if gts.product_variation_pricing == 'no' %}
+										<div class="product-sale-price price">
+												{{ format_price(product.current_variation.sale_price|default(product.sale_price)) }}
+										</div>
+										<div class="product-price from price">
+											{{ format_price(product.current_variation.price|default(product.price ? product.price : product.lowest_variation_price)) }}
+										</div>
+									{% elseif gts.product_variation_pricing == 'from' %}
+										<div class="product-sale-price price">
+											{{ format_price(product.current_variation.sale_price|default(product.sale_price)) }}
+										</div>
+										<div class="product-price price">From {{ format_price(product.lowest_variation_price) }}</div>
+									{% elseif gts.product_variation_pricing == 'range' %}
+										<div class="product-sale-price price">
+											{{ format_price(product.current_variation.sale_price|default(product.sale_price)) }}
+										</div>
+										<div class="product-price from price">{{ format_price(product.lowest_variation_price) }} - {{ format_price(product.highest_variation_price) }}</div>
+									{% endif %}
+								{% else %}
+									<div class="product-sale-price price">
+										{{ format_price(product.current_variation.sale_price|default(product.sale_price)) }}
+									</div>
+									<div class="product-price from price">
+										{{ format_price(product.current_variation.price|default(product.price ? product.price : product.lowest_variation_price)) }}
+									</div>
+								{% endif %}
+								{% if product.rrp %}
+									<div>
+										RRP: <strong>{{ format_price(product.rrp) }}</strong>
+									</div>
+								{% endif %}
+							</div>
+						{% else %}
+							{% include 'partials/hidden_prices.twig' %}
+						{% endif %}
+				
+			{% endif %}
+				{# end hide price for sale event #}
+            {# Render bulk discount link #}
+            {% if gts.bulk_discount_tables and (product.bulk_prices or product.bulk_variations) and display_price %}
+                <a class="product-bulk-link" data-toggle="product-bulk-hide product-bulk-pricing">bulk savings</a>
+            {% endif %}
+            {# Render labels #}
+            {% if product.three_for_two %}
+                {{ theme.product_label('3 for 2') }}
+            {% elseif product.two_for_one %}
+                {{ theme.product_label('2 for 1') }}
+            {% endif %}
+				
+        </div>
+				<div class="product-meta">
+					{% if product.categories %}
+					<span>
+						Kategori:
+						{% for cat in product.categories %}
+						<strong>{{cat.title}}</strong>
+						{% endfor%}
+					</span>
+					{% endif %}
+					{% if product.sku %}
+					<span>
+					SKU: <strong>{{product.sku}}</strong>
+					</span>
+					{% endif %}
+					
+						{% if product.custom_fields.unit_weight %}
+							{% if product.custom_fields.use_ml %}
+							<span>
+								Indhold pr. stk. <strong>{{ product.custom_fields.unit_weight }} milliliter</strong>
+							</span>
+							{% else %}
+					
+							<span>
+								Vægt pr. stk. <strong>{{ product.custom_fields.unit_weight }} g</strong>
+							</span>
+							{% endif %}
+						{% endif %}
+				</div>
+				{% if not modal %}
+					<div class="fr-view">
+						{{ product.description|raw }}
+					</div>
+				{% endif %}
+                {% if not modal and product.description|length and false %}
+					{# not in use #}
+                    <a  class="product-description-link js-scroll-to text-body text-underline show-for-large" href="#product-details">view details</a>
+                {% endif %}
+            </div>
+
+        </div>
+        {% if modal %}
+            <div class="margin-bottom">
+                <a class="product-modal-link" href="{{ product.url }}">Se detaljer</a>
+            </div>
+        {% endif %}
+		{% if gts.product_stock_indicator %}
+			<div class="product-stock-container">
+				<p class="product-stock-true">In stock{% if product.current_variation.sku|default(product.sku) %}: <strong class="product-stock-available">{{ product.current_variation.quantity|default(product.stock) }}</strong>{% endif %}</p>
+				<p class="product-stock-false">Sorry! We're out of stock</p>
+			</div>
+		{% endif %}
+ 
+        {# render product offers #}
+        {% if product.offers %}
+            <div class="margin-top">
+                {% for offer in product.offers %}
+                    <div class="product-offer">
+                        <div class="product-offer-title">
+                            {{ offer.title }}
+                        </div>
+                        <p class="product-offer-description">
+                            {{ offer.description }}
+                        </p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+
+{% block product_form %}
+    {# Minimum and maximum order quantities #}
+	{% if global.customer.id %}
+		{% if global.customer.order_quantity_restrictions_enabled %}
+    		{% set order_min = not global.features.extensions.min_max_quantity ? 0 : global.minimum_product_quantity > 0 ? global.minimum_product_quantity : product.minimum_order_quantity %}
+		    {% set order_max = not global.features.extensions.min_max_quantity ? 0 : global.maximum_product_quantity > 0 ? global.maximum_product_quantity : product.maximum_order_quantity %}
+		{% endif %}
+	{% else %}
+		{% if global.features.order_quantity_restrictions_for_visitors %}
+			{% set order_min = not global.features.extensions.min_max_quantity ? 0 : global.minimum_product_quantity > 0 ? global.minimum_product_quantity : product.minimum_order_quantity %}
+		    {% set order_max = not global.features.extensions.min_max_quantity ? 0 : global.maximum_product_quantity > 0 ? global.maximum_product_quantity : product.maximum_order_quantity %}
+		{% endif %}
+	{% endif %}
+
+    {# Render product form #}
+    <form class="product-form form-with-validation"
+          action="{{ product.url }}"
+          method="post"
+          data-min-quantity="{{ order_min }}"
+          data-max-quantity="{{ order_max }}"
+          {% if product.user_files > 0 %} enctype="multipart/form-data"{% endif %}
+    >
+		{% set options = product.current_variation.options|default(product.options) %}
+        {# Render options #}
+        {% if options|length %}
+            {% for option in options %}
+                {% if gts.variant_buttons %}
+                    <div class="product-option product-line">
+                        <input type="hidden" name="value[]" value="" class="product-option-value">
+                        <label class="field-label">
+                            Select Your {{ option.name }}
+                        </label>
+                        <div class="product-option-container">
+                            {% set group = loop.index0 %}
+                            {% for value in option.values %}
+                                {% if not value.hidden %}
+                                    {% set parts = value.name|split(':#') %}
+                                    {% set name = parts[0] %}
+                                    {% set color = parts[1] ? parts[1] : '' %}
+                                    <label class="rectangle{{ value.current ? ' active' : '' }} {{ color ? 'color top' : '' }}"{% if color %} data-tooltip title="{{ name }}"{% endif %}>
+                                        <input type="radio" name="group{{ group }}" value="{{ value.id }}" class="product-option-input required">
+                                        <span class="inner" style="{{ color ? ('background-color:#' ~ color ~ ';') : '' }}">
+                                            {{ name }}
+                                        </span>
+                                    </label>
+                                {% endif %}
+                            {% else %}
+                                <div class="note">
+                                    Choose an option from the list above...
+                                </div>
+                                <input type="radio" name="group{{ group }}" value="" class="product-option-input required" checked="checked">
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% else %}
+                    <label class="product-line">
+                        <span class="field-label">{{ option.name }}</span>
+                        <select name="value[]" class="product-option required">
+                            <option value="">Please select...</option>
+                            {% for value in option.values %}
+                                <option value="{{ value.id }}"{% if value.current %} selected{% endif %}>
+                                    {{ value.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                {% endif %}
+            {% endfor %}
+
+        {% endif %}
+        {% if product.alt_options|length %}
+            {% for option in product.alt_options %}
+                <label class="product-line">
+                    <span class="field-label">{{ option.name }}</span>
+                    <select name="alt2_attribute_id[]">
+                        <option value="">Please select...</option>
+                        {% for value in option.values %}
+                            <option value="{{ value.id }}" data-price="{{ value.price ? value.price|number_format(2) : 0 }}">
+                                {{ value.name }}
+                                {% if value.price and display_price %}
+                                    + {{ format_price(value.price) }}
+                                {% endif %}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </label>
+            {% endfor %}
+        {% endif %}
+        {# Render extras #}
+        {% if product.extras|length %}
+            <fieldset class="info-extra" data-total="0">
+                <ul class="no-bullet no-margin">
+                    {% for extra in product.extras %}
+                        {% set data_price = extra.price|number_format(2) %}
+                        <li>
+                            <div class="product-line">
+                                <span class="field-label">{{ extra.name }}</span>
+                                {{ html.input('product_extras[]', extra.id, '', '', 'checkbox', 'id="extra-' ~ extra.id ~ '" data-price="' ~ data_price ~ '"') }}
+                                <label for="extra-{{ extra.id }}">
+                                    <strong>
+                                        Yes
+                                        {% if extra.price and display_price %}
+                                            ({{ format_price(extra.price) }})
+                                        {% endif %}
+                                    </strong>
+                                </label>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </fieldset>
+        {% endif %}
+        {% if product.user_files > 0 or product.customization_fields|length %}
+            {# Render customization fields #}
+            {% if product.customization_fields|length %}
+                <fieldset class="product-line">
+                    {% for field in product.customization_fields %}
+                        <label>
+                            <span class="field-label">{{ field.label }}</span>
+                            {% if field.type == 1 %}
+                                {{ html.input('customization_field[' ~ field.id ~ ']', '', '', '', 'text', field.max_length ? 'maxlength="' ~ field.max_length ~ '"' : '') }}
+                            {% elseif field.type == 2 %}
+                                {{ html.textarea('customization_field[' ~ field.id ~ ']', '', '', '', '2', field.max_length ? 'maxlength="' ~ field.max_length ~ '"' : '') }}
+                            {% endif %}
+                        </label>
+                    {% endfor %}
+                </fieldset>
+            {% endif %}
+            {# Render file fields #}
+            {% if product.user_files > 0 %}
+                <fieldset class="product-line">
+                    <label class="field-label">Please upload your file{{ product.user_files > 1 ? 's' : '' }}</label>
+                    {% for i in 1..product.user_files %}
+                        {{ html.input('files[]', '', '', '', 'file') }}
+                    {% endfor %}
+                </fieldset>
+            {% endif %}
+        {% endif %}
+		{% if product.subscription %}
+			<div class="product-line">
+				{% if product.one_off_purchasing %}
+					<span class="field-label">Subscription options</span>
+					<div class="product-subscription-options">
+						<input type="checkbox" class="hidden" name="one_off_purchase" value="1"/>
+						<input type="radio" id="subscription-one-off-{{ product.id }}" name="_subscription_option" value="0" checked/>
+						<label for="subscription-one-off-{{ product.id }}">One-off purchase</label>
+						<input type="radio"  id="subscription-display-{{ product.id }}" name="_subscription_option" value="1"/>
+						<label for="subscription-display-{{ product.id }}">Subscription</label>
+					</div>
+				{% endif %}
+				<div class="product-subscription{{ product.one_off_purchasing ? ' hide mod-inset' }}">
+					<label for="subscription-select-{{ product.id }}">
+						<span class="field-label">
+							Subscription interval
+						</span>
+					</label>
+					<select name="subscription_interval" class="required">
+						<option value="">Please select...</option>
+						{% for subscription_interval in product.subscription_intervals %}
+							<option value="{{ subscription_interval.id }}">
+								{{ subscription_interval.description|capitalize }}
+								({{ subscription_interval.billing_intervals ? subscription_interval.billing_intervals ~ ' Instalment' ~ (subscription_interval.billing_intervals != 1 ? 's') : 'Rolling Subscription' }})
+							</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+		{% endif %}
+
+        {% set show_pre_order = global.features.apps.pre_order_products and product.is_pre_order and not product.is_released ? true : false %}
+
+        {% if display_price and not show_pre_order %}
+            <div class="product-buy product-line{{ global.features.extensions.back_in_stock and not modal ? ' hide-if-no-stock'}}">
+                <p class="product-quantity">
+                    {% if gts.product_quantity_box and display_price and product.in_stock %}
+                        QTY
+                    {% endif %}
+                    {% if (order_min or order_max) and global.features.extensions.min_max_quantity %}
+                        <span class="order-quantity">{% if order_min %}Minimum order quantity {{ order_min }}.{% endif %} {% if order_max %}Maximum order quantity {{ order_max }}{% endif %}</span>
+                    {% endif %}
+                </p>
+                <div class="row-table">
+                    {% if gts.product_quantity_box and display_price %}
+                        {% set qtyClass = product.in_stock ? '' : ' hide' %}
+                        <div class="col-cell product-quantity{{ qtyClass }}">
+                            {# number toggle input #}
+                            {{ html.number_toggle('quantity', order_min ? order_min : '1', 'quantity-input', '', '', '', '', '') }}
+                        </div>
+                    {% else %}
+                        <input type="hidden" name="quantity" value="1">
+                    {% endif %}
+                    <div class="col-cell">
+                        {% set softClass = global.features.ajax_basket ? 'product-soft-add-button' : '' %}
+                        {# Render add to basket button #}
+                        {% if product.current_variation.in_stock|default(product.in_stock) %}
+                            {{ html.button('cart_button', '', gts.button_add_to_basket, 'button expanded text-nocase button_add-basket product-add-button ' ~ softClass,'','','','data-nostock="OUT OF STOCK" data-text="' ~ gts.button_add_to_basket ~ '" id="product_add_button"', 'button_add_to_basket') }}
+                        {% else %}
+                            {{ html.button('cart_button', '', 'out of stock', 'button expanded text-nocase button_add-basket product-add-button disabled ' ~ softClass,'','','','data-nostock="OUT OF STOCK" data-text="' ~ gts.button_add_to_basket ~ '" id="product_add_button"') }}
+                        {% endif %}
+                    </div>
+                </div>
+				<div id="b2b-feature" class="row-table">
+					<a class="b2b-toggle button expanded secondary" data-toggle="b2bModal">Professionel indkøber</a>
+
+					<div class="reveal"  data-reveal id="b2bModal" >
+					  <h2 class="modal-title text-center">Kontakt din konsulent</h2>
+						<div class="row column">
+							<div class="column large-4 medium-4 contact">
+								<div class="img">
+									<img src="https://files.ecommercedns.uk/265038/8e2fcfd140945b36a792a572911c32c6.jpg" alt="Jonas Kristjansen"/>	
+								</div>
+								<div class="info">
+									<strong>Jonas Kristjansen </strong><br />
+									Salgschef/Head of sales
+									<em><a href="tel:+45 24477083">+45 24477083</a></em>
+									<a href="mailto:jkr@karema.dk">jkr@karema.dk</a>
+								</div>
+							</div>
+							<div class="column large-4 medium-4 contact">
+								<div class="img">
+									<img src="{{ asset_url('images/contact_lisbeth.jpg')}}" alt="Lisbeth Olsen"/>	
+								</div>								<div class="info">
+									<strong>Lisbeth Olsen</strong><br />
+									Salgskonsulent Jylland/Fyn
+									<em><a href="tel:+45 40112188">+45 40112188</a></em>
+									<a href="mailto:lo@karema.dk">lo@karema.dk</a>
+								</div>
+							</div>
+							<div class="column large-4 medium-4 contact">
+								<div class="img">
+									<img src="{{ asset_url('images/contact_mette.jpg')}}" alt="Mette Ploug Mossing"/>	
+								</div>
+								<div class="info">
+									<strong>Mette Ploug Mossing</strong><br />
+									Salgskonsulent Sjælland
+									<em><a href="tel:+45 30339888">+45 30339888</a></em>
+									<a href="mailto:mpm@karema.dk">mpm@karema.dk</a>
+								</div>
+							</div>
+						
+						</div>
+					
+							
+						<div class="row column companies bg-gray">
+							<h3 class="row text-center column">
+								Du kan bestille vores produkter hos følgende grossister.
+							</h3>
+							<div class="companies">
+								<div class="column small-6 medium-4 large-4  company">
+								<img src="{{ asset_url('images/ab_catering.png')}}" alt="Hørkram"/>								
+								<strong>AB catering</strong>
+								</div>
+
+								<div class="column small-6 medium-4 large-4  company">
+									<img src="{{ asset_url('images/bc_catering.png')}}" alt="Hørkram"/>								
+									<strong>BC catering</strong>
+								</div>
+
+								<div class="column small-6 medium-4 large-4  company">
+									<img src="{{ asset_url('images/dagrofa.png')}}" alt="Hørkram"/>								
+									<strong>Dagrofa FoodService</strong>
+								</div>
+
+								<div class="column small-6 medium-4 large-4  company">
+									<img src="{{ asset_url('images/full_house.png')}}" alt="Hørkram"/>								
+									<strong>Full House</strong>
+								</div>
+
+								<div class="column small-6 medium-4 large-4  company">
+									<img src="{{ asset_url('images/havi.png')}}" alt="Hørkram"/>								
+									<strong>Havi</strong>
+								</div>
+
+								<div class="column small-6 medium-4 large-4 company">
+									<img src="{{ asset_url('images/horkram.png')}}" alt="Hørkram"/>
+									<strong>Hørkram</strong>
+								</div>
+
+								<div class="column small-6 medium-4 large-4 company">
+									<img src="{{ asset_url('images/inco.png')}}" alt="Hørkram"/>								
+									<strong>Inco</strong>
+								</div>
+
+								<div class="column small-6 medium-4 large-4  company">
+									<img src="{{ asset_url('images/mega_house.png')}}" alt="Hørkram"/>								
+									<strong>Mega House</strong>
+								</div>
+
+								<div class="column small-6 medium-4 large-4  company">
+									<img src="{{ asset_url('images/rema.png')}}" alt="Hørkram"/>								
+									<strong>Rema Distribution</strong>
+								</div>
+								</div>
+
+						</div>
+					   <button class="close-button btn-close" data-close aria-label="Close modal" type="button">
+								<i class="sw-icon-log-out" aria-hidden="true"></i>
+						</button>
+					</div>
+				</div>
+            </div>
+        {% endif %}
+		<div class="product-icons">
+			{% if product.custom_fields.organic %}
+				<span><img src="https://theme-assets.ecommercedns.uk/8/132418/images/icon-organic.png" /> Økologisk</span>
+			{% endif %}
+			
+			{% if product.custom_fields.glutenfree %}
+				<span><img src="https://theme-assets.ecommercedns.uk/8/132418/images/icon-glutenfree.png" /> Glutenfri</span>
+			{% endif %}
+			
+			{% if product.custom_fields.glutenfree %}
+				<span><img src="https://theme-assets.ecommercedns.uk/8/132418/images/icon-vegan.png" /> Vegansk</span>
+			{% endif %}
+			
+			{% if product.brand.custom_fields.land %}
+				<span><img src="https://theme-assets.ecommercedns.uk/8/132418/images/icon-country.png" /> {{ product.brand.custom_fields.land}}</span
+			{% endif %}
+		</div>
+        {# Render pre-order date #}
+        {% if show_pre_order %}
+            <div class="product-buy product-line{{ global.features.extensions.back_in_stock and not modal ? ' hide-if-no-stock'}}">
+                <div class="product-buy-preorder">
+                    {% include 'partials/release_svg.twig' %}
+                    <span class="inner">This product will be released on <strong>{{ product.release_date|date('jS F Y \\a\\t g:ia', global.business.timezone) }}</strong></span>
+                </div>
+            </div>
+        {% endif %}
+        {# Stock request modal toggle #}
+        {% if global.features.extensions.back_in_stock and not modal %}
+            <div class="stock-requests-container">
+                <br>
+                <button type="button" class="button out-of-stock-button text-nocase expanded" data-open="stockRequestsModal" data-name="button_out_of_stock">{{ gts.button_out_of_stock }}</button>
+            </div>
+        {% endif %}
+    </form>
+{% endblock %}
+
+{% block product_share %}
+    {% if global.theme.settings.show_product_social_buttons or global.features.extensions.send_to_a_friend %}
+        {% set hide_buttons = global.theme.settings.show_product_social_buttons ? false : true %}
+        <div class="product-share-buttons">
+            {{ theme.share_buttons(global.current_url, product.title, product.description, product.photo_url, true, 'social-menu menu simple', global.features.extensions.send_to_a_friend, hide_buttons) }}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block product_rewards %}
+    <p class="info-rewards-line info-reward{{ product.current_variation.reward_points|default(product.reward_points) ? '' : ' hide' }}">
+        {{ theme.sw_icon('premium-badge', '', gts.icon_premium_badge) }}
+        You’ll earn <span class="product-reward-points">{{ product.reward_points }}</span><span> reward points</span> with this purchase.
+    </p>
+{% endblock %}
+
+{% block product_stock_request %}
+    {% if global.features.extensions.back_in_stock and not modal %}
+        <div class="reveal stock-requests-modal standard" id="stockRequestsModal" data-reveal>
+            <div class="inner padding">
+                <h2 class="text-upper">
+                    Be one of the first to know!
+                </h2>
+                <p class="lead">
+                    We’re sorry we’re out of stock but we can let you know as soon as it's available if you enter your email address below.
+                </p>
+                <form action="{{ product.url }}" method="post" class="form-with-validation">
+                    <label>
+                        <span class="field-label">Your Name</span>
+                        <input type="text" name="stock_request_name" class="required" placeholder="Your Name">
+                    </label>
+                    <label>
+                        <span class="field-label">Your Email Address</span>
+                        <input type="text" name="stock_request_email" class="required jsv_email" placeholder="Your Email Address">
+                    </label>
+                    <button class="button no-margin-bottom margin-top pad-x" name="stock_request" value="1" type="submit">Send Your Request</button>
+                </form>
+                <button class="close-button btn-close" data-close aria-label="Close modal" type="button">
+                    <span>luk</span>
+                </button>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block product_bulk_pricing %}
+    {% if gts.bulk_discount_tables and (product.bulk_prices or product.bulk_variations) and display_price %}
+        <div class="product-bulk-pricing hide" id="product-bulk-pricing" data-toggler=".hide">
+            <div class="bulk-savings-table">
+                <div class="table-heading">
+                    <h4>
+                        Bulk Buying Discounts
+                    </h4>
+                    <a class="bulk-close btn-close" data-toggle="product-bulk-pricing product-bulk-hide">close</a>
+                </div>
+                {% if product.bulk_variations|length %}
+                    <table class="bulk-discounts-table with-vars">
+                        <tr class="show-for-sr">
+                            <th>Variation</th>
+                            <th>Quantity Purchased</th>
+                            <th>Price</th>
+                        </tr>
+                        {% for variation in product.bulk_variations %}
+                            {% for price in variation.prices %}
+                                {% set var_title = ':#' in variation.title ? variation.title|split(':#')[0] : variation.title %}
+                                <tr>
+                                    <td>{{ var_title }}</td>
+                                    <td>{{ price.quantity }}</td>
+                                    <td>{{ currency_value(price.value) }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% endfor %}
+                    </table>
+                {% elseif product.bulk_prices|length %}
+                    <table class="bulk-discounts-table">
+                        <tr class="show-for-sr">
+                            <th>Quantity Purchased</th>
+                            <th>Price</th>
+                        </tr>
+                        {% for bulk_price in product.bulk_prices %}
+                            <tr>
+                                <td>{{ bulk_price.quantity }}</td>
+                                <td>{{ currency_value(bulk_price.value) }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% endif %}
+            </div>
+       </div>
+    {% endif %}
+{% endblock %}
+
+{% block send_to_friend %}
+    {% if global.features.extensions.send_to_a_friend %}
+        <div class="reveal large recommend-modal" id="recommendModal" data-reveal>
+            <div class="row collapse">
+                <div class="column large-6 show-for-large">
+                    <div class="padding">
+                        <div class="image-container" data-fit="0">
+                            <img src="{{ product.photo_url }}" alt="{{ product.photo_description }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="column large-6">
+                    <div class="padding">
+                        <h2 class="text-upper">
+                            Share the love with your friend
+                        </h2>
+                        <p class="lead">
+                            Complete the form below and we'll email your friend about this product
+                        </p>
+                        <form action="{{ global.current_url }}" method="post" class="form-with-validation">
+                            <label>
+                                <span class="field-label">Your Friend's Email Address</span>
+                                <input type="text" name="email_address" class="required jsv_email">
+                            </label>
+                            <label>
+                                <span class="field-label">Optional Message</span>
+                                <textarea cols="30" rows="5" name="message"></textarea>
+                            </label>
+                            <input type="text" name="{{ global.honeypot_field_name }}" autocomplete="off" class="hide">
+                            {% if recommendation_recaptcha %}
+                                <div class="g-recaptcha"></div>
+                                <br>
+                            {% endif %}
+                            <input type="hidden" name="redirect_message" value="The email has been sent">
+                            <div class="row column large-6">
+                                <button name="send_recommendation_email" value="1" class="button expanded">
+                                    Send your request
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <button class="close-button btn-close" data-close aria-label="Close modal" type="button">
+                <span>luk</span>
+            </button>
+        </div>
+    {% endif %}
+{% endblock %}

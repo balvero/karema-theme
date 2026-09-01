@@ -1,0 +1,28 @@
+{# Render page links #}
+{% set position = align|default('right') %}
+
+{% if total_pages > 1 %}
+    <div class="pagination-container {{ position_class|default('text-center') }}{{ container_class ? ' ' ~ container_class : '' }}">
+        <div class="row column">
+            <ul class="pagination">
+                <li class="pagination-previous">
+                    <a href="#" class="page-link" data-page="prev">
+                        {{ theme.sw_icon('arrow-pointing-to-left', 'Previous') }}
+                    </a>
+                </li>
+                {% for page in 1..total_pages %}
+                    <li{% if page == current_page %} class="active-page"{% endif %}>
+                        <a href="#" class="page-link {{ page == current_page ? 'current' : '' }}" data-page="{{ page }}">
+                            {{ page }}
+                        </a>
+                    </li>
+                {% endfor %}
+                <li class="pagination-next">
+                    <a href="#" class="page-link" data-page="next">
+                        {{ theme.sw_icon('arrow-pointing-to-right', 'Next') }}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+{% endif %}

@@ -1,0 +1,385 @@
+{# Extend page template #}
+{% extends 'templates/page.twig' %}
+
+{% set breadcrumb_title = product.title|default('Product Not Found') %}
+{% set show_bct = global.theme.settings.header_show_breadcrumbs ? true : false %}
+{% set full_width = 1 %}
+{% set bodyClass = 'product-page' %}
+{% set tabbed_descriptions_active = global.features.extensions.tabbed_descriptions and (product.description2|length or product.description3|length or product.description4|length or product.description5|length) ? true : false %}
+
+{% block breadcrumbs %}
+	{# Add breadcrumbs #}
+	{% for breadcrumb in breadcrumbs %}
+		<li>
+			<a href="{{ breadcrumb.url }}">{{ breadcrumb.name }}</a>
+		</li>
+	{% endfor %}
+{% endblock %}
+
+{% block footer %}
+    {{ parent() }}
+    {{ theme.info_message(errors) }}
+    {{ theme.info_message(review_errors) }}
+{% endblock %}
+
+{% block page_content %}
+	{% if product %}
+		{# Render errors #}
+        <div class="row column">
+    		{{ theme.errors(errors) }}
+    		{{ theme.errors(review_errors) }}
+        </div>
+		{{ render(global.theme.sections_above_content_area, { 
+			featured_products: featured_products, 
+			featured_categories: featured_categories, 
+			gts: global.theme.settings, 
+			theme: theme, html: html, 
+			blog_posts: blog_posts, 
+			recently_viewed: global.recently_viewed_products, 
+			product: product,
+			global_theme: global.theme,
+			global_theme: global.theme,
+			global_customer: global.customer
+			}) 
+		}}
+		{# Render product #}
+        {% include 'partials/product_form.twig' %}
+
+        <div class="row section-block product-info-bottom" id="product-details">
+            {% if tabbed_descriptions_active or global.features.apps.product_reviews %}
+                <div class="column large-12">
+                    <div class="row column margin-bottom">
+                        {#<span class="product-large-price price">
+                           {{  format_price(product.sale_price ? product.sale_price : product.price) }}
+                        </span>#}
+
+                        {{ block('product_tabs') }}
+						{{ block('more_info') }}
+                        {{ block('product_reviews') }}
+                    </div>
+                </div>
+            {% endif %}
+            <div class="column{{ tabbed_descriptions_active or global.features.apps.product_reviews ? ' large-12' : '' }}">
+                {{ block('product_related') }}
+                {{ block('product_bundle') }}
+            </div>
+        </div>
+		{{ render(global.theme.sections_below_content_area, { 
+			featured_products: featured_products, 
+			featured_categories: featured_categories, 
+			gts: global.theme.settings, 
+			theme: theme, html: html, 
+			blog_posts: blog_posts, 
+			recently_viewed: global.recently_viewed_products, 
+			product: product,
+			global_theme: global.theme,
+			global_theme: global.theme,
+			global_customer: global.customer
+			}) 
+		}}
+		
+	{% else %}
+		<h1>
+			{{ breadcrumb_title }}
+		</h1>
+	{% endif %}
+{% endblock %}
+
+{% block more_info %}
+<div id="moreInfo">
+	
+
+	<section class="column row our-process section display-flex">
+		{% if product.brand.custom_fields.unique_process %}
+
+			{% if product.brand.custom_fields.process_image %}
+					<div class="large-6 process-image" style="background-image: url({{ product.brand.custom_fields.process_image}})">
+
+			{% else %}
+					<div class="large-6 process-image" style="background-image: url(https://theme-assets.ecommercedns.uk/8/132418/images/ourprocess.jpg)">
+			
+			{% endif %}
+		</div>
+		<div class="large-6 orange-bg">
+			<div class="process-content text-center">
+				<h2>
+				{# product.brand.custom_fields.process_header #} Sådan skaber vi smagsoplevelser
+				</h2>
+				<div class="text-justify">
+					{{ product.brand.custom_fields.unique_process |raw }}
+				</div>
+			<a class="button outline" href="{{ product.brand.url }}" >Læs mere</a>
+
+			</div>
+		</div>
+		{% endif %}
+	</section>
+
+	<section class="column row brand-info section salmon-bg">
+	<div class="column large-4 brand-logo">
+		<img src="{{product.brand.photo_url}}" alt="{{product.brand.title}}" />
+	</div>
+	<div class="column large-8 brand-content">
+		<h2>
+			{{product.brand.title}}
+		</h2>
+		<div class="text-justify">
+			{{ product.brand.description|raw }}
+		</div>
+		{# Render brand name #}
+		{% if product.brand.title %}
+			<a class="button outline" href="{{ product.brand.url }}" >Læs mere</a>
+		{% endif %}
+  </div>
+	</section>
+</div>
+{% endblock %}
+
+{% block product_tabs %}
+    {% if global.features.extensions.tabbed_descriptions %}
+        {% set tab_descriptions = [product.description2, product.description3, product.description4, product.description5] %}
+    {% endif %}
+
+    {% set tab_title_2 = product.custom_fields.product_tab_2 ? product.custom_fields.product_tab_2 : gts.product_tab_2 %}
+    {% set tab_title_3 = product.custom_fields.product_tab_3 ? product.custom_fields.product_tab_3 : gts.product_tab_3 %}
+    {% set tab_title_4 = product.custom_fields.product_tab_4 ? product.custom_fields.product_tab_4 : gts.product_tab_4 %}
+    {% set tab_title_5 = product.custom_fields.product_tab_5 ? product.custom_fields.product_tab_5 : gts.product_tab_5 %}
+
+    {% set tab_titles = [tab_title_2, tab_title_3, tab_title_4, tab_title_5] %}
+
+    {% if tabbed_descriptions_active %}
+        <section class="product-tabs">
+            <ul class="tabs" id="product-tabs" data-tabs data-multi-expand="true" data-allow-all-closed="true" role="tablist">
+                {% set active_tab = false %}
+
+                {% for item in tab_descriptions if global.features.extensions.tabbed_descriptions %}
+                    {% if item|length %}
+                        {% set active_class = active_tab ? false : ' is-active' %}
+                        {% set tab_id = '#product-description' ~ (loop.index + 1) %}
+
+                        <li class="tabs-title{{ active_class }}">
+                            <a data-tabs-target="{{ tab_id }}" href="{{ tab_id }}" role="tab" data-name="product_tab_{{ loop.index + 1 }}">{{ tab_titles[loop.index0] }}</a>
+                        </li>
+
+                        {% if active_class|length %}
+                            {% set active_tab = true %}
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </ul>
+            <div class="tabs-content" data-tabs-content="product-tabs">
+                {% set active_content = false %}
+
+                {% for item in tab_descriptions if global.features.extensions.tabbed_descriptions %}
+                    {% if item|length %}
+                        {% set active_class = active_content ? false : ' is-active' %}
+
+                        <div class="tabs-panel fr-view{{ active_class }}" id="product-description{{ loop.index + 1 }}">
+                            {{ item|raw }}
+                        </div>
+
+                        {% if active_class|length %}
+                            {% set active_content = true %}
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
+{% endblock %}
+
+
+{% block product_reviews %}
+    {% if global.features.apps.product_reviews %}
+        <div class="product-reviews product-tabs section">
+            <h3 class="tab-title">
+                Kundeanmeldelser
+            </h3>
+            <div class="product-reviews-list" id="reviews-list" data-toggler=".hide">
+                {# Render reviews #}
+                {% for review in product.reviews %}
+                    <div class="customer-review">
+                        {# render review stars #}
+                        {{ theme.rating(review.rating, 'product-raiting') }}
+                        <div class="review-comment">
+                            <p>
+                              <em>{{ review.content }}</em>  
+                            </p>
+                        </div>
+						 <div class="review-author">
+							 <strong><em>{{ review.name }}</em></strong>
+                        </div>
+                       
+                    </div>
+                {% else %}
+                    <p>Vær den første til at anmelde dette produkt.</p>
+                {% endfor %}
+                <a class="link-underline" data-toggle="reviews-form reviews-list">Skriv en anmeldelse</a>
+            </div>
+            <div class="product-reviews-form hide" id="reviews-form" data-toggler=".hide">
+                <h3 class="product-reviews-heading">Skriv en anmeldelse</h3>
+                <a class="link-underline" data-toggle="reviews-form reviews-list">luk</a>
+                {# Render review form #}
+                {{ theme.errors(errors) }}
+                <form action="{{ global.current_url }}" method="post" class="shadow-box form-with-validation">
+                    <label>
+                        <span class="field-label">Dit navn</span>
+                        {{ html.input('customer_name', '', 'required') }}
+                    </label>
+                    <label>
+                        <span class="field-label">Din anmeldelse</span>
+                        {{ html.textarea('review', '', 'required') }}
+                    </label>
+                    <label>
+                        <span class="field-label">Din anmeldelse</span>
+                        {{ html.select('rating', review_form_fields.rating.values, '', 'required', 'Vælg antal stjerner') }}
+                    </label>
+                    {% if review_recaptcha %}
+                        <div class="g-recaptcha"></div>
+                    {% endif %}
+                    <button type="submit" class="button pad-x margin-top no-margin-bottom">
+                        Send
+                    </button>
+                </form>
+            </div>
+			<div class="review-info">
+				Alle anmeldelser læses af Karema Foods kundeservice før publicering. <a data-open="reviewTerms">Læs mere</a>
+			</div>
+			<div class="reveal" id="reviewTerms" data-reveal>
+				<h2 class="modal-title text-center">Godkendelse af vareanmeldelse</h2>
+				<div class="column">
+					  <p>
+					  Alle produktanmeldelser gennemlæses og godkendes af Karema Foods kundeservice inden publicering på  karemafoods.dk. Kun anmeldelser vedrørende produktet publiceres.
+					</p>
+				</div>
+				   <button class="close-button btn-close" data-close aria-label="Close modal" type="button">
+						<i class="sw-icon-log-out" aria-hidden="true"></i>
+					</button>
+				</div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+
+{% block product_related %}
+    {# Render related products #}
+    {% if product.related_products|length %}
+
+        {% set no_extensions = (not tabbed_descriptions_active) and (not global.features.apps.product_reviews) ? 1 : 0 %}
+
+        <section class="related-products">
+            <div class="row column">
+                <h2 class="related-products-heading">
+                    {# theme.text_snippet('related') #}
+					Måske vil du også synes om
+                </h2>
+                {% if product.related_products|length < 5 or no_extensions %}
+                    {% include 'partials/items.twig' with { 'items': product.related_products|slice(0, gts.related_products_to_show), 'item_type': 'product', 'classes': 'small-up-2 medium-up-3 large-up-5' ~ (no_extensions ? ' large-up-4' : '') } %}
+                {% else %}
+                    {# Render slider when over 4 items #}
+                    <div class="quartet-slider">
+                        {% for group in product.related_products|batch(4, 'false') %}
+                            <div class="quartet-slider-slide">
+                                {% include 'partials/items.twig' with { 'items': group, 'item_type': 'product', 'classes': 'small-up-2' } %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+    {% endif %}
+{% endblock %}
+
+{% block product_bundle %}
+    {# Render related products #}
+    {% if product.bundles|length %}
+        <section class="related-products">
+            <div class="row column">
+                <h2 class="related-products-heading">
+                    Bundles
+                </h2>
+                {% if product.bundles|length < 5 %}
+                    {% include 'partials/items.twig' with { 'items': product.bundles, 'item_type': 'product', 'classes': 'small-up-2' } %}
+                {% else %}
+                    {# Render slider when over 4 items #}
+                    <div class="quartet-slider">
+                        {% for group in product.bundles|batch(4, 'false') %}
+                            <div class="quartet-slider-slide">
+                                {% include 'partials/items.twig' with { 'items': group, 'item_type': 'product', 'classes': 'small-up-2' } %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+    {% endif %}
+{% endblock %}
+
+
+{% block scripts %}
+	{{ parent() }}
+	{% if product %}
+		{% include 'partials/product_data.twig' %}
+	{% endif %}
+	{% if product.current_variation.image_index %}
+        <script>
+            $(function() {
+                $('.js-item-image.p' + {{ product.current_variation.image_index  }}).trigger('click');
+            });
+        </script>
+    {% endif %}
+    {% if global.features.extensions.back_in_stock %}
+        <script>
+            $(function() {
+                $('.stock-requests-modal form').on('submit', function(e) {
+                    var modalForm = $(this),
+                        productForm = $('.product-form'),
+                        modalInputs = modalForm.find(':input');
+
+                    e.preventDefault();
+
+                    modalInputs.each( function(i) {
+                        var elm = $(this).clone().addClass('hide');
+
+                        // copy field
+                        productForm.append(elm);
+
+                        if( i == (modalInputs.length - 1) ) {
+                            // submit stock request
+                            productForm.find('[name="stock_request"]').trigger('click');
+                        }
+                    });
+                });
+            });
+        </script>
+    {% endif %}
+    <script>
+        (function(){
+            $('[data-slick]').each(function() {
+                $(this).slick();
+            });
+
+            $('.js-prev-slide').on('click', function() {
+                $(this).closest('[data-slick]').slick('slickPrev');
+            });
+
+            $('.js-next-slide').on('click', function() {
+                $(this).closest('[data-slick]').slick('slickNext');
+            });
+
+        })();
+    </script>
+    {% if product.photos|length and gts.product_zoom %}
+        {# initialise image zoom #}
+        {# {{ html.script('//cdnjs.cloudflare.com/ajax/libs/magnify/2.3.3/js/jquery.magnify.min.js') }} #}
+        {{ html.script(asset_url('js/image-zoom.js')) }}
+        <script>
+            (function(){
+                $('img.js-zoom').imageZoom({
+                    zoomPower: {{ gts.product_page_zoom_power }},
+                    glassSize: {{ global.visitor.is_mobile ? '150' : gts.product_page_zoom_size }}
+                });
+            })();
+        </script>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,7 @@
+{% set embedded_page = page(section.settings.website_page_id) %}
+<section class="sw-section sw-section-blog">
+	<div class="row column">
+		{{ theme.text_snippet('title_text', '', section.settings) }}
+		{{ embedded_page.content|raw }}
+	</div>
+</section>

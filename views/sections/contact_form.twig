@@ -1,0 +1,47 @@
+<section class="shadow-box section-block bg-form-block pad-small">
+	<div class="row">
+		<div class="column large-4">
+			{% if section.settings.text_contact_form %}
+				<div class="padding-top">
+					{{ theme.text_snippet('contact_form', '', section.settings) }}
+				</div>
+			{% endif %}
+		</div>
+		<div class="column large-8">
+			{# contact form #}
+			<form action="/contact-us" method="post" class="form-with-validation">
+				<div class="row">
+					<div class="column large-6">
+						<label>
+							<span class="field-label">Navn</span>
+							{{ html.input('name', form_field_value('name'), 'form-control required') }}
+						</label>
+					</div>
+					<div class="column large-6">
+						<label>
+							<span class="field-label">Telefonnummer</span>
+							{{ html.input('phone', form_field_value('phone'), 'form-control') }}
+						</label>
+					</div>
+				</div>
+				<label>
+					<span class="field-label">Email</span>
+					{{ html.input('email', form_field_value('email'), 'form-control required') }}
+				</label>
+				<label>
+					<span class="field-label">Din besked</span>
+					{{ html.textarea('message', form_field_value('message'), 'form-control required', '') }}
+				</label>
+				<div class="row">
+					<div class="column medium-6 large-5">
+						{{ theme.honeypot('hide') }}
+						{% if recaptcha %}
+							<div class="g-recaptcha margin-bottom"></div>
+						{% endif %}
+						<button type="submit" class="button expanded margin-top">Send besked</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</section>

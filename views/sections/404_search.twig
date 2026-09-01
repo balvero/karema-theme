@@ -1,0 +1,17 @@
+<section class="no-page-form shadow-box xl custom-search">
+	<div class="row">
+		<div class="column large-6 large-push-3">
+			<form action="/search/products" method="get">
+				<div class="input-group mod-custom mod-search no-margin">
+					<span class="input-group-label">
+                        {{ theme.sw_icon('musica-searcher', 'search', gts.icon_musica_searcher) }}
+					</span>
+					<input type="search" name="keywords" placeholder="{{ section.settings.search_instructions }}" class="input-group-field js-new-search">
+					<div class="input-group-button">
+						<button type="submit" class="button">Go</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</section>

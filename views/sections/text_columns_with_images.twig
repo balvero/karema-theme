@@ -1,0 +1,38 @@
+<section class="sw-section sw-section-text-columns-with-images">
+	<div class="row" data-equalizer data-equalize-on="medium" data-equalize-on-stack="true">
+		{% for block in section.blocks %}
+			{% if block.type == 'text_column' %}
+				<div class="column medium-6{{ section.blocks|length == 1 ? ' medium-push-3' : '' }}" data-equalizer-watch>
+					<div class="sw-section-item-box">
+						<div class="row collapse">
+							<div class="column large-12">
+								<div class="text-block">
+									{{ block.settings.text_column_text|raw }}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			{% else %}
+				<div class="column medium-6{{ section.blocks|length == 1 ? ' medium-push-3' : '' }}" data-equalizer-watch>
+					<div class="sw-section-item-box">
+						<div class="row collapse">
+							<div class="column large-7">
+								<div class="image-block">
+									<div class="image-container" data-fit="{{ block.settings.fill_container ? '1' : '0' }}">
+                                        {{ html.image(block.settings.text_column_image, block.settings.alt_text, '', '', gts.lazyload_images) }}
+									</div>
+								</div>
+							</div>
+							<div class="column large-5">
+								<div class="text-block">
+									{{ block.settings.text_column_text|raw }}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			{% endif %}
+		{% endfor %}
+	</div>
+</section>

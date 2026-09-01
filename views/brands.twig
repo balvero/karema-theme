@@ -1,0 +1,160 @@
+{# Extend collection template #}
+{% extends 'templates/collection.twig' %}
+
+{% set title = global.theme.settings.text_our_brands_title %}
+{% set description = global.theme.settings.text_our_brands_description %}
+{% set show_sidebar = 0 %}
+{% set show_bct = global.theme.settings.header_show_breadcrumbs ? true : false %}
+{% set titleClass = 'font-size-collection-other-description padding-bottom' %}
+
+{% block sidebar %}
+    {# Render category menu #}
+    {% include 'partials/category_menu.twig' %}
+
+{% endblock %}
+
+{% block items %}
+<div id="brands" v-cloak class="row">
+	<div class="row column text-left brands-filter-container custom-filters">
+		<div class="row column">
+			<h1>Lær vores dygtige og passionerede leverandører at kende
+			</h1>
+			<div class="bg-white custom-filter-title dropdown">
+				<span class="custom-label-title">Land <i class="sw-icon-down-arrow" aria-hidden="true"></i></span>
+				<div class="brand-filter  filter-group dropdown-content">
+					<input type="radio" value="" v-model="land" id="all" class="custom-filter" checked/>
+					<label class="custom-filter-label" for="all">Alle</label>
+					<input type="radio" value="Belgien" v-model="land" id="belgien" class="custom-filter"/>
+					<label class="custom-filter-label" for="belgien">Belgien</label>
+					
+					<input type="radio" value="Frankrig" v-model="land" id="frankrig" class="custom-filter"/>
+					<label class="custom-filter-label" for="frankrig">Frankrig</label>
+					
+					<input type="radio" value="Irland" v-model="land" id="irland" class="custom-filter"/>
+					<label class="custom-filter-label" for="irland">Irland</label>
+					
+					<input type="radio" value="Italien" v-model="land" id="italien" class="custom-filter"/>
+					<label class="custom-filter-label" for="italien">Italien</label>
+					
+					{#<input type="radio" value="Portugal" v-model="land" id="portugal" class="custom-filter"/>
+					<label class="custom-filter-label" for="portugal">Portugal</label> #}
+					
+					<input type="radio" value="Spanien" v-model="land" id="spanien" class="custom-filter"/>
+					<label class="custom-filter-label" for="spanien">Spanien</label>
+					
+					<input type="radio" value="Tyskland" v-model="land" id="tyskland" class="custom-filter"/>
+					<label class="custom-filter-label" for="tyskland">Tyskland</label>
+
+					<input type="radio" value="USA" v-model="land" id="usa" class="custom-filter"/>
+					<label class="custom-filter-label" for="usa">USA</label>
+
+
+
+				</div>
+			</div>
+		</div>
+	<div class="row brands products items-container  small-up-2 medium-up-3 large-up-5" data-class="{{ classes }}" data-equalizer data-equalize-by-row="true" >
+		<div class="column column-block"  v-for="brand in filteredBrands">
+			<article class="item-box text-center brands-box">
+				<div class="item-image{{ hover_class }}">
+					<a :href="brand.url" class="image-container" 
+					   >
+						<img :src="brand.img" alt="" class="item-img"/>
+					</a>
+				</div>
+				<h3 class="item-title brand-title" data-equalizer-watch="" style="height: 39px;">
+						<a :href="brand.url" ><span v-html="brand.title"></span></a>
+				</h3>
+				<div class="brand-land">
+							${brand.land}
+				</div>
+			</article>
+		</div>
+	</div>
+</div>
+</div>
+	{# Render brands #}
+	{# include 'partials/items.twig' with { 'items': brands, 'item_type': 'brand', 'classes': 'small-up-'~ global.theme.settings.brands_per_row_mobile ~' medium-up-' ~ global.theme.settings.brands_per_row_tablet ~' large-up-' ~ global.theme.settings.brands_per_row_desktop } #}
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+
+
+<style>
+	
+	.brands.display-flex {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 20px;
+		padding: 1rem 0;
+	}
+	
+	#brands .item-image {
+		border-radius: 4px;
+/* 		height: 210px;
+		width: 210px; */
+	
+	}
+	@media only screen and (max-width: 500px) {
+	  .brands.display-flex {
+		    justify-content: center;
+	  }
+	}
+</style>
+{% endblock %}
+{% block scripts %}
+    {{ parent() }}
+<script src="https://unpkg.com/vue@3.4.21/dist/vue.global.prod.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+
+    <script>
+	 const app = Vue.createApp({
+		 data() {
+			 return {
+				 land: "",
+				// type: "",
+				 brands: [
+					 	{% for brand in brands %}
+					 		{% if brand.custom_fields.alt_layout != true %}
+								{	
+									title: '{{brand.title}}',
+									url: '{{brand.url}}', 
+									img: '{{brand.photo_url}}', 
+									land: '{{brand.custom_fields.land}}',
+									type: '{{brand.custom_fields.vintyper}}'
+
+								},
+							{% endif %}
+						{% endfor%}
+				 ]
+				
+			 }
+		 },
+		computed: {
+			filteredBrands() {
+// 		 		return this.brands.filter(
+// 					brand =>
+// 					brand.land.includes(this.land) && brand.type.includes(this.type)
+// 				);
+		 
+		   var vm = this,
+        	lists = vm.brands;
+		  	return _.filter(lists, function (query) {
+			var brand = query.title,
+			  land = vm.land ? query.land == vm.land : true;
+			  //type = vm.type ? query.type == vm.type : true;
+
+
+			//return brand && land && type;
+				return brand && land;
+		  });
+		
+	 		}				   
+		}
+		 
+	 })
+	 app.config.compilerOptions.delimiters = ['${', '}'];
+	 app.mount('#brands');
+    </script>
+{% endblock %}

@@ -1,0 +1,1839 @@
+{# Extend page template #}
+{% extends 'templates/page.twig' %}
+
+{% set title = 'Style Guide' %}
+{% set hideTitle = 0 %}
+{% set hideTitleBar = 0 %}
+{% set side_list = 0 %}
+{% set full_width = 1 %}
+{% set bodyClass = 'sg-page' %}
+
+{% block page_content %}
+    <div class="row page-container" data-equalizer data-equalize-on="medium">
+        <div class="{{ side_list and side_list.links ? 'large-9 large-push-3' : 'small-12' }} column" data-equalizer-watch>
+            <div class="page__inner">
+                <a class="sg-collapse-all">Collapse all</a>
+                {# varaibles #}
+                <section class="sg-section">
+                    <h2>
+                        <span>Variables</span>
+                    </h2>
+                    <ul class="accordion" data-accordion data-allow-all-closed="true" data-multi-expand="true">
+
+                        {% set colour_count = 0 %}
+                        {% for key, value in gts %}
+                            {% if 'color_' in key %}
+                                {% set colour_count = colour_count + 1 %}
+                            {% endif %}
+                        {% endfor %}
+
+                        {# colour settings / SCSS variables #}
+                        {% if colour_count %}
+                            <li class="accordion-item is-active" data-accordion-item>
+                                <a href="#" class="accordion-title">
+                                    Colours
+                                </a>
+                                <div class="accordion-content" data-tab-content>
+                                    <div class="row small-up-2 medium-up-3 large-up-4">
+                                        {% for key, value in gts %}
+                                            {% if 'color_' in key %}
+                                                <div class="column">
+                                                    <div class="sg-colour card">
+                                                        <div class="card-divider sg-swatch" style="background: {{ value }}"></div>
+                                                        <div class="card-section sg-colour__title">
+                                                            <dl>
+                                                                <dt>
+                                                                    SCSS variable
+                                                                    <a class="sg-copy" data-copy="scss-{{ loop.index }}" title="copy ${{ key }}">
+                                                                        {{ theme.sw_icon('copy') }}
+                                                                    </a>
+                                                                </dt>
+                                                                <dd>
+                                                                    <code id="scss-{{ loop.index }}">${{ key }}</code>
+                                                                </dd>
+                                                                <dt>
+                                                                    Hexidecimal value
+                                                                    <a class="sg-copy" data-copy="hex-{{ loop.index }}" title="copy {{ value }}">
+                                                                        {{ theme.sw_icon('copy') }}
+                                                                    </a>
+                                                                </dt>
+                                                                <dd>
+                                                                    <code id="hex-{{ loop.index }}">{{ value }}</code>
+                                                                </dd>
+                                                            </dl>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </li>
+                        {% endif %}
+                        {# CSS breakpoints #}
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Responsive Breakpoints
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                <p>
+                                    We use six major breakpoints in SCSS based on Zurb Foundation:
+                                </p>
+                                <ul>
+                                    <li>
+                                        <code>$s-only</code> for small screens
+                                    </li>
+                                    <li>
+                                        <code>$m-up</code> for medium and above
+                                    </li>
+                                    <li>
+                                        <code>$m-down</code> for medium and below
+                                    </li>
+                                    <li>
+                                        <code>$m-only</code> for medium only
+                                    </li>
+                                    <li>
+                                        <code>$l-up</code> for large and above
+                                    </li>
+                                    <li>
+                                        <code>$l-only</code> for large only
+                                    </li>
+                                </ul>
+                                <table>
+                                    <tr>
+                                        <th></th>
+                                        <th>Small</th>
+                                        <th>Medium</th>
+                                        <th>Large</th>
+                                    </tr>
+                                    <tr>
+                                        <td>REMs</td>
+                                        <td>40</td>
+                                        <td>64</td>
+                                        <td>75</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pixels</td>
+                                        <td>640</td>
+                                        <td>1024</td>
+                                        <td>1200</td>
+                                    </tr>
+                                </table>
+                                <p>
+                                    Usage:
+                                </p>
+<pre>
+// Applies to screens wider than the "large" breakpoint of 1200px
+@media #{$l-up} {
+    .foo {
+        width: 100%;
+    }
+}
+</pre>
+                            </div>
+                        </li>
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Theme Colours
+                            </a>
+                            {% set theme_colours = {
+                                'black': '000000',
+                                'white': 'ffffff',
+                                'light grey': 'dddddd'
+                            } %}
+                            <div class="accordion-content" data-tab-content>
+                                <div class="row small-up-2 medium-up-3 large-up-4">
+                                    {% for key, value in theme_colours %}
+                                        <div class="column">
+                                            <div class="card sg-colour">
+                                                <div class="card-divider sg-swatch" style="background: #{{ value }}"></div>
+                                                <div class="card-section sg-colour__title">
+                                                    <dl>
+                                                        <dt>
+                                                            Colour
+                                                        </dt>
+                                                        <dd>
+                                                            <span>{{ key }}</span>
+                                                        </dd>
+                                                        <dt>
+                                                            Hexidecimal value
+                                                            <a class="sg-copy" data-copy="hex-colour-{{ loop.index }}" title="copy #{{ value }}">
+                                                                {{ theme.sw_icon('copy') }}
+                                                            </a>
+                                                        </dt>
+                                                        <dd>
+                                                            <code id="hex-colour-{{ loop.index }}">#{{ value }}</code>
+                                                        </dd>
+                                                    </dl>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </section>
+
+                {#section note #}
+                <section class="sg-section">
+                    <h2>
+                        <span>Typography</span>
+                    </h2>
+                    <ul class="accordion" data-accordion data-allow-all-closed="true" data-multi-expand="true">
+                        {# Headers #}
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Headers
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                <h1>h1. This is a very large header.</h1>
+                                <h2>h2. This is a large header.</h2>
+                                <h3>h3. This is a medium header.</h3>
+                                <h4>h4. This is a moderate header.</h4>
+                                <h5>h5. This is a small header.</h5>
+                                <h6>h6. This is a tiny header.</h6>
+
+                                <hr>
+
+                                {% set headers = {
+                                    'regular': 'Main page',
+                                    'blog-post': 'Blog post',
+                                    'stockists': 'Stockists',
+                                    'account': 'Account',
+                                    'galleries': 'Media',
+                                    'newsletter': 'Newsletter Subscription'
+                                    }
+                                %}
+
+                                {% for name, text in headers %}
+                                    <h1 class="{{ name }}-header">
+                                        {{ text }} Header
+                                    </h1>
+                                {% endfor %}
+                            </div>
+                        </li>
+                        {# Subheaders #}
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Subheaders
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                <h1 class="subheader">h1.subheader</h1>
+                                <h2 class="subheader">h2.subheader</h2>
+                                <h3 class="subheader">h3.subheader</h3>
+                                <h4 class="subheader">h4.subheader</h4>
+                                <h5 class="subheader">h5.subheader</h5>
+                                <h6 class="subheader">h6.subheader</h6>
+                            </div>
+                        </li>
+                        {# Paragraphs #}
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Paragraphs
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                <p>
+                                    This is a paragraph. Paragraphs are preset with a font size, line height and spacing to match the overall vertical
+                                    rhythm. To show what a paragraph looks like this needs a little more content so, did you know that there are storms
+                                    occurring on Jupiter that are larger than the Earth? Pretty cool. Wrap strong around type to <strong>make it bold!
+                                    </strong>. You can also use em to <em>italicize your words</em>.
+                                </p>
+                            </div>
+                        </li>
+                        {# Links #}
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Links
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                <p>
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, <a href="#">sed do eiusmod tempor incididunt</a> ut labore et
+                                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
+                                    ex ea commodo consequat.Learn more about Foundation's global colors.
+                                </p>
+                            </div>
+                        </li>
+                        {# Dividers #}
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Dividers
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                <hr>
+                            </div>
+                        </li>
+                        {# icon font #}
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Icon Font
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                <p>
+                                    Use the icon font for single color iconography.
+                                </p>
+                                {# icon definitions #}
+                                {% set myIcons = [
+                                    'video',
+                                    'facebook-logo',
+                                    'twitter1',
+                                    'instagram1',
+                                    'pinterest1',
+                                    'youtube-logo',
+                                    'linkedin-logo',
+                                    'tumblr-logo',
+                                    'pause-sign',
+                                    'musica-searcher',
+                                    'heart',
+                                    'person',
+                                    'shopping-basket',
+                                    'arrow',
+                                    'arrow1',
+                                    'expand',
+                                    'mark-as-favorite-star',
+                                    'premium-badge',
+                                    'heart-1',
+                                    'zoom-in',
+                                    'film',
+                                    'share',
+                                    'email',
+                                    'arrow-pointing-to-right',
+                                    'arrow-pointing-to-left',
+                                    'equalizer',
+                                    'calendar2',
+                                    'calendar1',
+                                    'equalizer-console-with-three-switches-at-different-levels',
+                                    'log-out',
+                                    'account-home',
+                                    'box',
+                                    'eye',
+                                    'forbidden',
+                                    'glass',
+                                    'calendar',
+                                    'facebook',
+                                    'gift',
+                                    'refresh',
+                                    'pdf',
+                                    'map-marker',
+                                    'twitter',
+                                    'google-plus',
+                                    'linkedin',
+                                    'pinterest',
+                                    'youtube',
+                                    'instagram',
+                                    'bell',
+                                    'like',
+                                    'bars',
+                                    'glass-2',
+                                    'caret-down',
+                                    'caret-up',
+                                    'star-on',
+                                    'external-link',
+                                    'plus-zoom',
+                                    'grid',
+                                    'caret-right',
+                                    'circle-star',
+                                    'gift1',
+                                    'mail',
+                                    'map',
+                                    'padlock',
+                                    'phone',
+                                    'shopping-bag',
+                                    'truck',
+                                    'user',
+                                    'down-arrow',
+                                    'down-chevron',
+                                    'left-arrow',
+                                    'left-chevron',
+                                    'move',
+                                    'question',
+                                    'right-arrow',
+                                    'right-chevron',
+                                    'search',
+                                    'up-arrow',
+                                    'up-chevron',
+                                    'minus',
+                                    'plus',
+                                    'tumblr'
+                                ] %}
+                                <div class="row small-up-1 medium-up-2 large-up-3">
+                                    {% for item in myIcons %}
+                                        <div class="column">
+                                            <div class="sg-icons" style="margin-bottom: 1rem;">
+                                                <h5>{{ item }}</h5>
+                                                <i class="sw-icon-{{ item }}" aria-hidden="true" style="font-size: 3rem;"></i>
+                                                <i class="sw-icon-{{ item }}" aria-hidden="true" style="font-size: 2rem;"></i>
+                                                <i class="sw-icon-{{ item }}" aria-hidden="true" style="font-size: 1.5rem;"></i>
+                                                <i class="sw-icon-{{ item }}" aria-hidden="true" style="font-size: 1rem;"></i>
+                                                <i class="sw-icon-{{ item }}" aria-hidden="true" style="font-size: .7rem;"></i>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <hr>
+                                <p>
+                                    Usage:
+                                </p>
+<pre>
+   &lt;i class="sw-icon-[name]" aria-hidden="true"&gt;
+</pre>
+                            </div>
+                        </li>
+                    </ul>
+                </section>
+
+                {# buttons #}
+                <section class="sg-section">
+                    <h2>
+                        <span>Controls</span>
+                    </h2>
+                    <ul class="accordion" data-accordion data-allow-all-closed="true" data-multi-expand="true">
+                        {# Buttons #}
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Buttons
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+
+                                <div class="row">
+                                    <div class="column large-3">
+                                        <button type="submit" class="button expanded" href="#">Create your account</button>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="column large-6">
+                                        <button type="submit" class="button large expanded" href="#">Proceed to secure checkout</button>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="column large-3">
+                                        <button type="submit" name="paypal_gateway" value="1" class="button image-button paypal-button expanded">
+                                            <span class="show-for-sr">Checkout with PayPal</span>
+                                            <img src="https://www.paypalobjects.com/webstatic/en_US/i/btn/png/gold-rect-paypalcheckout-60px.png" alt="Check out with PayPal" width="170">
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="column large-4">
+                                        <a class="button border" href="#">
+                                            <span class="text-top">Browse images</span>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="column large-3">
+                                        <a class="button large secondary" href="#">Continue shopping</a>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="column large-6">
+                                        <button type="submit" class="button third expanded" href="#">Sorry! We're currently out of stock, get notified here</button>
+                                    </div>
+                                </div>
+                                <div class="row column">
+                                    <a class="button quick-view-button" href="#">quick view</a>
+                                </div>
+                                <div class="margin-top">
+                                    <a href="" class="icon-button"><i class="sw-icon-heart-1" aria-hidden="true"></i></a>
+                                </div>
+                                <div class="margin-top">
+                                    <a href="" class="icon-button"><i class="sw-icon-heart" aria-hidden="true"></i></a>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="column large-5">
+                                        <div class="basket-voucher">
+                                            <div class="input-group mod-custom">
+                                                <input class="input-group-field" type="text" placeholder="Enter your voucher/promotion code">
+                                                <div class="input-group-button">
+                                                    <button type="submit" class="button">Apply</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="padding" style="background-color: #ffe256">
+                                    <div class="row">
+                                        <div class="column large-6">
+                                            <div class="input-group mod-simple no-margin">
+                                                <input class="input-group-field" type="text" placeholder="Enter your email address">
+                                                <div class="input-group-button">
+                                                    <button type="submit" class="button">Subscribe</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="padding" style="background-color: #f9f9f9">
+                                    <div class="row">
+                                        <div class="column large-7">
+                                            <div class="input-group mod-custom mod-search no-margin">
+                                                <span class="input-group-label">
+                                                    <i aria-hidden="true" class="sw-icon-musica-searcher"></i>
+                                                </span>
+                                                <input class="input-group-field" type="text" placeholder="Search by town, city or postcode">
+                                                <div class="input-group-button">
+                                                    <button type="submit" class="button">Go</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </section>
+
+                {# Forms #}
+                <section class="sg-section">
+                    <h2>
+                        <span>Forms</span>
+                    </h2>
+                    <ul class="accordion" data-accordion data-allow-all-closed="true" data-multi-expand="true">
+                        {# sub note #}
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Form components
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                {# form components #}
+                                <div class="row">
+                                    <div class="medium-6 column">
+                                        {# text input #}
+                                        <label>
+                                            <span class="field-label">
+                                                Input Label
+                                            </span>
+                                            <input type="text" placeholder="">
+                                        </label>
+                                        {# textarea #}
+                                        <label>
+                                            <span class="field-label">
+                                                Textarea input
+                                            </span>
+                                            <textarea placeholder=""></textarea>
+                                        </label>
+                                        {# select #}
+                                        <label>
+                                            <span class="field-label">
+                                                Select Menu
+                                            </span>
+                                            <select>
+                                                <option value="foo">Foo</option>
+                                                <option value="bar">Bar</option>
+                                                <option value="baz">Baz</option>
+                                            </select>
+                                        </label>
+                                        <br>
+                                        {# file input #}
+                                        <label class="field-label">Please upload your files</label>
+                                        <input type="file" name="files[]">
+                                        <br><br>
+                                        {# radio buttons #}
+                                        <fieldset class="row column">
+                                            <legend class="field-label">Radio buttons</legend>
+                                            <input type="radio" name="foo" value="Red" id="fooRed" required><label for="fooRed">Red</label>
+                                            <input type="radio" name="foo" value="Blue" id="fooBlue"><label for="fooBlue">Blue</label>
+                                            <input type="radio" name="foo" value="Yellow" id="fooYellow"><label for="fooYellow">Yellow</label>
+                                        </fieldset>
+                                        <br>
+                                        {# checkboxes #}
+                                        <fieldset class="row column">
+                                            <legend class="field-label">Checkboxes</legend>
+                                            <input id="checkbox1" type="checkbox"><label for="checkbox1">Checkbox 1</label>
+                                            <input id="checkbox2" type="checkbox"><label for="checkbox2">Checkbox 2</label>
+                                            <input id="checkbox3" type="checkbox"><label for="checkbox3">Checkbox 3</label>
+                                        </fieldset>
+                                        <br>
+                                        {# date field #}
+                                        <span class="field-label">Preferred Delivery Date</span>
+                                        <div class="delivery-date-container">
+                                            <input type="text" name="delivery_date" class="hasDatepicker">
+                                        </div>
+                                        <br>
+                                    </div>
+                                </div>
+
+                                {# input group #}
+                                <div class="padding" style="background-color: #f9f9f9">
+                                    <div class="row">
+                                        <div class="column large-7">
+                                            <div class="search-container">
+                                                <div class="input-group mod-custom mod-search no-margin">
+                                                    <span class="input-group-label">
+                                                        <i aria-hidden="true" class="sw-icon-musica-searcher"></i>
+                                                    </span>
+                                                    <input class="input-group-field" type="text" placeholder="Search by town, city or postcode">
+                                                    <div class="input-group-button">
+                                                        <button type="submit" class="button">Go</button>
+                                                    </div>
+
+                                                    <button class="close-search btn-close">
+                                                        <span>Close</span>
+                                                    </button>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {# /form components #}
+                            </div>
+                        </li>
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Contact Form
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                {# contact form #}
+                                <form action="{{ global.current_url }}" method="post" class="form-with-validation">
+                                    <div class="row">
+                                        <div class="column large-6">
+                                            <label>
+                                                <span class="field-label">Your Name</span>
+                                                {{ html.input('name', form_field_value('name'), 'form-control required') }}
+                                            </label>
+                                        </div>
+                                        <div class="column large-6">
+                                            <label>
+                                                <span class="field-label">Your Telephone Number</span>
+                                                {{ html.input('phone', form_field_value('phone'), 'form-control') }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <label>
+                                        <span class="field-label">Your Email Address</span>
+                                        {{ html.input('email', form_field_value('email'), 'form-control required') }}
+                                    </label>
+                                    <label>
+                                        <span class="field-label">Your Enquiry</span>
+                                        {{ html.textarea('message', form_field_value('message'), 'form-control required', '') }}
+                                    </label>
+                                    <div class="row">
+                                        <div class="column medium-6 large-3">
+                                            {{ shopwired.honeypot() }}
+                                            <button type="submit" class="button expanded">Send your message</button>
+                                        </div>
+                                    </div>
+                                </form>
+                                {# / contact form #}
+                            </div>
+                        </li>
+                    </ul>
+                </section>
+
+                {# components #}
+                <section class="sg-section">
+                    <h2>
+                        <span>Components</span>
+                    </h2>
+                    <ul class="accordion" data-accordion data-allow-all-closed="true" data-multi-expand="true">
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Announcement Bar
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                {# announcment bar #}
+                                <div class="announcement-bar hide callout no-margin" data-closable>
+                                    <div class="row column">
+                                        <div class="inner">
+                                            <span>{{ theme.text_snippet('announce') }}</span>
+                                            <button class="close-button announcement-bar-close btn-close" aria-label="Dismiss alert" type="button" data-close>
+                                            <span>Close</span>
+                                        </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                {# / announcment bar #}
+                            </div>
+                        </li>
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Brand Text (No logo image)
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                {# header no logo text #}
+                                <a href="/" class="header-logo">
+                                    <span class="logo-text">
+                                        {{ global.business.name }}
+                                    </span>
+                                </a>
+                                {# / header no logo text #}
+                            </div>
+                        </li>
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Product images
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                {# product images #}
+                                <div class="row product-container">
+                                    <div class="column large-7">
+                                        <!-- if product.photos > 1 add class "with-dots" -->
+                                        <div class="product-image with-dots">
+                                            <div role="region" aria-label="Product Images" class="product-main-image">
+                                                <div class="main-image-slider">
+                                                    {% for i in 1..10 %}
+                                                        <div class="slide">
+                                                            <div class="image-container product-gallery-main-photo"
+                                                         data-fit="1"
+                                                         data-zoom="{{ gts.product_zoom }}">
+                                                                <img src="//via.placeholder.com/800/dddddd?text={{ i }}" alt="">
+                                                            </div>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+
+                                                <span class="zoom">
+                                                    {{ theme.sw_icon('zoom-in') }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <a href="#" class="link-with-icon info-video margin-top">
+                                                <i class="sw-icon-film" aria-hidden="true"></i>
+                                                <span>Play video</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                {# / product thumbnails #}
+                            </div>
+                        </li>
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Star raiting
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                {# star raiting #}
+                                <span class="product-raiting">
+                                    {% for i in 1..5 %}
+                                        {% set starClass = ( 3 >= i ? '' : 'off' ) %}
+                                        <span class="{{ starClass }}">
+                                            {{ theme.sw_icon("mark-as-favorite-star", 'raiting star') }}
+                                        </span>
+                                    {% endfor %}
+                                </span>
+                                {# / star raiting #}
+                            </div>
+                        </li>
+                        {# sub note #}
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Product labels
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                {# product labels #}
+                                <span class="label primary three-for-two">3for2</span>
+                                <br><br>
+                                <span class="label primary two-for-one">2for1</span>
+                                <br><br>
+                                <span class="label secondary new">New!</span>
+                                {# / product labels #}
+                            </div>
+                        </li>
+                        {# sub note #}
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Modal dialogs
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                {# modals #}
+                                <a data-open="exampleModal1">Open basic modal</button></a>
+                                <div class="reveal" id="exampleModal1" data-reveal>
+                                    <h1>
+                                        Modal Heading
+                                    </h1>
+                                    <p class="lead">
+                                        Lead paragraph
+                                    </p>
+                                    <p>
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+                                        dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
+                                        ex ea commodo consequat.
+                                    </p>
+                                    <button class="close-button" data-close aria-label="Close modal" type="button">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <br>
+                                {% if gts.age_modal %}
+                                    <a data-open="verifyAgeModal">Open age verify modal</button></a>
+                                {% endif %}
+                                <br>
+                                {% if gts.newsletter_modal %}
+                                    <a data-open="newsletterModal">Open newsletter subscription modal</button></a>
+                                {% endif %}
+                                {# / modals #}
+                            </div>
+                        </li>
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Off canvas basket
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                {# canvas basket button #}
+                                <a data-toggle="offCanvasBasket">Open off canvas basket</a>
+                            </div>
+                        </li>
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Basket Item
+                            </a>
+                            <div class="accordion-content bg" data-tab-content>
+                                {# basket item row #}
+                                <table class="basket-table unstriped" role="grid">
+                                    <tbody>
+                                        <tr class="basket-headings show-for-sr">
+                                            <th colspan="2">Product</th>
+                                            <th>Price</th>
+                                            <th>Quantity</th>
+                                            <th>Total</th>
+                                            <th>Remove</th>
+                                        </tr>
+                                        <tr class="basket-item">
+                                            <td class="basket-item-image" data-fit="0">
+                                                <a class="image-container" href="#">
+                                                    <img alt="" src="//via.placeholder.com/600x600">
+                                                </a>
+                                            </td>
+                                            <td class="basket-item-info">
+                                                <h4>Product title</h4>
+                                                <div class="basket-item-options">
+                                                    <div>
+                                                        Colour
+                                                        <strong>green</strong>
+                                                        Size
+                                                        <strong>Large</strong>
+                                                    </div>
+                                                    <div>
+                                                        <strong>
+                                                            Extra 1
+                                                            &pound;12.00
+                                                        </strong>
+                                                    </div>
+                                                </div>
+
+                                                <a href="#" class="link-with-icon info-wishlist margin-top">
+                                                    {{ theme.sw_icon('heart') }}
+                                                    <span>move to wishlist</span>
+                                                </a>
+                                            </td>
+                                            <td class="basket-item-qty" data-label="Quantity">
+                                                <div class="quantity">
+                                                    {{ html.number_toggle('quantity[4024873]', '1', '', '', '', '', '', '') }}
+                                                    <button class="basket-update" type="submit">
+                                                        Update
+                                                    </button>
+                                                </div>
+                                            </td>
+                                            <td class="basket-item-price" data-label="Price">
+                                                <div class="price">
+                                                    &pound;888.88
+                                                </div>
+                                            </td>
+                                            <td class="basket-item-cost" data-label="Cost">
+                                                <div class="price">
+                                                    &pound;1,777.76
+                                                </div>
+                                            </td>
+                                            <td class="basket-item-remove">
+                                                <div class="remove">
+                                                    <a class="remove-button" href="#">Remove</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                {# / basket item row #}
+                            </div>
+                        </li>
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Basket totals
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                <div class="row">
+                                    <div class="column large-5">
+                                        {# basket totals #}
+                                        <div class="basket-box">
+                                            <table class="basket-totals unstriped">
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Subtotal</td>
+                                                        <td><span class="basket-sub-total">£59.74</span></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <label>
+                                                <span class="field-label">Delivery Country</span>
+                                                <select>
+                                                    <option>Please select...</option>
+                                                </select>
+                                            </label>
+                                            <label>
+                                                <span class="field-label">Delivery Rate</span>
+                                                <select>
+                                                    <option>Please select...</option>
+                                                </select>
+                                            </label>
+                                            <table class="basket-totals unstriped">
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Delivery</td>
+                                                        <td><span class="basket-delivery">£1.20</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Discount <a href="#">remove</a></td>
+                                                        <td><span class="basket-discounts">£6.64</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Total</td>
+                                                        <td><span class="basket-total">£60.94</span></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        {# / basket totals #}
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Basket rewards
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                {# reward points #}
+                                <div class="row">
+                                    <div class="column large-5">
+                                        <p>Can convert</p>
+                                        {# reward points convert #}
+                                        <div class="info-rewards-line mod-basket">
+                                            <p>
+                                                You have <span>33607 reward points</span>. <a href="#">Redeem for a discount.</a>
+                                            </p>
+                                        </div>
+                                        {# / reward points convert #}
+                                        <br>
+                                        <p>Converted</p>
+                                        {# reward points converted #}
+                                        <div class="info-rewards-line mod-basket">
+                                            <p>
+                                                A discount of <span>&pound;3.00</span> has been applied. <a href="#">Cancel.</a>
+                                            </p>
+                                        </div>
+                                        {# / reward points converted #}
+                                        <br>
+                                        {# cannot be converted #}
+                                        <p>Cannot convert</p>
+                                        <div class="info-rewards-line mod-basket">
+                                            <p>
+                                                You have <span>33607 reward points</span>.
+                                            </p>
+                                        </div>
+                                        {# / cannot be converted #}
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Delivery rate radio buttons
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                {# delivery rate radios #}
+                                <fieldset class="rates rates-container" name="rateId" style="">
+                                    <legend class="field-label">Delivery Rate</legend>
+                                    <div class="rateId">
+                                        <div class="row column">
+                                            <input checked="checked" id="rate-75079" name="rateId" type="radio" value="75079">
+                                            <label for="rate-75079">Click and collect <span>&pound;0.00</span></label>
+                                        </div>
+                                        <div class="row column">
+                                            <input id="rate-73706" name="rateId" type="radio" value="73706">
+                                            <label for="rate-73706">Standard Local Delivery <span>&pound;1.20</span></label>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                {# / delivery rate radios #}
+                            </div>
+                        </li>
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Basket voucher
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                {# basket voucher form #}
+                                <div class="row">
+                                    <div class="column medium-5">
+                                        <div class="basket-voucher">
+                                            <form>
+                                                <div class="input-group mod-custom">
+                                                    <input class="input-group-field" name="voucher_code" placeholder="Enter your voucher/promotion code" type="text">
+                                                    <div class="input-group-button">
+                                                        <button type="submit" class="button">Apply</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                {# / basket voucher form #}
+                            </div>
+                        </li>
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Currency dropdown
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                {# currency dropdown #}
+                                <button type="button" class="currency-link header-link" data-toggle="offCanvasCurrency">
+                                    {{ global.currency.name }}
+                                </button>
+                                {# / currency dropdown #}
+                            </div>
+                        </li>
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Account dropdown
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                {# account dropdown #}
+                                <a data-toggle="sg-account-dropdown" class="header-link account-link">
+                                    {{ theme.sw_icon('person') }}
+                                </a>
+                                <div class="account-dropdown dropdown-pane" id="sg-account-dropdown" data-dropdown data-v-offset="10">
+                                    <div class="account-dropdown-header" data-closable>
+                                        <a href="/contact-us">Need help? Contact us</a>
+                                        <button class="close-button" aria-label="Dismiss alert" type="button" data-close>
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <ul class="account-dropdown-menu no-bullet">
+                                        {% if global.customer.id or global.customer.trade %}
+                                            <li>
+                                                <a href="/account/logout">
+                                                    {{ theme.sw_icon('external-link') }}
+                                                    <span>Logout</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="/account">
+                                                    {{ theme.sw_icon('gift1') }}
+                                                    <span>My Account</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="/account/orders">
+                                                    {{ theme.sw_icon('gift1') }}
+                                                    <span>My Orders</span>
+                                                </a>
+                                            </li>
+                                        {% else %}
+                                            <li>
+                                                <a href="/account/login">
+                                                    {{ theme.sw_icon('external-link') }}
+                                                    <span>Sign In</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="/account/create">
+                                                    {{ theme.sw_icon('user') }}
+                                                    <span>Register</span>
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                                {# / account dropdown #}
+                            </div>
+                        </li>
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Footer link lists
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                {# footer link lists #}
+                                <div class="footer-top">
+                                    <div class="row">
+                                        <div class="large-3 column">
+                                            {{ theme.link_list('footer_1', 'footer-list menu vertical', 1) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                {# / footer link lists #}
+                            </div>
+                        </li>
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Footer newsletter
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                {# footer newsletter #}
+                                <div class="row">
+                                    <div class="large-3 column">
+                                        <div class="footer-newsletter">
+                                            {% if global.theme.settings.mailchimp_action %}
+                                                <form action="{{ global.theme.settings.mailchimp_action }}" method="post" class="newsletter-form" name="mc-embedded-subscribe-form" target="_blank" novalidate="novalidate">
+                                                    <div class="input-group no-margin">
+                                                        {{ html.input('EMAIL', '', 'input-group-field jsv_email required', 'Email address') }}
+                                                        <div class="input-group-button">
+                                                            {{ html.button('', '', '', '', true, '', 'arrow', '') }}
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            {% else %}
+                                                <form action="/newsletter-subscribe" method="post" class="newsletter-form form-with-validation">
+                                                    <div class="input-group no-margin">
+                                                        {{ html.input('email', '', 'input-group-field jsv_email required', 'Email address') }}
+                                                        <div class="input-group-button">
+                                                            {{ html.button('', '', '', '', true, '', 'arrow', '') }}
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                {# / footer newsletter #}
+                            </div>
+                        </li>
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Company contact information
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                {# company contact information #}
+                                <div class="contact-information text-center">
+                                    {% if global.business.address %}
+                                        <address>
+                                            {{ global.business.address|nl2br }}
+                                        </address>
+                                    {% endif %}
+                                    {% if global.business.phone %}
+                                        <p>
+                                            Tel: {{ global.business.phone }}
+                                        </p>
+                                    {% endif %}
+                                    {% if global.business.email %}
+                                        <p>
+                                            Email: <a href="mailto:{{ global.business.email }}">{{ global.business.email }}</a>
+                                        </p>
+                                    {% endif %}
+                                </div>
+
+                                {# / company contact information #}
+                            </div>
+                        </li>
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Category Menu
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                {# main category menu #}
+                                <div class="header-nav-outer">
+                                    <nav class="row column">
+                                        <div class="header-nav">
+                                            <button type="button" class="button secondary expanded no-margin hide-for-large" data-toggle="sg-main-nav-wrapper">
+                                                {{ theme.sw_icon('bars') }}
+                                                Categories
+                                            </button>
+                                            {# Render main navigation #}
+                                            <div id="sg-main-nav-wrapper" class="main-nav-wrapper show-for-large" data-toggler=".show-for-large">
+                                                <ul class="main-nav vertical large-horizontal menu align-center"
+                                                    data-responsive-menu="accordion large-dropdown"
+                                                    data-close-on-click-inside
+                                                >
+                                                    {# Render home link #}
+                                                    <li class="main-nav-home-link">
+                                                        <a href="/"{% if global.current_path == '/' %} class="active"{% endif %}>
+                                                            Home
+                                                        </a>
+                                                    </li>
+                                                    {# Render category links #}
+                                                    {% for category in global.categories %}
+                                                        <li>
+                                                            <a href="{{ category.url }}" {% if category.url in global.current_url %}class="active" {% endif %}>
+                                                                {{ category.title }}
+                                                            </a>
+                                                        </li>
+                                                    {% endfor %}
+                                                    {# Render brand links #}
+                                                    {% if global.brands %}
+                                                        <li>
+                                                            <a href="/brands" {% if global.current_path == '/brands' %}class="active" {% endif %}>
+                                                                Brands
+                                                            </a>
+                                                        </li>
+                                                    {% endif %}
+                                                    <li>
+                                                        <a href="/blog">
+                                                            Blog
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </nav>
+                                </div>
+                                {# / main category menu #}
+                            </div>
+                        </li>
+                        {# pagination #}
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Pagination
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                {# pagination #}
+                                <div class="pagination-container">
+                                    <ul class="pagination text-center">
+                                        <li class="pagination-previous">
+                                            <a class="page-link" data-page="prev" href="#"><i aria-hidden="true" class="sw-icon-arrow-pointing-to-left"></i></a>
+                                        </li>
+                                        <li class="active-page">
+                                            <a class="page-link current" data-page="1" href="#">1</a>
+                                        </li>
+                                        <li>
+                                            <a class="page-link" data-page="2" href="#">2</a>
+                                        </li>
+                                        <li>
+                                            <a class="page-link" data-page="3" href="#">3</a>
+                                        </li>
+                                        <li>
+                                            <a class="page-link" data-page="4" href="#">4</a>
+                                        </li>
+                                        <li>
+                                            <a class="page-link" data-page="5" href="#">5</a>
+                                        </li>
+                                        <li>
+                                            <a class="page-link" data-page="6" href="#">6</a>
+                                        </li>
+                                        <li>
+                                            <a class="page-link" data-page="7" href="#">7</a>
+                                        </li>
+                                        <li>
+                                            <a class="page-link" data-page="8" href="#">8</a>
+                                        </li>
+                                        <li>
+                                            <a class="page-link" data-page="9" href="#">9</a>
+                                        </li>
+                                        <li style="display: none;">
+                                            <a class="page-link hidden" data-page="10" href="#">10</a>
+                                        </li>
+                                        <li style="display: none;">
+                                            <a class="page-link hidden" data-page="11" href="#">11</a>
+                                        </li>
+                                        <li style="display: none;">
+                                            <a class="page-link hidden" data-page="12" href="#">12</a>
+                                        </li>
+                                        <li style="display: none;">
+                                            <a class="page-link hidden" data-page="13" href="#">13</a>
+                                        </li>
+                                        <li style="display: none;">
+                                            <a class="page-link hidden" data-page="14" href="#">14</a>
+                                        </li>
+                                        <li style="display: none;">
+                                            <a class="page-link hidden" data-page="15" href="#">15</a>
+                                        </li>
+                                        <li style="display: none;">
+                                            <a class="page-link hidden" data-page="16" href="#">16</a>
+                                        </li>
+                                        <li style="display: none;">
+                                            <a class="page-link hidden" data-page="17" href="#">17</a>
+                                        </li>
+                                        <li class="pagination-next">
+                                            <a class="page-link" data-page="prev" href="#"><i aria-hidden="true" class="sw-icon-arrow-pointing-to-right"></i></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                {# / pagination #}
+                            </div>
+                        </li>
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Blog categories and archive
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                {# blog categories and archive #}
+                                <div class="nav-blog-container">
+                                    <nav class="row column">
+                                        <ul class="blog-categories-nav horizontal menu">
+                                            <li><a href="" class="active">Latest News</a></li>
+                                            <li><a href="">Product Releases</a></li>
+                                            <li><a href="">Special Offers</a></li>
+                                            <li><a href="">Events</a></li>
+                                            <li><a href="">Trends</a></li>
+                                        </ul>
+                                        <ul class="blog-archive-nav horizontal menu">
+                                            <li><a href="" class="active">June 2019</a></li>
+                                            <li><a href="">March 2019</a></li>
+                                            <li><a href="">January 2019</a></li>
+                                            <li><a href="">September 2018</a></li>
+                                            <li><a href="">August 2017</a></li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                                {# / blog categories and archive #}
+                            </div>
+                        </li>
+                        {# sort form #}
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Collection sort form
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                {# sort form #}
+                                <div class="sort-form">
+                                    <div class="row">
+                                        <div class="medium-5 column">
+                                            <div class="row-table">
+                                                <div class="col-cell">
+                                                    <button type="button" class="filters-toggle" data-toggle="offCanvasFilters">
+                                                        <i aria-hidden="true" class="sw-icon-equalizer-console-with-three-switches-at-different-levels"></i>
+                                                        <span>Filter</span>
+                                                    </button>
+                                                </div>
+                                                <div class="col-cell">
+                                                    <form>
+                                                        <select class="sort-drop-down" name="sort">
+                                                            <option value="sort_order_asc">
+                                                                Relevance
+                                                            </option>
+                                                            <option selected="selected" value="price_asc">
+                                                                Price (Low - High)
+                                                            </option>
+                                                            <option value="price_desc">
+                                                                Price (High - Low)
+                                                            </option>
+                                                            <option value="title_asc">
+                                                                Title (A - Z)
+                                                            </option>
+                                                            <option value="title_desc">
+                                                                Title (Z - A)
+                                                            </option>
+                                                        </select>
+                                                        <input name="page" type="hidden" value="1">
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        {# product page price #}
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Product page prices
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                <div class="row">
+                                    <div class="column large-5">
+                                        {# without sale price #}
+                                        <div class="product-cost">
+                                            <div class="price product-price">
+                                                &pound;12.54
+                                            </div>
+                                            <div class="bulk-savings">
+                                                (<span class="bulk-toggle">Bulk Savings</span>)
+                                                <div class="bulk-savings-table">
+                                                    <div class="table-heading">
+                                                        <h4>Bulk buying discounts</h4>
+                                                        <span class="bulk-close btn-close"><span>close</span></span>
+                                                    </div>
+                                                    <table class="bulk-discounts-table">
+                                                        <tr>
+                                                            <td>Small, Blue</td>
+                                                            <td>2-9</td>
+                                                            <td>&pound;9.99</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Small, Blue</td>
+                                                            <td>2-9</td>
+                                                            <td>&pound;9.99</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Small, Blue</td>
+                                                            <td>2-9</td>
+                                                            <td>&pound;9.99</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {# with sale price #}
+                                        <div class="product-cost has-sale-price">
+                                            <div class="price product-sale-price">
+                                                &pound;10.12
+                                            </div>
+                                            <div class="price product-price">
+                                                &pound;12.54
+                                            </div>
+                                        </div>
+                                        {# / content #}
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        {# sub note #}
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Variant buttons
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                {# variant buttons #}
+                                <div class="product-option">
+                                    <input class="product-option-value" name="value[]" type="hidden" value="">
+                                    <label class="field-label">Size</label>
+                                    <div class="product-option-container">
+                                        <label class="rectangle" title="">
+                                            <input class="product-option-input" name="group0" type="radio" value="5511416">
+                                            <span class="inner"><span>small</span></span>
+                                        </label>
+                                        <label class="rectangle" title="">
+                                            <input class="product-option-input" name="group0" type="radio" value="5511416">
+                                            <span class="inner"><span>large</span></span>
+                                        </label>
+                                        <label class="rectangle active" title="">
+                                            <input class="product-option-input" name="group0" type="radio" value="5511416">
+                                            <span class="inner"><span>extra large</span></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                {# / variant buttons #}
+                            </div>
+                        </li>
+                        {# sub note #}
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Product buy buttons
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                <div class="row">
+                                    <div class="column large-5">
+                                        {# buy buttons #}
+                                        <div class="product-buy product-line">
+                                            <p>QTY (Minimum order quantity 6. Maximum order quantity 12)</p>
+                                            <div class="row-table">
+                                                <div class="col-cell">
+                                                    {{ html.number_toggle('quantity', '1', '', '', '', '', '', '') }}
+                                                </div>
+                                                <div class="col-cell">
+                                                    <button class="button expanded button_add-basket product-add-button" data-nostock="OUT OF STOCK" data-text="ADD TO YOUR BASKET" name="cart_button" type="submit">ADD TO YOUR BAG</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <button type="submit" class="button third expanded" href="#">Sorry! We're currently out of stock, get notified here</button>
+                                        {# / buy buttons #}
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        {# sub note #}
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Product page info
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                {# content #}
+                                <div class="info-details">
+                                    <a href="#" class="link-with-icon info-video">
+                                        <i class="sw-icon-film" aria-hidden="true"></i>
+                                        <span>Play video</span>
+                                    </a>
+                                    <br><br>
+                                    <div class="info-rewards-line mod-product">
+                                        <p>
+                                            You'll earn <span>33607 reward points</span> with this purchase.
+                                        </p>
+                                    </div>
+                                    <br><br>
+                                    <div class="info-brand link-underline">
+                                        Armani Collezioni
+                                    </div>
+                                </div>
+                                {# / content #}
+                            </div>
+                        </li>
+                        {# sub note #}
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Product description tabs
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                {# description tabs #}
+                                <section class="product-tabs">
+                                    <ul class="tabs" data-tabs id="example-tabs">
+                                        <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">Details</a></li>
+                                        <li class="tabs-title"><a data-tabs-target="panel2" href="#panel2">Specification</a></li>
+                                    </ul>
+                                    <div class="tabs-content" data-tabs-content="example-tabs">
+                                        <div class="tabs-panel is-active" id="panel1">
+                                            <p>
+                                                Vivamus hendrerit arcu sed erat molestie vehicula. Sed auctor neque eu tellus rhoncus ut eleifend nibh porttitor.
+                                                Ut in nulla enim. Phasellus molestie magna non est bibendum non venenatis nisl tempor. Suspendisse dictum feugiat
+                                                nisl ut dapibus.
+                                            </p>
+                                        </div>
+                                        <div class="tabs-panel" id="panel2">
+                                            <p>
+                                                Suspendisse dictum feugiat nisl ut dapibus.  Vivamus hendrerit arcu sed erat molestie vehicula. Ut in nulla enim.
+                                                Phasellus molestie magna non est bibendum non venenatis nisl tempor.  Sed auctor neque eu tellus rhoncus ut eleifend
+                                                nibh porttitor.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </section>
+                                {# / description tabs #}
+                            </div>
+                        </li>
+                        {# product tiles #}
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Product tiles
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                {# render first 3 products of first category #}
+                                {% set firstCat = category(global.categories[0].id) %}
+                                {% include 'partials/items.twig' with { 'items': firstCat.products|slice(0, 3), 'item_type': 'product', 'classes': 'small-up-2 medium-up-3 large-up-4' } %}
+                            </div>
+                        </li>
+                        {# category tiles #}
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Category tiles
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                {# render first 3 cats #}
+                                {% set myCats = {
+                                    items: global.categories|slice(0, 3),
+                                    item_type: 'category',
+                                    classes: 'small-up-1 medium-up-2'
+                                } %}
+                                {% include 'partials/items.twig' with { 'items': myCats.items, 'item_type': myCats.item_type, 'classes': myCats.classes } %}
+                            </div>
+                        </li>
+                        {# featured categories #}
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Featured categories
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                {% set featured_categories = featured_categories(2) %}
+                                {% if featured_categories|length %}
+                                    <div class="row column">
+                                        <div class="featured-categories-slider featured-slider">
+                                            {% for category in featured_categories %}
+                                                <div class="row featured-box">
+                                                    <div class="column large-8">
+                                                        <div class="shadow-box lg category-box">
+                                                            <div class="image-container">
+                                                                <img src="{{ category.photo_url }}">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="column large-4">
+                                                        <div class="featured-heading">
+                                                            <h2>
+                                                                <a href="{{ category.url }}">{{ category.title }}</a>
+                                                            </h2>
+                                                            <div class="show-for-large">
+                                                                {{ category.description|raw }}
+                                                            </div>
+                                                        </div>
+                                                        <a href="{{ category.url }}" class="button border">
+                                                            <span class="text-top">
+                                                                Browse
+                                                            </span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </li>
+                        {# article tiles #}
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Article tiles
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                {# article tiles #}
+                                <div class="row medium-up-3">
+                                    {% for post in blog_posts()|slice(0, 3) %}
+                                        <div class="column-block column">
+                                            <article class="article-box">
+                                                <a href="{{ post.url }}" class="image-container" data-fit="1">
+                                                    <img src="{{ post.thumbnail.image_url }}" alt="{{ post.title }}" class="blog-post-image">
+                                                </a>
+                                                <h3 class="item-title">
+                                                    {{ post.title }}
+                                                </h3>
+                                                <div class="blog-post-meta">
+                                                    <time datetime="{{ post.date|date('Y-m-d') }}">{{ post.date|date('jS F Y') }}</time>
+                                                </div>
+                                                <div class="article-description">
+                                                    <p>
+                                                        {{ post.excerpt|raw }}
+                                                    </p>
+                                                </div>
+                                                <a href="{{ post.url }}" class="button border md no-margin">
+                                                    <span class="text-top">
+                                                        Read
+                                                    </span>
+                                                </a>
+                                            </article>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                {# / article tiles #}
+                            </div>
+                        </li>
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Video tiles
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                {# video tiles #}
+                                <div class="row small-up-1 medium-up-2 videos-container">
+                                    {% for i in 1..2 %}
+                                        <div class="column column-block">
+                                            <article class="video-box media-box">
+                                                <div class="shadow-box">
+                                                    <div class="responsive-embed widescreen no-margin">
+                                                        <iframe src="https://www.youtube.com/embed/C0DPdy98e4c" frameborder="0" allowfullscreen></iframe>
+                                                    </div>
+                                                </div>
+                                                <h4 class="item-title">
+                                                    Video name
+                                                </h4>
+                                            </article>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                {# / video tiles #}
+                            </div>
+                        </li>
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Gallery tiles
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                {# gallery tiles #}
+                                <div class="row column">
+                                    <div class="featured-galleries-slider featured-slider">
+                                        {% for i in 1..2 %}
+                                            <div class="row featured-box">
+                                                <div class="column large-8">
+                                                    <div class="shadow-box lg">
+                                                        <div class="image-container">
+                                                            <img src="//via.placeholder.com/900x900?text={{ i }}" alt="">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="column large-4">
+                                                    <div class="featured-heading">
+                                                        <h2>
+                                                            <a href="">Gallery name goes here</a>
+                                                        </h2>
+                                                    </div>
+                                                    <a href="" class="button border">
+                                                        <span class="text-top">
+                                                            Browse images
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {# / gallery tiles #}
+                            </div>
+                        </li>
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Gallery image tiles
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                {# gallery image tiles #}
+                                <div class="row small-up-2 items-container">
+                                    {% for i in 1..2 %}
+                                        <div class="column column-block">
+                                            <article class="item-box gallery-box media-box">
+                                                <div class="item-image shadow-box">
+                                                    <a class="image-container" data-fit="1" href="#">
+                                                        <img src="//via.placeholder.com/600x600?text={{ i }}" alt="">
+                                                    </a>
+                                                </div>
+                                                <h4 class="item-title">
+                                                    Image {{ i }} title
+                                                </h4>
+                                            </article>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                {# / gallery image tiles #}
+                            </div>
+                        </li>
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Stockist tiles
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+
+                                <div class="custom-search">
+                                    <div class="row">
+                                        <div class="column large-6 large-push-3">
+                                            <div class="input-group mod-custom mod-search no-margin">
+                                                <span class="input-group-label">
+                                                    <i aria-hidden="true" class="sw-icon-musica-searcher"></i>
+                                                </span>
+                                                <input class="input-group-field" type="text" placeholder="Search by town, city or postcode">
+                                                <div class="input-group-button">
+                                                    <button type="submit" class="button">Go</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {# stockist tiles #}
+                                <div class="row">
+                                     {% for i in 1..4 %}
+                                        <div class="column large-6">
+                                            <article class="stockist-box">
+                                                <div class="row">
+                                                    <div class="column medium-8">
+                                                        <h4>Stockist Company Name</h4>
+                                                        <div>Address line1</div>
+                                                        <div>Address line2</div>
+                                                        <div>Address line3</div>
+                                                        <div>Town/City</div>
+                                                        <div>POSTCODE</div>
+                                                    </div>
+                                                    <div class="column medium-4">
+                                                        <div class="stockist-map">
+                                                            <h5>United Kingdom</h5>
+                                                            <a href="https://maps.google.co.uk/maps?q=TS1+3BA&amp;ie=UTF-8&amp;hl=en" target="_blank">open map</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </article>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                {# / stockist tiles #}
+                            </div>
+                        </li>
+                    </ul>
+                </section>
+                <!--
+                {# blank section #}
+                <section class="sg-section">
+                    <h2>
+                        <span>Blank section</span>
+                    </h2>
+                    <ul class="accordion" data-accordion data-allow-all-closed="true" data-multi-expand="true">
+                        {# blank section item #}
+                        <li class="accordion-item is-active" data-accordion-item>
+                            <a href="#" class="accordion-title">
+                                Blank section item
+                            </a>
+                            <div class="accordion-content" data-tab-content>
+                                {# blank section item content #}
+                                    Blank section element
+                                {# / blank section item content #}
+                            </div>
+                        </li>
+                    </ul>
+                </section>
+                {# / blank section #}
+                -->
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        pre {
+            color: #fff;
+            background-color: #000;
+            padding: .5rem;
+            font-weight: 700;
+            font-size: .9rem;
+        }
+        .sg-icons i + i {
+            margin-left: .5rem;
+        }
+    </style>
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script>
+
+        $('a').on('click', function(e) {
+            //e.preventDefault();
+        });
+
+        $(document).on('click','.product-option-container .rectangle',function(){
+            $(this).closest('.product-option-container').find('.active').removeClass('active');
+            $(this).addClass('active');
+        });
+
+        $(document).on('down.zf.accordion', function() {
+            $('image-container').imageContainer();
+            $(window).trigger('resize');
+        });
+
+        $('.sg-collapse-all').on('click', function() {
+            $(document).find('.accordion-item.is-active').each(function() {
+                $(this).find('.accordion-title').trigger('click');
+            });
+        });
+
+        $('.sg-copy').on('click', function() {
+            var target = $(this).data('copy'),
+                element = $('#' + target);
+
+            CopyToClipboard(target);
+            console.log(element.text() + ' copied');
+        });
+
+        function CopyToClipboard(containerid) {
+          // Create a new textarea element and give it id='t'
+          let textarea = document.createElement('textarea')
+          textarea.id = 't'
+          // Optional step to make less noise on the page, if any!
+          textarea.style.height = 0
+          // Now append it to your page somewhere, I chose <body>
+          document.body.appendChild(textarea)
+          // Give our textarea a value of whatever inside the div of id=containerid
+          textarea.value = document.getElementById(containerid).innerText
+          // Now copy whatever inside the textarea to clipboard
+          let selector = document.querySelector('#t')
+          selector.select()
+          document.execCommand('copy')
+          // Remove the textarea
+          document.body.removeChild(textarea)
+        }
+
+    </script>
+{% endblock %}

@@ -1,0 +1,103 @@
+.button {
+    background-color: if(setting-value('forms_use_default_website_colors'), $color_global_yellow_button_background, $color_forms_button_background);
+    color: if(setting-value('forms_use_default_website_colors'), $color_global_black_button_text, $color_forms_button_text);
+    text-transform: none;
+    font-size: .8rem;
+    font-family: $font_main;
+    padding: 1.3rem;
+
+    @include is-active {
+        background-color: if(setting-value('forms_use_default_website_colors'), $color_global_yellow_button_background, $color_forms_button_background);
+        color: if(setting-value('forms_use_default_website_colors'), $color_global_black_button_text, $color_forms_button_text);
+    }
+
+    &.border {
+        background: transparent;
+        font-size: 1.01rem;
+        border: 1px solid if(setting-value('forms_use_default_website_colors'), $color_global_black_button_text, $color_forms_button_text);
+        padding: 1.5rem 3.27rem;
+        letter-spacing: 5px;
+        min-width: 170px;
+
+        &.md {
+            padding: 1.15rem 2rem;
+        }
+
+        @include is-active {
+            background-color: transparent;
+        }
+    }
+
+    &.large {
+        font-size: 1.01rem;
+        padding: 2.2rem 2rem;
+        min-width: 215px;
+    }
+
+     &.secondary {
+         background-color: #adadad;
+         color: #ffffff;
+
+         @include is-active {
+             background-color: #adadad;
+             color: #ffffff;
+        }
+    }
+
+    &.third {
+        background-color: $colour_main;
+        color: #ffffff;
+
+        @include is-active {
+            background-color: $colour_main;
+            color: #ffffff;
+        }
+    }
+
+    &.pad-x {
+        @include rem(min-width, 180px);
+    }
+
+    & + .button {
+        margin-left: .5rem;
+    }
+
+    &.disabled {
+        pointer-events: none;
+    }
+
+    &.basket-proceed-button {
+        background-color: if(setting-value('shopping_basket_use_default_website_colors'), $color_global_yellow_button_background, $color_basket_checkout_button_background);
+        color: if(setting-value('shopping_basket_use_default_website_colors'), $color_global_black_button_text, $color_basket_checkout_button_text);
+    }
+}
+
+.paypal-button {
+    border-radius: 0;
+    background: #ffc43a;
+    padding: .35rem 3rem;
+    text-align: center;
+
+    &:focus, &:hover {
+       background-color: #ffc43a;
+    }
+}
+
+.icon-button {
+    display: inline-block;
+    font-size: 2.18rem;
+    color: $colour_bodytxt;
+
+    @include is-active {
+        color: $colour_bodytxt;
+    }
+}
+
+button {
+    cursor: pointer;
+    font-family: $font_main;
+}
+
+.button_add-basket {
+    white-space: nowrap;
+}

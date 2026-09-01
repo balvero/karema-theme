@@ -1,0 +1,93 @@
+{# Extend master template #}
+{% extends 'templates/master.twig' %}
+
+{% block content %}
+
+    <div id="content" class="content{{ contentClass ? ' ' ~ contentClass : '' }} {{ brands? 'brands': ''}} {{ gts.warehouse_sale or gts.vat_sale ? 'with-sale' : '' }} ">
+        <div class="{{ full_width ? 'expanded' : 'row column' }}">
+
+            {% if full_width %}
+                {{'<div class="row"><div class="small-12 column">'}}
+            {% endif %}
+
+            <ul class="breadcrumbs main-breadcrumbs{{ show_bct ? ' mod-show' : '' }}">
+                {# Render breadcrumbs #}
+                <li>
+                    <a href="/">Home</a>
+                </li>
+                {% block breadcrumbs %}{% endblock %}
+                <li>
+                    {{ breadcrumb_title|default(title) }}
+                </li>
+            </ul>
+
+            {% if full_width %}
+                {{'</div></div>'}}
+            {% endif %}
+
+            <section class="main-content">
+                {% if full_width %}
+                    {{'<div class="row"><div class="small-12 column">'}}
+                {% endif %}
+					{% if collection_page %}
+						<div>
+						{{ render(global.theme.sections_above_content_area, { 
+							featured_products: featured_products, 
+							featured_categories: featured_categories, 
+							gts: global.theme.settings, 
+							theme: theme, html: html, 
+							blog_posts: blog_posts, 
+							recently_viewed: global.recently_viewed_products, 
+							product: product,
+							global_theme: global.theme,
+							global_customer: global.customer
+							}) 
+						}}
+						<div id="{{ global.theme.content_area_id }}">
+					{% endif %}
+                    {% if title %}
+                        <h1 class="{{ titleClass ? titleClass : 'main-heading' }}{{ hideTitle ? ' show-for-sr' : '' }}"{% if title_setting %} data-name="{{ title_setting }}" id="{{ title_setting }}"{% endif %}>
+                            {{ title }}
+                        </h1>
+                    {% endif %}
+                    {% if description and not hideDesc %}
+                        <div class="page-description {{ descriptionClass ? descriptionClass : '' }}"{% if description_setting %} data-name="{{ description_setting }}" id="{{ description_setting }}"{% endif %}>
+                            {{ description|raw }}
+                        </div>
+                    {% endif %}
+                {% if full_width %}
+                    {{'</div></div>'}}
+                {% endif %}
+                {% block page_content %}{% endblock %}
+				{% if category.description2 %}
+					<div class="row">
+						<div class="small-12 column">
+							<div class="page-description {{ descriptionClass ? descriptionClass : '' }}"{% if description_setting %} data-name="{{ description_setting }}" id="{{ description_setting }}"{% endif %}>
+								{{ category.description2|raw }}
+							</div>
+						</div>
+					</div>
+				{% endif %}
+				{% if collection_page %}
+					</div>
+					{{ render(global.theme.sections_below_content_area, { 
+						featured_products: featured_products, 
+						featured_categories: featured_categories, 
+						gts: global.theme.settings, 
+						theme: theme, html: html, 
+						blog_posts: blog_posts, 
+						recently_viewed: global.recently_viewed_products, 
+						product: product,
+						global_theme: global.theme,
+						global_customer: global.customer
+						}) 
+					}}
+					</div>
+				{% endif %}
+            </section>
+        </div>
+    </div>
+
+
+{% endblock %}
+

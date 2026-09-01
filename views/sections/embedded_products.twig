@@ -1,0 +1,27 @@
+{% set embedded_products = category(section.settings.category_products) %}
+{% set featured_products = featured_products(section.settings.products_to_show) %}
+{% set hide_prices = gts.hide_prices and not global_customer.trade %}
+{% set hover_class_embedded = gts.product_image_hover == 'zoom' ? ' mod-img-zoom' : gts.product_image_hover == 'zoom_out' ? ' mod-img-zoom-out' : gts.product_image_hover == 'second' ? 'second' : '' %}
+
+{# Render featured products #}
+<section class="sw-section featured-products">
+	<div class="products items-container row small-up-{{ section.settings.products_per_row_mobile }} medium-up-{{ section.settings.products_per_row_tablet }} large-up-{{ section.settings.products_per_row_desktop }}">
+		{% if section.settings.text_home_featured_title or section.settings.text_home_featured_paragraph %}
+			<div class="column column-block">
+				<div class="featured-products-heading">
+					<div class="inner">
+						<h2 class="featured-products-title">
+							{{ theme.text_snippet('home_featured_title', '', section.settings) }}
+						</h2>
+                        {{ theme.text_snippet('home_featured_paragraph', '', section.settings) }}
+					</div>
+				</div>
+			</div>
+		{% endif %}
+		{% if section.settings.show_featured_products == 'yes' %}
+			{% include 'partials/item.twig' with { 'items': featured_products, 'container': gts.image_container_product, 'hide_prices': hide_prices, 'variation_pricing': gts.variation_pricing } %}
+		{% else %}
+			{% include 'partials/item.twig' with { 'items': embedded_products.products|slice(0, section.settings.products_to_show), 'container': gts.image_container_product, 'hide_prices': hide_prices, 'variation_pricing': gts.variation_pricing } %}
+		{% endif %}
+	</div>
+</section>

@@ -1,0 +1,68 @@
+{% if type == 'canvas' %}
+    <div class="off-canvas off-canvas-basket position-right" id="offCanvasBasket" data-off-canvas data-content-scroll="false">
+        <div class="row">
+            <div class="off-canvas-basket-heading">
+                <button class="btn-close" data-close type="button">
+                    <span>Luk</span>
+                </button>
+            </div>
+            <div class="items">
+                {% include 'partials/basket_items.twig' with { 'items' : basket_items() } %}
+            </div>
+            <div class="summary">
+                <div class="row">
+                    <div class="column small-6">
+                        <span class="off-canvas-basket__total-label">Subtotal</span>
+                    </div>
+                    <div class="column small-6 text-right">
+                        <span class="off-canvas-basket__total-value total">
+                            {{ format_price(global.basket.value) }}
+                        </span>
+                    </div>
+                </div>
+
+                <p class="subheader">Leveringsomkostninger og rabatkoder tilføjes ved kassen</p>
+
+                <div class="row gutter-custom buttons">
+                    <div class="column large-7 large-push-5">
+                        <a href="/checkout/basket" class="button expanded large text-nocase proceed">
+                            {# global.theme.settings.button_checkout #}
+							Fortsæt til betaling
+                        </a>
+                    </div>
+                    <div class="column large-5 large-pull-7">
+                        <a data-close class="button expanded secondary large">
+                            Fortsæt med at shoppe
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div class="shopwired-basket-modal">
+        <div class="inner">
+            <h2>
+                Varen er blevet tilføjet din kurv
+            </h2>
+            <div class="items"></div>
+            <div class="buttons">
+                <div class="row">
+                    <div class="medium-6 column">
+                        <button class="close-button button secondary expanded">
+                            Fortsæt med at shoppe
+                        </button>
+                    </div>
+                    <div class="medium-6 column">
+                        <a href="/checkout/basket" class="button expanded">
+                            Fortsæt til betaling
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <button class="close close-button alternative-background-color">
+                {{ theme.sw_icon('times-circle-o') }}
+            </button>
+        </div>
+    </div>
+{% endif %}

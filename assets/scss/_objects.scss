@@ -1,0 +1,134 @@
+$page_margins: (
+    'small': 20px,
+    'medium': 20px,
+    'large': 30px
+);
+
+.row {
+    max-width: none;
+
+    .row {
+        @include rem(margin-right, -(map-get($page_margins, 'small')));
+        @include rem(margin-left, -(map-get($page_margins, 'small')));
+
+        @each $name, $value in $page_margins {
+
+            $query: if($name == 'small', $s-only, if($name == 'medium', $m-only, $l-up));
+
+            @media #{$query} {
+                @include rem(margin-right, -($value));
+                @include rem(margin-left, -($value));
+            }
+        }
+
+        &.gutter-custom {
+            @include rem(margin-right, -15px);
+            @include rem(margin-left, -15px);
+
+            > .column, .columns {
+                @include rem(padding-right, 15px);
+                @include rem(padding-left, 15px);
+            }
+        }
+    }
+}
+
+.column,
+.columns {
+    @include rem(padding-right, map-get($page_margins, 'small'));
+    @include rem(padding-left, map-get($page_margins, 'small'));
+
+    @each $name, $value in $page_margins {
+
+        $query: if($name == 'small', $s-only, if($name == 'medium', $m-only, $l-up));
+
+        @media #{$query} {
+            @include rem(padding-right, $value);
+            @include rem(padding-left, $value);
+        }
+    }
+}
+
+.content {
+
+    &:not(.full-height) {
+        @include rem(padding, 30px 0);
+
+        @media #{$m-up} {
+            @include rem(padding, 40px 0);
+        }
+    }
+
+    &.split {
+        @media #{$l-up} {
+            background: linear-gradient(90deg, $white 50%, $light-grey 50%);
+
+            &-right {
+                background: linear-gradient(90deg, $white 75%, $light-grey 25%);
+            }
+
+            .account-page & {
+                background: linear-gradient(90deg, $white 50%, if(setting-value('account_pages_use_default_website_colors'), $color_global_content_background, $color_account_background) 50%);
+
+                &-right {
+                    background: linear-gradient(90deg, $white 75%, if(setting-value('account_pages_use_default_website_colors'), $color_global_content_background, $color_account_background) 25%);
+                }
+            }
+        }
+    }
+
+    &.homepage {
+        padding-top: 0;
+    }
+}
+
+.text-container {
+    max-width: $site-width;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.is-dropdown-submenu {
+    z-index: 3;
+}
+
+.p-margins {
+
+    p {
+        margin-bottom: 0;
+
+        & + p {
+            margin-top: 1rem;
+        }
+    }
+}
+
+.items-container {
+
+    // list / grid view display
+    .item-box--list {
+        display: none;
+    }
+
+    &.list {
+
+        .item-box {
+            display: none;
+
+            &--list {
+                display: block;
+                margin-bottom: 1rem;
+            }
+        }
+    }
+}
+
+.js {
+    .hide-for-js {
+        display: none;
+    }
+}
+
+*:focus {
+    outline: none !important;
+}

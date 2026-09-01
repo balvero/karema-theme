@@ -1,0 +1,395 @@
+
+// validation messages
+span.validation-error {
+    color: #ef3d3d;
+    font-style: italic;
+    font-size: .8rem;
+    white-space: nowrap;
+    padding-left: .5rem;
+
+    & + * {
+        //background-color: #fff5f5;
+    }
+
+    .input-group & {
+        position: absolute;
+    }
+}
+
+.field-label {
+    font-weight: normal;
+    font-size: 1.01rem;
+    padding: 0;
+    margin: 0;
+    margin-bottom: .5rem;
+    line-height: normal;
+    display: inline-block;
+    color: if(setting-value('website_colours_use_default_website_colors'), $color_global_black_text, $color_website_text);
+}
+
+// inputs
+[type=color],
+[type=date],
+[type=datetime-local],
+[type=datetime],
+[type=email],
+[type=month],
+[type=number],
+[type=password],
+[type=search],
+[type=tel],
+[type=text],
+[type=time],
+[type=url],
+[type=week],
+textarea,
+select {
+    font-family: $font_main;
+    box-shadow: none !important;
+    border-radius: 0;
+    border: 1px solid $input-grey;
+    font-size: .873rem;
+    height: 3.2rem;
+    padding: .7rem 1rem;
+}
+
+input::-webkit-input-placeholder {
+     line-height: normal !important;
+}
+
+textarea {
+    resize: none;
+    min-height: 150px;
+}
+
+// dropdown boxes
+select {
+    background-image: url(../images/select_arrow.svg);
+    background-size: 10px 6px;
+    padding-right: 2rem;
+    background-position: right -10px center;
+
+    &:focus,
+    &:hover,
+    &:active {
+
+    }
+}
+
+select:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 #000;
+}
+
+@media screen and (-ms-high-contrast: active),
+(-ms-high-contrast: none) {
+    select::-ms-expand {
+        display: none;
+    }
+    select:focus::-ms-value {
+        background: transparent;
+        color: grey;
+    }
+}
+
+[name="date_of_birth"] {
+    background-color: $white !important;
+
+    &.hasDatepicker {
+        cursor: pointer;
+    }
+}
+
+// checkbox and radio inputs
+$check-border-colour: #dddddd;
+$check-selected-colour: $colour_main;
+$check-colour: $white;
+$radius_on: 1;
+
+input {
+    &[type="checkbox"],
+    &[type="radio"] {
+        border: 0;
+        clip: rect(0 0 0 0);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+    }
+
+    &[type="checkbox"]+label,
+    &[type="radio"]+label {
+        position: relative;
+        display: block;
+        padding: 7px;
+        line-height: 1;
+        padding-left: 32px;
+        padding-right: 0;
+        margin: 0;
+        font-size: 0.945rem;
+        font-weight: 700;
+        vertical-align: middle;
+        user-select: none;
+        color: if(setting-value('website_colours_use_default_website_colors'), $color_global_black_text, $color_website_text);
+
+        .filters & {
+            font-weight: normal;
+            padding-left: 30px;
+            color: if(setting-value('product_filters_menu_use_default_website_colors'), $color_global_black_text, $color_filters_menu_filter_names);
+        }
+    }
+
+    &[type="checkbox"]+label:before,
+    &[type="radio"]+label:before {
+        box-sizing: content-box;
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 20px;
+        height: 20px;
+        margin-top: -10px;
+        text-align: center;
+        border-radius: 50%;
+        background-color: #adadad;
+
+        .filters & {
+            width: 18px;
+            height: 18px;
+            margin-top: -9px;
+            background-color: if(setting-value('product_filters_menu_use_default_website_colors'), $color_global_other_content_background, $color_filters_menu_unselected);
+        }
+    }
+
+    &[type="checkbox"]+label:before {
+        background-color: if(setting-value('forms_use_default_website_colors'), $color_global_grey_text_icons, $color_forms_check_background);
+    }
+
+     &[type="radio"]+label:before {
+        background-color: if(setting-value('forms_use_default_website_colors'), $color_global_grey_text_icons, $color_forms_radio_background);
+    }
+
+    &[type="checkbox"]+label:after,
+    &[type="radio"]+label:after {
+        box-sizing: content-box;
+        content: '';
+        background-color: $white;
+        position: absolute;
+        top: 50%;
+        left: 4px;
+        width: 12px;
+        height: 12px;
+        margin-top: -6px;
+        @include transform( scale(0) );
+        transform-origin: 50%;
+        transition: transform 200ms ease-out;
+        border-radius: 50%;
+
+        .filters & {
+            width: 18px;
+            height: 18px;
+            margin-top: -9px;
+            left: 0;
+            background-color: if(setting-value('product_filters_menu_use_default_website_colors'), $color_global_black_icons, $color_filters_menu_selected);
+        }
+    }
+
+     &[type="checkbox"]+label:after {
+        background-color: if(setting-value('forms_use_default_website_colors'), $color_global_white_button_text, $color_forms_check_selected);
+    }
+
+     &[type="radio"]+label:after {
+        background-color: if(setting-value('forms_use_default_website_colors'), $color_global_white_button_text, $color_forms_radio_selected);
+    }
+
+    &:checked+label:after {
+        content: '';
+        @include transform( scale(1) );
+        transition: transform 200ms ease-out;
+    }
+}
+
+.input-group.mod-simple {
+    input {
+        border: 0;
+        background: #fff;
+        height: auto;
+        font-size: 1.09rem;
+        padding: 1.5rem;
+
+        &:focus {
+            border: 0;
+        }
+
+        @include placeholder {
+            color: #000000;
+        }
+    }
+
+    .input-group-button {
+        background: $colour_main;
+    }
+
+    .button {
+        text-transform: uppercase;
+        background: $colour_main;
+        color: $white;
+        font-size: 1.09rem;
+        padding-left: 2rem;
+        padding-right: 2rem;
+
+        @include is-active {
+            background: $colour_main;
+            color: $white;
+        }
+    }
+}
+
+.input-group.mod-custom {
+    padding: 10px 15px;
+    background: $colour_bg;
+
+    .input-group-label {
+        color: $colour_bodytxt;
+        font-size: 1.8rem;
+        background: transparent;
+        border: 0;
+    }
+
+    input {
+        border: 0;
+        background: $colour_bg;
+        height: auto;
+        font-size: 1.09rem;
+        padding: 1.09rem 1rem;
+
+        &:focus {
+            border: 0;
+        }
+
+        @include placeholder {
+            color: #000000;
+        }
+    }
+
+    .input-group-button {
+        background: $colour_second;
+    }
+
+    .button {
+        text-transform: uppercase;
+        background: $colour_second;
+        color: $colour_bodytxt;
+        font-size: 0.873rem;
+        font-weight: 900;
+        padding-left: 1rem;
+        padding-right: 1rem;
+
+        @include is-active {
+            background: $colour_second;
+            color: $colour_bodytxt;
+        }
+    }
+
+    &.mod-search {
+        background: #fff;
+
+        input {
+            background: #fff;
+            font-size: .873rem;
+        }
+    }
+}
+
+.search-container .input-group {
+    position: relative;
+
+    .close-search {
+        position: absolute;
+        top: 50%;
+        @include transform( translateY(-50%) );
+        left: 100%;
+        margin-left: 15px;
+        color: if(setting-value('search_use_default_website_colors'), $color_global_black_text, $color_search_close);
+        text-transform: lowercase;
+        font-size: .873rem;
+        font-weight: normal;
+
+        span {
+            text-decoration: underline;
+        }
+    }
+
+    &.mod-search {
+
+        .input-group-label {
+            color: if(setting-value('search_use_default_website_colors'), $color_global_black_titles, $color_search_icon);
+        }
+
+        .header-search-input {
+            color: if(setting-value('search_use_default_website_colors'), $color_global_black_titles, $color_search_icon);
+
+            @include placeholder {
+                color: if(setting-value('search_use_default_website_colors'), $color_global_black_titles, $color_search_icon);
+            }
+        }
+
+        .button,
+        .input-group-button {
+            background-color: if(setting-value('search_use_default_website_colors'), $color_global_yellow_button_background, $color_search_button_background);
+            color: if(setting-value('search_use_default_website_colors'), $color_global_black_button_text, $color_search_button_text);
+        }
+    }
+}
+
+// date field
+.delivery-date-container {
+    position: relative;
+
+    input {
+        padding-left: 3.4rem;
+        cursor: pointer;
+    }
+
+    &:after {
+        content: '\e94f';
+        font-family: $icon;
+        @include vertical-align(absolute);
+        left: 1rem;
+        font-size: 1.6rem;
+        pointer-events: none;
+    }
+}
+
+.ui-datepicker {
+
+    select {
+        height: auto;
+        padding-right: 0;
+        background-position: center right 8px;
+    }
+
+    .ui-datepicker-header {
+        .ui-datepicker-prev,
+        .ui-datepicker-next {
+            top: calc(50% - .9em);
+        }
+    }
+}
+
+
+// gift voucher form
+
+.voucher-form {
+
+    fieldset,
+    label {
+        margin-bottom: 1.5em;
+    }
+
+    .menu.simple li {
+        @include rem(margin-right, 30px);
+    }
+}

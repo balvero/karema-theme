@@ -1,0 +1,76 @@
+{% if section.blocks|length > 1 %}
+	{% set img_and_text_slider = {
+		autoplay: section.settings.image_with_text_autoplay_checkbox|default(false), 
+		autoplaySpeed: section.settings.image_with_text_autoplay_speed~'000',
+		slidesToShow: 1,
+		infinite: true,
+		arrows: true,
+		dots: false,
+		swipeToSlide: true,
+		responsive: [
+			{
+				breakpoint: 1023,
+				settings: {
+					slidesToShow: 1
+				}
+			},
+			{
+				breakpoint: 640,
+				settings: {
+					slidesToShow: 1
+				}
+			}
+		]
+	} %}
+{% endif %}
+
+<div class="row column {{ section.blocks|length > 1 ? 'sw-section-img-and-text-slider' : ''}}" {% if section.blocks|length > 1 %}data-slick="{{ img_and_text_slider|json_encode }}"{% endif %}>
+	{% for block in section.blocks %}
+		<section class="sw-section sw-section-img-and-text" data-id="{{ block.id }}" data-index="{{ loop.index0 }}">
+			<div class="image-block">
+				<div class="image-container hide-for-medium" data-fit="1">
+                    {{ html.image(block.settings.slide_image_mobile ? block.settings.slide_image_mobile : block.settings.slide_image_desktop, block.settings.slide_image_alt_text, '', '', gts.lazyload_images) }}
+				</div>
+				<div class="image-container show-for-medium" data-fit="0">
+                    {{ html.image(block.settings.slide_image_desktop, block.settings.slide_image_alt_text, '', '', gts.lazyload_images) }}
+				</div>
+			</div>
+			{% if section.blocks|length == 1 %}
+				{% if block.settings.slide_image_slide_text or block.settings.slide_image_button_link %}
+					<div class="text-overlay">
+						{{ block.settings.slide_image_slide_text|raw }}
+						{% if block.settings.slide_image_button_link %}
+							<a href="{{ block.settings.slide_image_button_link }}" class="sw-section-slide-overlay-btn button border">{{ block.settings.slide_image_button_text }}</a>
+						{% endif %}
+					</div>
+				{% endif %}
+			{% else %}
+				{% if block.settings.slide_image_slide_text or block.settings.slide_image_button_link %}
+					<div class="text-overlay">
+						{{ block.settings.slide_image_slide_text|raw }}
+						<div class="row collapse">
+							{% if block.settings.slide_image_button_link %}
+								<div class="column small-6 large-12">
+									<a href="{{ block.settings.slide_image_button_link }}" class="sw-section-slide-overlay-btn button border">{{ block.settings.slide_image_button_text }}</a>
+								</div>
+							{% endif %}
+							<div class="column small-6 large-12">
+								<div class="sw-section-slide-overlay-nav{{ block.settings.slide_image_button_link ? '' : ' mod-text-left' }}">
+									<button class="js-prev-slide">{{ theme.sw_icon('arrow1') }}</button>
+									<button class="js-next-slide">{{ theme.sw_icon('arrow') }}</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				{% else %}
+					<div class="column small-6 large-12">
+						<div class="sw-section-slide-overlay-nav">
+							<button class="js-prev-slide">{{ theme.sw_icon('arrow1') }}</button>
+							<button class="js-next-slide">{{ theme.sw_icon('arrow') }}</button>
+						</div>
+					</div>
+				{% endif %}
+			{% endif %}
+		</section>
+	{% endfor %}
+</div>

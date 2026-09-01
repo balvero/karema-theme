@@ -1,0 +1,38 @@
+{% if section.settings.show_featured_categories == 'yes' %}
+	{% set embedded_categories = featured_categories(section.settings.categories_to_show) %}
+{% else %}
+	{% set embedded_categories = category(section.settings.embedded_category).categories %}
+{% endif %}
+
+{% if embedded_categories|length %}
+    <div class="row column">
+        <div class="sw-section featured-categories-slider featured-slider important">
+            {% for category in embedded_categories|slice(0, section.settings.categories_to_show) %}
+                <div class="row featured-box">
+                    <div class="column large-8">
+                        <div class="shadow-box lg category-box">
+                            <a class="image-container" href="{{ category.url }}" data-fit="{{ global.theme.settings.image_container_category ? '1' : '0' }}">
+                                {{ html.image(category.photo_url, category.photo_description, '', '', false, true) }}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="column large-4">
+                        <div class="featured-heading">
+                            <h2>
+                                <a href="{{ category.url }}">{{ category.title }}</a>
+                            </h2>
+                            <div class="show-for-large">
+                                {{ category.description|raw }}
+                            </div>
+                        </div>
+                        <a href="{{ category.url }}" class="button border">
+                            <span class="text-top">
+                                Browse
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}

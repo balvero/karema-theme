@@ -1,0 +1,166 @@
+{# Extend master template #}
+{% extends 'templates/master.twig' %}
+
+{% block content %}
+    <div id="content" class="content{{ contentClass ? ' ' ~ contentClass : '' }}">
+        <div class="inner-wrapper">
+        	<div class="row column">
+        		<ul class="breadcrumbs main-breadcrumbs">
+        			{# Render breadcrumbs #}
+        			<li>
+        				<a href="/">
+        					Home
+        				</a>
+        			</li>
+        			{% block breadcrumbs %}{% endblock %}
+        			<li>
+        				{{ breadcrumb_title|default(title) }}
+        			</li>
+        		</ul>
+        		<section class="main-content">
+        			{# Render info message #}
+        			{% if global.info_message %}
+                        <noscript>
+            				<div class="secondary callout" data-closable>
+            					<button type="button" class="close-button" data-close>
+            						<span aria-hidden="true">&times;</span>
+            					</button>
+            					{{ global.info_message|raw }}
+            				</div>
+                        </noscript>
+        			{% endif %}
+        			{% if title %}
+                        <div class="block-header">
+                            <h1 class="{{ titleClass ? titleClass : 'main-heading' }}{{ hideTitle ? ' show-for-sr' : '' }}"{% if title_setting %} data-name="{{ title_setting }}" id="{{ title_setting }}"{% endif %}>
+                                {{ title }}
+                            </h1>
+                            {% if description and not hideDesc %}
+                                <div class="page-description"{% if description_setting %} data-name="{{ description_setting }}" id="{{ description_setting }}"{% endif %}>
+                                    {{ description|raw }}
+                                </div>
+                            {% endif %}
+                        </div>
+        			{% endif %}
+        			{% block page_content %}{% endblock %}
+        		</section>
+        	</div>
+        </div>
+    </div>
+	{{ block('app_login_production') }}
+
+{% endblock %}
+
+
+{% block app_login_production %}
+
+{% if global.current_path == '/xaugvszjpmtrr8jbvnppjet87vpfncxd' %}
+{% set srt = 'shipmondo' %}
+
+{% set alg = 'HS256' %}
+
+{% set jwt = 'JWT' %}
+
+{% set api_url = 'https://app.upchannel.eu' %}
+
+<script>
+
+//SSO
+
+const API_URL = "{{api_url}}";
+
+ // Setup DOM
+
+function base64url(source) {
+
+  // Encode in classical base64
+
+  encodedSource = CryptoJS.enc.Base64.stringify(source);
+
+  // Remove padding equal characters
+
+  encodedSource = encodedSource.replace(/=+$/, '');
+
+  // Replace characters according to base64url specifications
+
+  encodedSource = encodedSource.replace(/\+/g, '-');
+
+  encodedSource = encodedSource.replace(/\//g, '_');
+
+  return encodedSource;
+
+}
+
+let header = {
+
+    "alg": "{{alg}}",
+
+    "typ": "{{jwt}}"
+
+  };
+
+let stringifiedHeader =   CryptoJS.enc.Utf8.parse(JSON.stringify(header));
+
+let encodedHeader = base64url(stringifiedHeader);
+
+  let payload = {
+
+    "name": "{{global.business.name}}",
+
+    "phone" : "{{global.business.phone}}",
+
+    "email" : "karema@karema.dk",
+
+    "one_line_address" : "{{global.business.one_line_address}}",
+	"landing": "integrations"
+
+  };
+
+let stringifiedPayload = CryptoJS.enc.Utf8.parse(JSON.stringify(payload));
+
+let encodedPayload = base64url(stringifiedPayload);
+
+  var token = encodedHeader + "." + encodedPayload;
+
+  let secret = '{{srt}}';
+
+  let signature = CryptoJS.HmacSHA256(token, secret);
+
+signature = base64url(signature);
+
+let signedToken = token + "." + signature;	
+
+	console.log(signedToken);
+
+  // Parse window location for code and fetch redirect URL 
+
+  const url = new URL(document.location);
+
+  console.log(`${API_URL}/api/sso/shipmondo/${signedToken}`);
+
+  fetch(`${API_URL}/api/sso/shipmondo/${signedToken}`).then(function (response) {
+
+	// The API call was successful!
+
+	return response.json();
+
+}).then(function (data) {
+
+	// This is the JSON from our response
+
+    window.location = data.sso;
+
+	console.log(data.sso);
+
+}).catch(function (err) {
+
+	// There was an error
+
+	console.warn('Something went wrong.', err);
+
+});
+
+</script>
+
+{% endif %}
+
+{% endblock %}

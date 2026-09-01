@@ -1,0 +1,20 @@
+{% if recently_viewed|length %}
+	{# Render featured products #}
+	<section class="featured-products section-block">
+		<div class="products items-container row small-up-{{ section.settings.products_per_row_mobile }} medium-up-{{ section.settings.products_per_row_tablet }} large-up-{{ section.settings.products_per_row_desktop }}">
+			{% if section.settings.text_home_featured_title or section.settings.text_home_featured_paragraph %}
+				<div class="column column-block">
+					<div class="featured-products-heading">
+						<div class="inner">
+							<h2 class="featured-products-title">
+								{{ theme.text_snippet('home_featured_title', '', section.settings) }}
+							</h2>
+							{{ theme.text_snippet('home_featured_paragraph', '', section.settings) }}
+						</div>
+					</div>
+				</div>
+			{% endif %}
+			{% include 'partials/item.twig' with { 'items': recently_viewed|slice(0, section.settings.products_to_show) } %}
+		</div>
+	</section>
+{% endif %}

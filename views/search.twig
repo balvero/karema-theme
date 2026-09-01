@@ -1,0 +1,17 @@
+{# Extend collection template #}
+{% extends 'templates/collection.twig' %}
+
+{% set gts = global.theme.settings %}
+{% set title = gts.text_search_page_title %}
+{% set show_sidebar = true %}
+{% set titleClass = 'font-size-collection-other-description' %}
+
+{% block sidebar %}
+    {# Render category menu #}
+    {% include 'partials/category_menu.twig' with { hide_side_menu: true } %}
+{% endblock %}
+
+{% block items %}
+	{# Render products #}
+	{% include 'partials/items.twig' with { 'classes': 'small-up-'~ global.theme.settings.products_per_row_mobile ~'  medium-up-' ~ global.theme.settings.products_per_row_tablet ~' large-up-' ~ global.theme.settings.products_per_row_desktop } %}
+{% endblock %}

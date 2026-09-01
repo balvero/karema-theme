@@ -1,0 +1,243 @@
+.search-open {
+	#content {
+		//height: 100vh;
+	}
+}
+
+body.search-open {
+	overflow: hidden;
+	//height: 100%;
+}
+
+.search-open #content {
+	z-index: 1;
+}
+
+.search-open .content:before {
+	background-color: hsla(0, 0%, 0%, .75);
+	z-index: 1;
+}
+
+#header-search {
+	position: absolute;
+	top: 0;
+	z-index: 999;
+	background-color: #fff;
+	padding: 20px 0;
+	
+	.input-container {
+		padding: 10px 20px;
+		
+		.mod-search {
+			display: flex;
+			align-items: center;
+			max-width: 720px;
+			justify-self: center;
+			margin:auto;
+			padding: 0px 20px;
+			border: 2px solid #333;
+			border-radius: 30px;
+			
+			
+			#header-search-input {
+				font-size: 16px !important;
+			}
+			
+			i {
+				font-size: 1.5rem;
+				
+				&:hover {
+					opacity: 0.5;
+				}
+			}
+			
+			input::placeholder {
+			  color: #ccc !important;
+			}
+		}
+	}
+	
+	.search-container {
+		padding-bottom: 0px;
+	}
+	
+}
+
+
+#algolia-search-results {
+	
+	display: grid;
+	grid-template-columns: repeat(6, minmax(0, 1fr));
+	grid-auto-rows: 1fr;
+   	gap: 8px;
+	
+	padding: 20px 0;
+	max-height: 100vh;
+	height: 100%;
+	padding: 20px;
+	
+	.item-box {
+		text-align: center;
+	}
+	
+	.item-title {
+		font-weight: 600;
+		margin: 8px 0 8px 0 !important;
+		padding: 0;
+		line-height: 1.2;
+	}
+	
+	.item-image {
+		background: #fff;
+		padding: 8px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 220px;
+		
+		img {
+			max-width: 100%;
+			max-height: 100%;
+			object-fit: contain;
+		}
+	}
+	
+	.item-description {
+		color: #000;
+		font-size: .875rem;
+    	line-height: 1;
+		overflow: hidden;
+		display: -webkit-box;
+		-webkit-line-clamp: 2; /* Specifies the number of lines */
+		-webkit-box-orient: vertical;
+		margin-bottom: 8px;
+	}
+	
+	.algolia-result-item {
+		display: flex;
+    	flex-direction: column;
+    	height: 100%;
+		
+		.item-box {
+			flex-grow: 1;
+		}
+	}
+}
+
+#no-results {
+	font-weight: bold;
+	font-size: 1.4rem;
+	padding: 0 20px 20px;
+	text-align: center;
+}
+
+/* === ALGOLIA PAGINATION === */
+.algolia-pagination {
+  display: flex;
+  justify-content: flex-end; /* align right */
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  font-family: inherit;
+}
+
+.algolia-pagination-nav {
+	padding: 0 20px 10px;
+}
+
+/* Buttons */
+.algolia-page-btn {
+  appearance: none;
+  background: transparent;
+  border: 1px solid #ddd;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 4px;
+  color: #111;
+  transition: all 0.15s ease-in-out;
+}
+
+/* Hover */
+.algolia-page-btn:hover:not(.is-disabled):not(.is-active) {
+  background-color: #f3f3f3;
+}
+
+/* Active page */
+.algolia-page-btn.is-active {
+  background-color: #111;
+  color: #fff;
+  border-color: #111;
+  cursor: default;
+}
+
+/* Disabled buttons */
+.algolia-page-btn.is-disabled,
+.algolia-page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Prev / Next emphasis */
+.algolia-page-btn.algolia-prev,
+.algolia-page-btn.algolia-next {
+  font-weight: 500;
+}
+
+/* Ellipsis */
+.algolia-ellipsis {
+  padding: 0 0.25rem;
+  color: #888;
+  user-select: none;
+}
+
+
+#algolia-search-results .algolia-load-more-row {
+  grid-column: 1 / -1;
+	margin-top: 20px;
+  margin-bottom: 60px;
+}
+
+/* Optional: full-width button */
+#algolia-search-results .algolia-load-more {
+  	color: #fff;
+	display: block;
+    border: 1px solid #d96b44;
+	background-color: #d96b44;
+    padding: 10px 5px;
+    margin: auto;
+    min-width: 100px;
+	pointer: cursor;
+	letter-spacing: 1px;
+}
+
+/* Mobile tweak */
+@media (max-width: 640px) {
+  .algolia-pagination {
+    justify-content: center; /* center on mobile */
+    flex-wrap: wrap;
+  }
+}
+
+
+@media only screen and (max-width: 63.9375em) {
+  #algolia-search-results {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 8px;
+	  	overflow-y: scroll;
+	}
+	
+	#algolia-search-results.hits {
+		padding-bottom: 50%;
+	}
+	
+}
+
+
+#sw-theme-preview-bar {
+	position: absolute;
+    bottom: 0px;
+    z-index: 999;
+}

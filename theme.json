@@ -1,0 +1,1512 @@
+{
+    "formatVersion": 5,
+    "settingEditor": {
+		"liveSectionReordering": true,
+        "responsiveBreakpoints": {
+            "smartphone": 375,
+            "tablet": 768,
+            "desktop": 1200
+        }
+    },
+    "sections": [
+		{ 
+			"name": "customers_also_bought",
+			"icon": "shop",
+			"label": "Customers Also Bought",
+			"pageTypes": [
+				"product"
+			],
+			"settings": [
+				{
+                    "name": "text_home_featured_title",
+                    "type": "text",
+                    "label": "Heading Text",
+                    "defaultValue": "Customers Also Bought...",
+					"livePreview": true,
+					"refreshButton": true,
+					"note": "Click refresh to see all changes."
+                },
+                {
+                    "name": "text_home_featured_paragraph",
+                    "type": "rich_text",
+                    "label": "Description Text (featured products)",
+                    "defaultValue": "",
+					"livePreview": true,
+					"separator": true
+                },
+				{
+                    "name": "products_to_show",
+                    "type": "slider",
+                    "label": "Products To Show",
+                    "defaultValue": 7,
+                    "minValue": 1,
+                    "maxValue": 30,
+                    "step": 1,
+					"separator": true
+                },
+				{
+                    "name": "products_per_row_desktop",
+                    "type": "slider",
+                    "label": "Products Per Row (Desktop)",
+                    "defaultValue": 4,
+                    "minValue": 1,
+                    "maxValue": 5,
+                    "step": 1
+                },
+				{
+                    "name": "products_per_row_tablet",
+                    "type": "slider",
+                    "label": "Products Per Row (Tablet)",
+                    "defaultValue": 3,
+                    "minValue": 1,
+                    "maxValue": 4,
+                    "step": 1
+                },
+				{
+                    "name": "products_per_row_mobile",
+                    "type": "slider",
+                    "label": "Products Per Row (Mobile)",
+                    "defaultValue": 2,
+                    "minValue": 1,
+                    "maxValue": 3,
+                    "step": 1
+                }
+			]
+		},
+		{ 
+			"name": "hero_image_slider",
+			"icon": "gallery",
+			"label": "Hero Image Slider",
+			"settings": [
+					{
+						"name": "hero_image_slider_no_margin_t",
+						"type": "checkbox",
+						"label": "Remove the top margin",
+						"note": "Use this setting to remove the empty space above the slides.",
+						"defaultValue": false,
+						"separator": true
+					},
+					{
+						"name": "hero_image_slider_show_dots",
+						"type": "checkbox",
+						"label": "Show progress indicator",
+						"defaultValue": 0
+					},
+					{
+						"name": "hero_image_slider_autoplay_checkbox",
+						"type": "checkbox",
+						"label": "Autoplay the slides",
+						"group": "Autoplay"
+					},
+					{
+						"name": "hero_image_slider_autoplay_speed",
+						"type": "slider",
+						"label": "Autoplay time (in seconds)",
+						"defaultValue": 4,
+						"minValue": 1,
+						"maxValue": 15,
+						"step": 1,
+						"group": "Autoplay",
+						"separator": true
+					}
+				],
+			"blocks": [
+				{
+					"name": "hero_image_slide_with_text",
+					"label": "Image Slide With Text",
+					"icon": "gallery",
+					"settings": [
+						{
+							"name": "slide_image_desktop",
+							"type": "image",
+							"label": "Slide Image (Desktop)",
+							"note": "Recommended image size 1440px x 600px",
+							"identifier": true
+						},
+						{
+							"name": "slide_image_mobile",
+							"type": "image",
+							"label": "Slide Image (mobile)",
+							"note": "Recommended image size 640px x 700px"
+						},
+						{
+							"name": "hero_image_alt_text",					
+							"type": "text",
+							"label": "Image Alt Text",
+							"identifier": true,
+							"separator": true
+						},
+						{
+							"name": "hero_image_slide_text",
+							"note": "ShopWired recommends setting the title text as an H2 tag.",					
+							"type": "rich_text",
+							"extraButtons": true,
+							"label": "Slide Text",
+							"separator": true
+						},
+						{
+							"name": "hero_image_button_text",					
+							"type": "text",
+							"label": "Slide Button Text",
+							"note": "You must add a button link below."
+						},
+						{	
+							"name": "hero_image_button_link",					
+							"type": "text",
+							"extraButtons": true,
+							"label": "Slide Button Link",
+							"note": "For example, enter /about-us to link to the About Us page. Click refresh to see your changes",
+							"separator": true,
+							"refreshButton": true
+						},
+						{
+							"name": "hero_image_overlay_alignment",
+							"label": "Overlay alignment (desktop only)",
+							"type": "radio",
+							"defaultValue": "left",
+							"values": {
+								"left": "Left",
+								"center": "Centre",
+								"right": "Right"
+							}
+						}
+					]
+				},
+				{
+					"name": "hero_image_slide",
+					"label": "Image Slide",
+					"icon": "gallery",
+					"settings": [
+						{
+							"name": "slide_image_desktop",
+							"type": "image",
+							"label": "Slide Image (Desktop)",
+							"note": "Recommended image size 1440px x 600px",
+							"identifier": true
+						},
+						{
+							"name": "slide_image_mobile",
+							"type": "image",
+							"label": "Slide Image (mobile)",
+							"note": "Recommended image size 640px x 700px"
+						},
+						{
+							"name": "hero_image_alt_text",					
+							"type": "text",
+							"label": "Image Alt Text",
+							"identifier": true,
+							"separator": true
+						},
+						{
+							"name": "hero_image_button_text",					
+							"type": "text",
+							"label": "Slide Button Text",
+							"note": "You must add a button link below."
+						},
+						{	
+							"name": "hero_image_button_link",					
+							"type": "text",
+							"extraButtons": true,
+							"label": "Slide Link/Button",
+							"note": "For example, enter /about-us to link to the About Us page. Click refresh to see your changes.",
+							"refreshButton": true,
+							"separator": true
+						},
+						{
+							"name": "hero_image_overlay_alignment",
+							"label": "Button alignment",
+							"type": "radio",
+							"defaultValue": "left",
+							"values": {
+								"left": "Left",
+								"center": "Centre",
+								"right": "Right"
+							}
+						}
+					]
+				},
+				{
+					"name": "hero_video_slide",
+					"label": "Video Slide",
+					"icon": "video",
+					"settings": [
+						{
+							"name": "video_slide_code",
+							"type": "textarea",
+							"label": "Video Slide Code",
+							"note": "Enter the full embedding code for your video (not just the URL)."
+						}						
+					]
+				}
+			]
+		},
+		{ 
+			"name": "image_with_text_overlay",
+			"icon": "gallery2",
+			"label": "Image With Text Overlay",
+			"settings": [
+					{
+						"name": "image_with_text_autoplay_checkbox",
+						"type": "checkbox",
+						"label": "Autoplay the slides"
+					},
+					{
+						"name": "image_with_text_autoplay_speed",
+						"type": "slider",
+						"label": "Autoplay time (in seconds)",
+						"defaultValue": 4,
+						"minValue": 1,
+						"maxValue": 15,
+						"step": 1,
+						"separator": true
+					}
+			],
+			"blocks": [
+				{
+					"name": "image_with_text_slide",
+					"label": "Image Slide",
+					"icon": "gallery",
+					"settings": [
+						{
+							"name": "slide_image_desktop",
+							"type": "image",
+							"label": "Slide Image (Desktop)",
+							"note": "Recommended image size 1286px x 520px",
+							"identifier": true
+						},
+						{
+							"name": "slide_image_mobile",
+							"type": "image",
+							"label": "Slide Image (mobile)",
+							"note": "Recommended image size 640px x 880px"
+						},
+						{
+							"name": "slide_image_alt_text",					
+							"type": "text",
+							"label": "Image Alt Text",
+							"identifier": true,
+							"separator": true
+						},
+						{
+							"name": "slide_image_slide_text",
+							"note": "ShopWired recommends setting the title text as an H2 tag.",					
+							"type": "rich_text",
+							"extraButtons": true,
+							"label": "Slide Text",
+							"separator": true
+						},
+						{
+							"name": "slide_image_button_text",					
+							"type": "text",
+							"label": "Slide Button Text",
+							"livePreview": true,
+							"note": "You must add a button link below. You can leave this field blank and enter a link below to make the entire image a link."
+						},
+						{	
+							"name": "slide_image_button_link",					
+							"type": "text",
+							"extraButtons": true,
+							"label": "Slide Button Link",
+							"note": "For example, enter /about-us to link to the About Us page. Click refresh to see your changes.",
+							"refreshButton": true
+						}
+						
+					]
+				}
+			]
+		},
+		{ 
+			"name": "image_with_text",
+			"icon": "image2",
+			"label": "Image With Text",
+			"settings": [
+					{
+						"name": "image",
+						"type": "image",
+						"label": "Image",
+						"note": "Recommended image size 540px x 540px"
+					},
+					{
+						"name": "alt_text",					
+						"type": "text",
+						"label": "Image Alt Text"
+					},
+					{
+						"name": "fill_container",
+						"type": "checkbox",
+						"label": "Fill the image container",
+						"defaultValue": 1,
+						"separator": true
+	                },
+					{
+						"name": "text_text",	
+						"label": "Text",
+						"type": "rich_text",
+						"extraButtons": true,
+						"livePreview": true,
+						"separator": true
+					},
+					{
+						"name": "button_text",					
+						"type": "text",
+						"label": "Slide Button Text",
+						"livePreview": true,
+						"note": "You must add a button link below to display the button."
+					},
+					{	
+						"name": "button_link",					
+						"type": "text",
+						"extraButtons": true,
+						"label": "Slide Button Link",
+						"description": "For example, enter /about-us to link to the About Us page.",
+						"refreshButton": true,
+						"note": "Click refresh to see your changes.",
+						"separator": true
+					}
+			]
+		},
+		{ 
+			"separator": true,
+			"name": "embedded_products",
+			"icon": "shop",
+			"label": "Embedded Products",
+			"settings": [
+				{
+                    "name": "text_home_featured_title",
+                    "type": "text",
+                    "label": "Heading Text",
+                    "defaultValue": "FAVOURITES",
+                    "livePreview": true,
+					"refreshButton": true,
+					"note": "Click refresh to see all changes."
+                },
+                {
+                    "name": "text_home_featured_paragraph",
+                    "type": "rich_text",
+                    "label": "Description Text (featured products)",
+                    "defaultValue": "<p>Here you can write some text which introduces the featured products.</p>",
+                    "livePreview": true,
+					"separator": true
+                },
+				{
+                    "name": "show_featured_products",
+					"label": "Show Featured Products?",
+					"note": "Select to show your ShopWired account's featured products, alternatively select a category of products below.",
+					"type": "radio",
+					"defaultValue": "yes",
+					"values": {
+                        "yes": "Featured Products",
+						"no": "Embedded From Category"
+					}
+                },
+				{
+                    "name": "category_products",
+                    "type": "category",
+                    "label": "Select Category",
+                    "livePreview": true,
+					"separator": true
+                },
+				{
+                    "name": "products_to_show",
+                    "type": "slider",
+                    "label": "Products To Show",
+                    "defaultValue": 7,
+                    "minValue": 1,
+                    "maxValue": 30,
+                    "step": 1,
+					"separator": true
+                },
+				{
+                    "name": "products_per_row_desktop",
+                    "type": "slider",
+                    "label": "Products Per Row (Desktop)",
+                    "defaultValue": 4,
+                    "minValue": 1,
+                    "maxValue": 5,
+                    "step": 1
+                },
+				{
+                    "name": "products_per_row_tablet",
+                    "type": "slider",
+                    "label": "Products Per Row (Tablet)",
+                    "defaultValue": 3,
+                    "minValue": 1,
+                    "maxValue": 4,
+                    "step": 1
+                },
+				{
+                    "name": "products_per_row_mobile",
+                    "type": "slider",
+                    "label": "Products Per Row (Mobile)",
+                    "defaultValue": 2,
+                    "minValue": 1,
+                    "maxValue": 3,
+                    "step": 1
+                }
+			]
+		},
+		{ 
+			"name": "recently_viewed_products",
+			"icon": "shop",
+			"label": "Recently Viewed Products",
+			"settings": [
+				{
+                    "name": "text_home_featured_title",
+                    "type": "text",
+                    "label": "Heading Text",
+                    "defaultValue": "Recently Viewed",
+					"livePreview": true,
+					"group": "Text",
+					"refreshButton": true,
+					"note": "Click refresh to see all changes."
+                },
+                {
+                    "name": "text_home_featured_paragraph",
+                    "type": "rich_text",
+                    "label": "Description Text",
+                    "defaultValue": "",
+					"livePreview": true,
+					"group": "Text"
+                },
+				{
+                    "name": "products_to_show",
+                    "type": "slider",
+                    "label": "Products To Show",
+                    "defaultValue": 7,
+                    "minValue": 1,
+                    "maxValue": 30,
+                    "step": 1,
+					"separator": true,
+					"group": "Product settings"
+                },
+				{
+                    "name": "products_per_row_desktop",
+                    "type": "slider",
+                    "label": "Products Per Row (Desktop)",
+                    "defaultValue": 4,
+                    "minValue": 1,
+                    "maxValue": 5,
+                    "step": 1,
+					"group": "Product settings"
+                },
+				{
+                    "name": "products_per_row_tablet",
+                    "type": "slider",
+                    "label": "Products Per Row (Tablet)",
+                    "defaultValue": 3,
+                    "minValue": 1,
+                    "maxValue": 4,
+                    "step": 1,
+					"group": "Product settings"
+                },
+				{
+                    "name": "products_per_row_mobile",
+                    "type": "slider",
+                    "label": "Products Per Row (Mobile)",
+                    "defaultValue": 2,
+                    "minValue": 1,
+                    "maxValue": 3,
+                    "step": 1,
+					"group": "Product settings"
+                }
+			]
+		},
+		{ 
+			"name": "embedded_categories",
+			"icon": "category",
+			"label": "Embedded Categories",
+			"settings": [
+				{
+                    "name": "show_featured_categories",
+					"label": "Show Featured Categories?",
+					"note": "Select to show your ShopWired account's featured categories, alternatively select a parent category below.",
+					"type": "radio",
+					"defaultValue": "yes",
+					"values": {
+                        "yes": "Featured Categories",
+						"no": "Embedded From Parent Category"
+					}
+                },
+				{
+                    "name": "categories",
+                    "type": "parent_category",
+                    "label": "Select Parent Category"
+                },
+				{
+                    "name": "categories_to_show",
+                    "type": "slider",
+                    "label": "Categories To Show",
+                    "defaultValue": 4,
+                    "minValue": 1,
+                    "maxValue": 8,
+                    "step": 1,
+					"separator": true
+                },
+				{
+                    "name": "categories_per_row_desktop",
+                    "type": "slider",
+                    "label": "Categories Per Row (Desktop)",
+                    "defaultValue": 3,
+                    "minValue": 1,
+                    "maxValue": 5,
+                    "step": 1
+                },
+				{
+                    "name": "categories_per_row_tablet",
+                    "type": "slider",
+                    "label": "Categories Per Row (Tablet)",
+                    "defaultValue": 2,
+                    "minValue": 1,
+                    "maxValue": 3,
+                    "step": 1
+                },
+				{
+                    "name": "categories_per_row_mobile",
+                    "type": "slider",
+                    "label": "Categories Per Row (Mobile)",
+                    "defaultValue": 2,
+                    "minValue": 1,
+                    "maxValue": 3,
+                    "step": 1
+                }
+			]
+		},
+		{ 
+			"name": "featured_categories",
+			"icon": "web-browser",
+			"label": "Featured Categories",
+			"settings": [
+				{
+                    "name": "show_featured_categories",
+					"label": "Show Featured Categories?",
+					"note": "Select to show your ShopWired account's featured categories, alternatively select a parent category below.",
+					"type": "radio",
+					"defaultValue": "yes",
+					"values": {
+                        "yes": "Featured Categories",
+						"no": "Embedded From Parent Category"
+					}
+                },
+				{
+                    "name": "embedded_category",
+                    "type": "parent_category",
+                    "label": "Select Parent Category"
+                },
+				{
+                    "name": "categories_to_show",
+                    "label": "Categories To Show",
+					"type": "slider",
+                    "defaultValue": 4,
+                    "minValue": 1,
+                    "maxValue": 8,
+                    "step": 1
+                }
+			]
+		},
+		{ 
+			"name": "embedded_brands",
+			"icon": "category",
+			"label": "Embedded Brands",
+			"settings": [
+				{
+                    "name": "brands_to_show",
+                    "type": "slider",
+                    "label": "Brands To Show",
+                    "defaultValue": 4,
+                    "minValue": 1,
+                    "maxValue": 8,
+                    "step": 1,
+					"separator": true
+                },
+				{
+                    "name": "brands_per_row_desktop",
+                    "type": "slider",
+                    "label": "Brands Per Row (Desktop)",
+                    "defaultValue": 3,
+                    "minValue": 1,
+                    "maxValue": 5,
+                    "step": 1
+                },
+				{
+                    "name": "brands_per_row_tablet",
+                    "type": "slider",
+                    "label": "Brands Per Row (Tablet)",
+                    "defaultValue": 2,
+                    "minValue": 1,
+                    "maxValue": 5,
+                    "step": 1
+                },
+				{
+                    "name": "brands_per_row_mobile",
+                    "type": "slider",
+                    "label": "Brands Per Row (Mobile)",
+                    "defaultValue": 2,
+                    "minValue": 1,
+                    "maxValue": 3,
+                    "step": 1
+                }
+			]
+		},
+		{ 
+			"separator": true,
+			"name": "text_section",
+			"icon": "page",
+			"label": "Text Section",
+			"settings": [
+				{
+					"name": "text_text_section",				
+					"type": "rich_text",
+					"extraButtons": true,
+					"label": "Text Content",
+					"livePreview": true
+				}
+			]
+		},
+		{ 
+			"name": "text_columns_with_images",
+			"icon": "image2",
+			"label": "Text Columns (Images Optional)",
+			"blocks": [
+				{
+					"name": "text_column_with_image",
+					"label": "Text Column With Image",
+					"icon": "image2",
+					"settings": [
+						{
+							"name": "text_column_image",
+							"type": "image",
+							"label": "Image",
+							"note": "Recommended image size 400px x 400px",
+							"identifier": true
+						},
+						{
+							"name": "alt_text",					
+							"type": "text",
+							"label": "Image Alt Text",
+							"identifier": true
+						},
+						{
+							"name": "fill_container",
+							"type": "checkbox",
+							"label": "Fill the image container",
+							"defaultValue": 1,
+							"separator": true
+						},
+						{
+							"name": "text_column_text",
+							"type": "rich_text",
+							"extraButtons": true,
+							"label": "Text",
+							"separator": true
+						}
+					]
+				},
+				{
+					"name": "text_column",
+					"label": "Text Column",
+					"icon": "page",
+					"settings": [
+						{
+							"name": "text_column_text",
+							"type": "rich_text",
+							"extraButtons": true,
+							"label": "Text",
+							"separator": true
+						}
+					]
+				}
+			]
+		},
+		{ 
+			"name": "blog_posts",
+			"icon": "blog",
+			"label": "Blog Posts",
+			"settings": [
+				{
+					"name": "text_blog_title_text",				
+					"label": "Title Text",
+					"type": "text",
+					"defaultValue": "Latest news & updates",
+					"livePreview": true
+				},
+				{
+					"name": "blog_posts_to_show",				
+					"label": "Posts To Show",
+					"type": "slider",
+                    "defaultValue": 5,
+                    "minValue": 1,
+                    "maxValue": 12,
+                    "step": 1,
+					"separator": true
+				},
+				{
+					"name": "blog_posts_autoplay_checkbox",
+					"type": "checkbox",
+					"label": "Autoplay the blog posts"
+				},
+				{
+					"name": "blog_posts_autoplay_speed",
+					"type": "slider",
+					"label": "Autoplay time (in seconds)",
+					"defaultValue": 4,
+					"minValue": 1,
+					"maxValue": 15,
+					"step": 1,
+					"separator": true
+				},
+				{
+					"name": "blog_posts_excerpt_length",				
+					"label": "Excerpt length (characters)",
+					"type": "slider",
+                    "defaultValue": 50,
+                    "minValue": 0,
+                    "maxValue": 250,
+					"valueSuffix": "characters",
+                    "step": 5,
+					"separator": true
+				}
+			]
+		},
+		{ 
+			"name": "testimonials",
+			"icon": "rating",
+			"label": "Testimonials",
+			"settings": [
+				{
+                    "name": "text_section_header",
+                    "type": "rich_text",
+                    "label": "Heading Text",
+                    "defaultValue": "WHAT OUR CUSTOMERS SAY",
+                    "livePreview": true,
+					"separator": true
+				},
+				{
+					"name": "testimonials_to_show",
+					"type": "slider",
+					"label": "Testimonials To Show",
+					"defaultValue": 3,
+					"minValue": 1,
+					"maxValue": 4,
+					"step": 1,
+					"separator": true
+				},
+				{
+					"name": "testimonial_autoplay_checkbox",
+					"type": "checkbox",
+					"label": "Autoplay the testimonials"
+				},
+				{
+					"name": "testimonial_autoplay_speed",
+					"type": "slider",
+					"label": "Autoplay time (in seconds)",
+					"defaultValue": 5,
+					"minValue": 1,
+					"maxValue": 15,
+					"step": 1,
+					"separator": true
+				},
+				{
+					"name": "testimonial_show_arrows",
+					"type": "checkbox",
+					"label": "Show scrolling arrows",
+					"defaultValue": 1
+				},
+				{
+					"name": "testimonial_show_dots",
+					"type": "checkbox",
+					"label": "Show progress indicator"
+				}
+			],
+			"blocks": [
+				{
+					"name": "testimonial",
+					"label": "Testimonial",
+					"settings": [
+						{
+							"name": "testimonial_name",
+							"type": "text",
+							"label": "Customer Name",
+							"identifier": true,
+							"refreshButton": true,
+							"note": "Click refresh to see your changes."
+						},
+						{
+							"name": "testimonial_text",
+							"type": "rich_text",
+							"extraButtons": true,
+							"label": "Testimonial/Review Content",
+							"refreshButton": true,
+							"note": "Click refresh to see your changes."
+						}
+					]
+				}
+			]
+		},
+		{ 
+			"name": "faq_section",
+			"icon": "page",
+			"label": "FAQs",
+			"settings": [
+					{
+						"name": "faq_section_title",
+						"label": "FAQ Section Title",
+						"type": "text",
+						"defaultValue": "FAQs"
+					},
+					{
+						"name": "faq_section_description_1",
+						"label": "FAQ Section Primary Description",
+						"note": "Shows above the FAQs.",
+						"type": "rich_text"
+					},
+					{
+						"name": "faq_section_description_2",
+						"label": "FAQ Section Secondary Description",
+						"note": "Shows below the FAQs.",
+						"type": "rich_text"
+					},
+					{
+						"name": "faq_section_multi",
+						"label": "Multi-Expand",
+						"note": "Allow multiple FAQs to be open at the same time.",
+						"type": "checkbox",
+						"defaultValue": false
+					},
+					{
+						"name": "faq_section_closed",
+						"label": "All Closed",
+						"note": "Allow all FAQs to be closed at the same time.",
+						"type": "checkbox",
+						"defaultValue": false
+					}
+			],
+			"blocks": [
+				{
+					"name": "faq_section_block",
+					"label": "Answer & Question",
+					"icon": "faq",
+					"settings": [
+						{
+							"name": "faq_section_question",
+							"type": "text",
+							"label": "Question",
+							"identifier": true
+						},
+						{
+							"name": "faq_section_answer",
+							"type": "rich_text",
+							"label": "Answer"
+						}
+
+					]
+				}
+			]
+		},
+		{ 
+			"name": "website_page_content",
+			"icon": "page",
+			"label": "Website Page Content",
+			"note": "Use this section to embed content from a website page you have configured in your ShopWired account.",
+			"settings": [
+					{
+							"name": "text_title_text",
+							"type": "rich_text",
+							"extraButtons": true,
+							"label": "Title Text",
+							"livePreview": true
+					},
+					{
+						"name": "website_page_id",
+						"type": "page",
+						"label": "Select Website Page To Embed",
+						"note": "Any styling for the content (e.g. text alignment, font size) will need to be customised within the website page editor."
+					}
+				]
+		},
+		{ 
+			"separator": true,
+			"name": "gallery_of_images",
+			"icon": "image",
+			"label": "Gallery Of Images",
+			"settings": [
+					{
+						"name": "gallery_image_aspect_ratio",
+						"type": "slider",
+						"label": "Aspect Ratio",
+						"defaultValue": 100,
+						"valueSuffix": "%",
+						"minValue": 50,
+						"maxValue": 150,
+						"step": 1
+					},
+					{
+						"name": "fill_container",
+						"type": "checkbox",
+						"label": "Fill the image container",
+						"defaultValue": 0,
+						"separator": true
+					},
+					{
+						"name": "images_to_show_desktop",				
+						"label": "Images To Show (Desktop)",
+						"type": "slider",
+						"defaultValue": 4,
+						"minValue": 1,
+						"maxValue": 6,
+						"step": 1
+					},
+					{	
+						"name": "images_to_show_tablet",				
+						"label": "Images To Show (Tablet)",
+						"type": "slider",
+						"defaultValue": 3,
+						"minValue": 1,
+						"maxValue": 4,
+						"step": 1
+					},
+					{
+						"name": "images_to_show_mobile",				
+						"label": "Images To Show (Mobile)",
+						"type": "slider",
+						"defaultValue": 2,
+						"minValue": 1,
+						"maxValue": 4,
+						"step": 1,
+						"separator": true
+					},
+					{
+						"name": "gallery_slider",
+						"label": "Gallery display",
+						"type": "radio",
+						"defaultValue": "stack",
+						"values": {
+							"slider": "Slider",
+							"stack": "Stack images in rows"
+						},
+						"separator": true
+					},
+					{
+						"name": "gallery_autoplay_checkbox",
+						"type": "checkbox",
+						"label": "Autoplay the slides"
+					},
+					{
+						"name": "gallery_autoplay_speed",
+						"type": "slider",
+						"label": "Autoplay time (in seconds)",
+						"defaultValue": 4,
+						"minValue": 1,
+						"maxValue": 15,
+						"step": 1,
+						"separator": true
+					},
+					{
+						"name": "gallery_show_arrows",
+						"type": "checkbox",
+						"label": "Show scrolling arrows"
+					},
+					{
+						"name": "gallery_show_three_dots",
+						"type": "checkbox",
+						"label": "Show scrolling dots"
+					}
+				],
+				"blocks": [
+					{
+						"name": "gallery_image",
+						"label": "Single Image",
+						"icon": "image",
+						"settings": [
+							{
+								"name": "gallery_image",
+								"type": "image",
+								"label": "Gallery Image",
+								"note": "Recommended image size 400px x 400px",
+								"identifier": true
+							},
+							{
+								"name": "gallery_image_alt_text",					
+								"type": "text",
+								"label": "Gallery Image Alt Text",
+								"identifier": true,
+								"separator": true
+							},
+							{
+								"name": "gallery_link",					
+								"type": "text",
+								"label": "Gallery Image Link"
+							}
+						]
+					},
+					{
+						"name": "gallery_gallery",
+						"label": "Image Gallery",
+						"icon": "gallery",
+						"settings": [
+							{
+								"name": "gallery_of_images",
+								"type": "gallery",
+								"label": "Select Gallery"
+							}
+						]
+					}
+			]
+		},
+		{ 
+			"name": "embedded_video",
+			"icon": "video",
+			"label": "Embedded Video",
+			"maxBlocks": 1,
+			"blocks": [
+				{
+					"name": "video_with_overlay",
+					"label": "Video With Image Overlay",
+					"icon": "video",
+					"settings": [
+						{
+							"name": "embedded_video_link",
+							"type": "text",
+							"label": "Video URL",
+							"note": "Enter the URL of your video, e.g. https://www.youtube.com/watch?v=ScMzIvxBSi4",
+							"separator": true
+						},
+						{
+							"name": "text_video_button_text",
+							"type": "text",
+							"label": "Button text",
+							"defaultValue": "PLAY VIDEO",
+							"refreshButton": true,
+							"note": "Click refresh to see your changes."
+						},
+						{
+							"name": "embedded_image_thumbnail",
+							"note": "Recommended image size 1800px x 625px",
+							"type": "image",
+							"label": "Video thumbnail image"
+						},
+						{
+							"name": "embedded_video_alt_text",
+							"type": "text",
+							"label": "Image alt text",
+							"separator": true
+						}
+					]
+				},
+				{
+					"name": "video",
+					"label": "Video",
+					"icon": "video",
+					"settings": [
+						{
+							"name": "embedded_video_link",
+							"type": "textarea",
+							"label": "Video Embedding Code",
+							"note": "Enter the full embedding code for your video (not just the URL)."
+						}
+					]
+				}
+			]
+		},
+		{ 
+			"separator": true,
+			"name": "newsletter_form",
+			"icon": "newsletter",
+			"label": "Newsletter Form",
+			"settings": [
+				{
+					"name": "text_newsletter_title_text",				
+					"type": "text",
+					"label": "Title Text",
+					"defaultValue": "Stay in the know!",
+					"livePreview": true
+				},
+				{
+					"name": "text_newsletter_paragraph_text",				
+					"type": "rich_text",
+					"extraButtons": true,
+					"label": "Text Content",
+					"livePreview": true,
+					"defaultValue": "<p>We’ll use your email to be in touch with you regarding product updates, exclusive offers and other relevant marketing.</p>"
+				},
+				{
+					"name": "email_placeholder",				
+					"type": "text",
+					"label": "Email field text",
+					"defaultValue": "Enter your email",
+					"refreshButton": true,
+					"note": "Click refresh to see your changes."
+				}
+			]
+		},
+		{ 
+			"name": "custom_html",
+			"icon": "text-box",
+			"label": "Custom HTML",
+			"settings": [
+				{
+                    "name": "text_custom_html",
+                    "type": "textarea",
+                    "label": "Enter custom HTML below",
+					"note": "You cannot use Twig code here."
+                }
+			]
+		},
+		{ 
+			"separator": true,
+			"name": "horizontal_rule",
+			"icon": "separator",
+			"label": "Separator",
+			"settings": [
+				{
+                    "name": "horizontal_rule_line_style",
+					"label": "Line style",
+					"type": "radio",
+					"defaultValue": "dashed",
+					"values": {
+                        "dashed": "Dashed",
+						"solid": "Solid"
+					}
+                },
+				{
+                    "name": "horizontal_rule_height",
+                    "type": "slider",
+                    "label": "Height",
+                    "defaultValue": 4,
+                    "minValue": 1,
+                    "maxValue": 10,
+                    "step": 1,
+					"valueSuffix": "px"
+                },
+				{
+                    "name": "horizontal_rule_color",
+                    "type": "color",
+                    "label": "Colour (click refresh to see changes)",
+					"defaultValue": "#e9e6dc"
+                }
+			]
+		},
+		{ 
+			"name": "extra_margin",
+			"icon": "padding",
+			"label": "Extra Margin",
+			"settings": [
+				{
+                    "name": "section_height",
+                    "type": "slider",
+                    "label": "Height/Space",
+                    "defaultValue": 20,
+                    "minValue": 1,
+                    "maxValue": 100,
+                    "step": 1,
+					"valueSuffix": "px"
+                }
+			]
+		},
+		{ 
+			"separator": true,
+			"name": "developer_use",
+			"icon": "text-box",
+			"label": "Developer Section",
+			"settings": [
+				{
+					"name": "instructions",				
+					"type": "textarea",
+					"label": "Instructions",
+					"defaultValue": "This section is for developer use only. Refer to the help guide on developer sections for more information."
+				},
+				{
+					"name": "label_1",				
+					"type": "text",
+					"label": "Label 1"
+				},
+				{
+					"name": "text_1",				
+					"type": "text",
+					"label": "Text 1"
+				},
+				{
+					"name": "textarea_1",				
+					"type": "textarea",
+					"label": "Textarea 1"
+				},
+				{
+					"name": "rich_text_1",				
+					"type": "rich_text",
+					"label": "Rich Text 1"
+				},
+				{
+					"name": "rich_text_extra_buttons_1",				
+					"type": "rich_text",
+					"extraButtons": true,
+					"label": "Rich Text Extra Buttons 1"
+				},
+				{
+					"name": "image_1",				
+					"type": "image",
+					"label": "Image 1"
+				},
+				{
+					"name": "checkbox_1",				
+					"type": "checkbox",
+					"label": "Checkbox 1"
+				},
+				{
+					"name": "gallery_1",
+					"type": "gallery",
+					"label": "Gallery 1",
+					"separator": true
+				},
+				{
+					"name": "label_2",				
+					"type": "text",
+					"label": "Label 2"
+				},
+				{
+					"name": "text_2",				
+					"type": "text",
+					"label": "Text 2"
+				},
+				{
+					"name": "textarea_2",				
+					"type": "textarea",
+					"label": "Textarea 2"
+				},
+				{
+					"name": "rich_text_2",				
+					"type": "rich_text",
+					"label": "Rich Text 2"
+				},
+				{
+					"name": "rich_text_extra_buttons_2",				
+					"type": "rich_text",
+					"extraButtons": true,
+					"label": "Rich Text Extra Buttons 2"
+				},
+				{
+					"name": "image_2",				
+					"type": "image",
+					"label": "Image 2"
+				},
+				{
+					"name": "checkbox_2",				
+					"type": "checkbox",
+					"label": "Checkbox 2",
+					"separator": true
+				},
+				{
+					"name": "label_3",				
+					"type": "text",
+					"label": "Label 3"
+				},
+				{
+					"name": "text_3",				
+					"type": "text",
+					"label": "Text 3"
+				},
+				{
+					"name": "textarea_3",				
+					"type": "textarea",
+					"label": "Textarea 3"
+				},
+				{
+					"name": "rich_text_3",				
+					"type": "rich_text",
+					"label": "Rich Text 3"
+				},
+				{
+					"name": "rich_text_extra_buttons_3",				
+					"type": "rich_text",
+					"extraButtons": true,
+					"label": "Rich Text Extra Buttons 3"
+				},
+				{
+					"name": "image_3",				
+					"type": "image",
+					"label": "Image 3"
+				},
+				{
+					"name": "checkbox_3",				
+					"type": "checkbox",
+					"label": "Checkbox 3"
+				}
+			],
+			"blocks": [
+				{
+					"name": "developer_block",
+					"label": "developer_block",
+					"icon": "text-box",
+					"settings": [
+						{
+							"name": "instructions",				
+							"type": "textarea",
+							"label": "Instructions",
+							"defaultValue": "This block is for developer use only. Refer to the help guide on developer sections for more information."
+						},
+						{
+							"name": "label_1",				
+							"type": "text",
+							"label": "Label 1",
+							"identifier": true
+						},
+						{
+							"name": "text_1",				
+							"type": "text",
+							"label": "Text 1"
+						},
+						{
+							"name": "textarea_1",				
+							"type": "textarea",
+							"label": "Textarea 1"
+						},
+						{
+							"name": "rich_text_1",				
+							"type": "rich_text",
+							"label": "Rich Text 1"
+						},
+						{
+							"name": "rich_text_extra_buttons_1",
+							"extraButtons": true,
+							"type": "rich_text",
+							"label": "Rich Text Extra Buttons 1"
+						},
+						{
+							"name": "image_1",				
+							"type": "image",
+							"label": "Image 1",
+							"identifier": true
+						},
+						{
+							"name": "checkbox_1",				
+							"type": "checkbox",
+							"label": "Checkbox 1"
+						}
+					]
+				}
+			]
+		},
+		{ 
+			"separator": true,
+			"name": "404_heading",
+			"icon": "text-box",
+			"label": "404 Heading",
+			"settings": [
+				{
+                    "name": "text_404_heading",
+                    "type": "text",
+                    "label": "404 Page",
+					"livePreview": true,
+                    "defaultValue": "404"
+                },
+				{
+                    "name": "text_404",
+                    "type": "rich_text",
+                    "label": "404 Page",
+					"livePreview": true,
+                    "defaultValue": "<h3>NOTHING TO SEE HERE</h3>"
+                }
+			],
+			"pageTypes": [
+				"404"
+			]
+		},
+		{ 
+			"separator": true,
+			"name": "404_search",
+			"label": "Search Box",
+			"settings": [
+				{
+                    "name": "search_instructions",
+                    "type": "text",
+                    "label": "Search Instructions",
+                    "defaultValue": "Search by product name, code or category",
+					"note": "Click the refresh button to see your changes."
+                }
+			],
+			"pageTypes": [
+				"404"
+			]
+		},
+		{ 
+			"separator": true,
+			"name": "contact_information",
+			"label": "Contact Information",
+			"note": "Contact information is set within your ShopWired account",
+			"pageTypes": [
+				"contact"
+			],
+			"blocks": [
+				{
+					"name": "address",
+					"label": "Address",
+					"maxInstances": 1
+				},
+				{
+					"name": "telephone",
+					"label": "Telephone",
+					"maxInstances": 1
+				},
+				{
+					"name": "email",
+					"label": "Email",
+					"maxInstances": 1
+				}
+			]
+		},
+		{ 
+			"name": "contact_form",
+			"label": "Contact Form",
+			"settings": [
+				{
+                    "name": "text_contact_form",
+                    "type": "rich_text",
+					"extraButtons": true,
+                    "label": "Contact Form Instructions",
+                    "note": "text about the contact form",
+					"livePreview": true,
+                    "defaultValue": "<h2>Contact form</h2><p>Complete the form and a member of our team will contact you within 24 - 48 hours.</p>"
+                }
+			],
+			"pageTypes": [
+				"contact"
+			]
+		},
+		{ 
+			"name": "page_content",
+			"icon": "category",
+			"label": "Page Content",
+			"contentArea": true
+		},
+		{ 
+			"name": "product_page_content",
+			"icon": "product",
+			"label": "Product Information",
+			"contentArea": true
+		}
+
+    ],
+	"defaultSections": { 
+		"home": [ "featured_categories"	],
+		"404": [ "404_heading", "404_search"	],
+		"contact": [ { "type":"contact_information", "blocks": [{"type": "address", "enabled": true}, {"type": "telephone", "enabled": true }, {"type": "email", "enabled": true }] }, "contact_form" ],
+		"newsletter_subscription": [ "page_content" ],
+		"content_page": [ "page_content" ],
+		"blog_home": [ "page_content" ],
+		"blog_post": [ "page_content" ],
+		"gift_voucher": [ "page_content" ],
+		"categories": [ "page_content" ],
+		"parent_category": [ "page_content" ],
+		"category": [ "page_content" ],
+		"brands": [ "page_content" ],
+		"brand": [ "page_content" ],
+		"search": [ "page_content" ],
+		"wishlist": [ "page_content" ],
+		"basket": [ "page_content" ],
+		"videos": [ "page_content" ],
+		"galleries": [ "page_content" ],
+		"account_login": [ "page_content" ],
+		"account_create": [ "page_content" ],
+		"trade_application": [ "page_content" ],
+		"account_forgotten_password": [ "page_content" ],
+		"product": [ "product_page_content" ]
+	}
+}

@@ -1,0 +1,33 @@
+<section class="sw-section sw-section-faq">
+    <div class="row column">
+		{% if section.settings.faq_section_title %}
+			<div class="block-header">
+				<h2 class="account-header">
+					{{ section.settings.faq_section_title }}
+				</h2>
+			</div>
+		{% endif %}
+		{% if section.settings.faq_section_description_1 %}
+			<div class="sw-section-faq-description-one">
+				{{ section.settings.faq_section_description_1|raw }}
+			</div>
+		{% endif %}
+		{% if section.blocks|length %}
+			<ul class="accordion sw-section-faq-accordion" data-accordion{% if section.settings.faq_section_multi %} data-multi-expand="true"{% endif %}{% if section.settings.faq_section_closed %} data-allow-all-closed="true"{% endif %}>
+				{% for block in section.blocks %}
+					<li class="accordion-item{{ loop.first ? ' is-active' }}" data-accordion-item>
+						<a href="#" class="accordion-title">{{ block.settings.faq_section_question }}</a>
+						<div class="accordion-content" data-tab-content>
+							{{ block.settings.faq_section_answer|raw }}
+						</div>
+					</li>
+				{% endfor %}
+			</ul>
+		{% endif %}
+		{% if section.settings.faq_section_description_2 %}
+			<div class="sw-section-faq-description-two">
+				{{ section.settings.faq_section_description_2|raw }}
+			</div>
+		{% endif %}
+    </div>
+</section>
