@@ -15,7 +15,8 @@
 		theme: theme, html: html,
 		blog_posts: blog_posts,
 		recently_viewed: global.recently_viewed_products,
-		product: product
+		product: product,
+		is_about_us: narrow_content
 		})
 	}}
 	{% if narrow_content %}
@@ -33,14 +34,15 @@
 	</div>
 	{% endif %}
 	{{ render(global.theme.sections_below_content_area, {
-		featured_products: featured_products, 
-		featured_categories: featured_categories, 
-		gts: global.theme.settings, 
-		theme: theme, html: html, 
-		blog_posts: blog_posts, 
-		recently_viewed: global.recently_viewed_products, 
-		product: product
-		}) 
+		featured_products: featured_products,
+		featured_categories: featured_categories,
+		gts: global.theme.settings,
+		theme: theme, html: html,
+		blog_posts: blog_posts,
+		recently_viewed: global.recently_viewed_products,
+		product: product,
+		is_about_us: narrow_content
+		})
 	}}
 {% endblock %}
 {% block scripts %}
